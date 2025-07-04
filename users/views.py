@@ -9,7 +9,7 @@ class RegisterView(APIView):
     """
     使用者註冊接口（POST /api/users/register/）
     - 允許匿名存取（AllowAny）
-    - 接收：username, email, password, role
+    - 接收：username, email, password
     - 驗證資料、建立 User，並回傳 JWT tokens
     """
     permission_classes = [AllowAny]
@@ -18,23 +18,21 @@ class RegisterView(APIView):
         # 1. 反序列化並驗證輸入資料
         serializer = RegisterSerializer(data=request.data)
         if not serializer.is_valid():
-            # 驗證失敗時，回傳 400 與錯誤細節
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # 2. 建立新使用者（create() 已在 Serializer 中處理密碼雜湊等）
+        # 2. 建立新使用者
         user = serializer.save()
 
         # 3. 產生 JWT (access + refresh)
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
 
-        # 4. 組裝回應資料
+        # 4. 組裝回應資料（不含 role）
         response_data = {
             "msg": "註冊成功",
             "user": {
                 "username": user.username,
-                "email": user.email,
-                "role": user.role
+                "email": user.email
             },
             "token": {
                 "access": access_token,
@@ -43,7 +41,7 @@ class RegisterView(APIView):
         }
         response = Response(response_data, status=status.HTTP_201_CREATED)
 
-        # 5. （可選）在 HTTP Header 裡同時回傳 access token
+        # 5. 同時在 Header 裡回傳 access token
         response['Authorization'] = f"Bearer {access_token}"
 
         return response

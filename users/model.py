@@ -3,18 +3,11 @@ from django.db import models
 
 class User(AbstractUser):
     """
-    自訂使用者模型，繼承自 Django 內建 AbstractUser。
-    新增 role 欄位：user / therapist / admin
-    並強化 email 為唯一欄位。
+    自訂使用者模型：移除 role 欄位，新增性別與生日欄位。
     """
-    ROLE_CHOICES = [
-        ('user', '一般用戶'),
-        ('therapist', '心理師'),
-        ('admin', '管理員'),
-    ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
-    email = models.EmailField(unique=True, blank=False)
-
+    email = models.EmailField(unique=True)
+    gender = models.CharField(max_length=10, choices=[('male', '男性'), ('female', '女性'), ('other', '其他')], blank=True)
+    birthday = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        return self.username

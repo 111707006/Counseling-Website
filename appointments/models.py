@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.conf import settings
 from therapists.models import AvailableSlot, TherapistProfile
@@ -40,6 +41,12 @@ class Appointment(models.Model):
         choices=CONSULTATION_CHOICES,
         help_text='諮詢方式：線上或實體'
     )
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True, blank=True,
+        help_text='預約當時的收費金額'
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -51,5 +58,12 @@ class Appointment(models.Model):
         help_text='建立時間'
     )
 
+    def save(self, *args, **kwargs):
+        # 如果前端沒給 price，自動從 therapist.pricing 拿對應金額
+        if self.price in (None, Decimal('0'), ''):
+            pricing_dict = getattr(self.therapist, 'pricing', {}) or {}
+            self.price = pricing_dict.get(self.consultation_type, Decimal('0.00'))
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.user.username} → {self.therapist.user.username} @{self.slot.start_time}"
+        return f"{self.user.username} → {self.therapist.name} @ {self.slot.start_time}"

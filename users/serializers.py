@@ -1,5 +1,3 @@
-# users/serializers.py
-
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -10,7 +8,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     註冊使用者時使用的序列化器
     - 驗證 email 唯一性
     - 驗證密碼強度
-    - 阻擋使用者自行註冊為 admin
     """
     # 強制 email 唯一，並自訂錯誤訊息
     email = serializers.EmailField(
@@ -28,23 +25,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         validators=[validate_password]
     )
-    # 限定為模型中定義的三種角色
-    role = serializers.ChoiceField(
-        choices=User.ROLE_CHOICES,
-        default='user'
-    )
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'role')
-
-    def validate_role(self, value):
-        """
-        阻止使用者註冊為管理員角色
-        """
-        if value == 'admin':
-            raise serializers.ValidationError("無法自行註冊成管理員")
-        return value
+        # 移除 role，只保留基本註冊欄位
+        fields = ('username', 'email', 'password')
 
     def create(self, validated_data):
         """
@@ -54,7 +39,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password'],
-            role=validated_data.get('role', 'user')
+            password=validated_data['password']
         )
         return user

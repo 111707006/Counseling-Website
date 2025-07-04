@@ -1,22 +1,14 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAdminUser
 
-class IsUser(BasePermission):
+class IsAppointmentOwner(BasePermission):
     """
-    僅限 role='user' 的使用者
+    僅允許預約的 user 本人操作（例如取消）。
     """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'user'
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_authenticated and obj.user == request.user
 
-class IsTherapist(BasePermission):
+class IsAdmin(IsAdminUser):
     """
-    僅限 role='therapist' 的心理師
+    僅限管理員（staff 或 superuser）。
     """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'therapist'
-
-class IsAdmin(BasePermission):
-    """
-    僅限 role='admin' 的管理員
-    """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'admin'
+    pass
