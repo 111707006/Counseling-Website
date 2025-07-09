@@ -3,9 +3,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # 其它 app 的路由...
+    path('api/auth/', include('users.urls')),                # JWT token、User 端點
+    path('api/therapists/', include('therapists.urls')),
+    path('api/appointments/', include('appointments.urls')),
+    path('api/assessments/', include('assessments.urls')),
     path('api/articles/', include('articles.urls')),
-    #綠界 
     path('api/payments/', include('payments.urls', namespace='payments')),
- # 文章模組
 ]

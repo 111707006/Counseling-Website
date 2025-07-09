@@ -1,47 +1,53 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer
+# from rest_framework import viewsets, mixins, status
+# from rest_framework.decorators import action
+# from rest_framework.response import Response
+# from rest_framework.permissions import AllowAny
+# from .models import Appointment
+# from .serializers import AppointmentSerializer, AppointmentCreateSerializer
+# from users.models import User
 
-class RegisterView(APIView):
-    """
-    使用者註冊接口（POST /api/users/register/）
-    - 允許匿名存取（AllowAny）
-    - 接收：username, email, password
-    - 驗證資料、建立 User，並回傳 JWT tokens
-    """
-    permission_classes = [AllowAny]
+# class AppointmentViewSet(
+#         mixins.ListModelMixin,
+#         mixins.RetrieveModelMixin,
+#         viewsets.GenericViewSet):
+#     """
+#     GET    /api/appointments/           列表（需 email+id_number 查詢―另有 lookup）
+#     GET    /api/appointments/{id}/      檢視
+#     """
+#     queryset = Appointment.objects.all().order_by('-created_at')
+#     serializer_class = AppointmentSerializer
+#     permission_classes = [AllowAny]
 
-    def post(self, request):
-        # 1. 反序列化並驗證輸入資料
-        serializer = RegisterSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     @action(detail=False, methods=['post'], url_path='create', permission_classes=[AllowAny])
+#     def create_appointment(self, request):
+#         """
+#         POST /api/appointments/create/
+#         建立預約（同時處理預約即註冊邏輯）。
+#         """
+#         serializer = AppointmentCreateSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         appointment = serializer.save()
+#         return Response(AppointmentSerializer(appointment).data, status=status.HTTP_201_CREATED)
 
-        # 2. 建立新使用者
-        user = serializer.save()
+#     @action(detail=False, methods=['post'], url_path='lookup', permission_classes=[AllowAny])
+#     def lookup(self, request):
+#         """
+#         POST /api/appointments/lookup/
+#         使用 email + id_number 查詢該使用者的所有預約。
+#         """
+#         email = request.data.get('email')
+#         id_number = request.data.get('id_number')
+#         if not email or not id_number:
+#             return Response({'detail': 'email 與 id_number 為必填'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 3. 產生 JWT (access + refresh)
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
+#         try:
+#             user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             return Response({'detail': '用戶不存在'}, status=status.HTTP_404_NOT_FOUND)
 
-        # 4. 組裝回應資料（不含 role）
-        response_data = {
-            "msg": "註冊成功",
-            "user": {
-                "username": user.username,
-                "email": user.email
-            },
-            "token": {
-                "access": access_token,
-                "refresh": str(refresh)
-            }
-        }
-        response = Response(response_data, status=status.HTTP_201_CREATED)
+#         if not user.check_id_number(id_number):
+#             return Response({'detail': '身分證號驗證失敗'}, status=status.HTTP_403_FORBIDDEN)
 
-        # 5. 同時在 Header 裡回傳 access token
-        response['Authorization'] = f"Bearer {access_token}"
-
-        return response
+#         queryset = Appointment.objects.filter(user=user).order_by('-created_at')
+#         data = AppointmentSerializer(queryset, many=True).data
+#         return Response(data)

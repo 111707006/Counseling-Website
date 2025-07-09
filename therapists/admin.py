@@ -10,17 +10,15 @@ class AvailableTimeInline(admin.TabularInline):
 
 @admin.register(TherapistProfile)
 class TherapistProfileAdmin(admin.ModelAdmin):
-    # 將 consultation_modes 與 pricing 加入列表頁顯示
     list_display = (
         'name', 'title', 'license_number',
         'get_consultation_modes', 'get_pricing_summary', 'created_at'
     )
-    # 可以用 consultation_modes 來過濾
     list_filter = ('consultation_modes',)
-    search_fields = ('name', 'title', 'license_number')
+    search_fields = ('name', 'specialties', 'license_number')
+    ordering = ('-created_at',)
     inlines = [AvailableTimeInline]
 
-    # 分組顯示欄位：基本資料 + 服務設定
     fieldsets = (
         (None, {
             'fields': (
@@ -35,17 +33,32 @@ class TherapistProfileAdmin(admin.ModelAdmin):
     )
 
     def get_consultation_modes(self, obj):
-        # 將 list 轉成逗號分隔字串
         return ", ".join(obj.consultation_modes)
     get_consultation_modes.short_description = "諮詢模式"
 
     def get_pricing_summary(self, obj):
-        # 簡要顯示 pricing dict
         return "; ".join(f"{mode}: {price}" for mode, price in obj.pricing.items())
     get_pricing_summary.short_description = "收費資訊"
+
+    # 開啟 autocomplete 功能
+    autocomplete_fields = ('available_times',)  # 讓可預約時段與心理師進行聯動搜索
 
 @admin.register(AvailableTime)
 class AvailableTimeAdmin(admin.ModelAdmin):
     list_display = ('therapist', 'day_of_week', 'start_time', 'end_time')
-    list_filter = ('day_of_week',)
-    search_fields = ('therapist__name',)
+    list_filter = (
+        'day_of_week',
+        'therapist',            # 可以依心理師過濾
+    )
+    search_fields = (
+        'therapist__name',      # 透過心理師姓名搜尋
+    )
+    ordering = (
+        'therapist__name',
+        'day_of_week',
+        'start_time',
+    )
+    list_select_related = ('therapist',)  # 加快查 therapist 關聯
+
+    # 若想透過 autocomplete 快速找心理師，可在 TherapistProfileAdmin 先設定:
+    autocomplete_fields = ('therapist',)  # 讓可預約時段更便捷地選擇心理師

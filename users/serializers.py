@@ -1,44 +1,64 @@
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
-from django.contrib.auth.password_validation import validate_password
-from .models import User
+# from rest_framework import serializers
+# from django.contrib.auth import get_user_model
+# from .models import Appointment
+# from therapists.models import AvailableSlot
 
-class RegisterSerializer(serializers.ModelSerializer):
-    """
-    註冊使用者時使用的序列化器
-    - 驗證 email 唯一性
-    - 驗證密碼強度
-    """
-    # 強制 email 唯一，並自訂錯誤訊息
-    email = serializers.EmailField(
-        required=True,
-        validators=[
-            UniqueValidator(
-                queryset=User.objects.all(),
-                message="此 Email 已被註冊"
-            )
-        ]
-    )
-    # 密碼只寫入，不回傳，並檢查強度
-    password = serializers.CharField(
-        write_only=True,
-        required=True,
-        validators=[validate_password]
-    )
+# User = get_user_model()
 
-    class Meta:
-        model = User
-        # 移除 role，只保留基本註冊欄位
-        fields = ('username', 'email', 'password')
+# class AppointmentSerializer(serializers.ModelSerializer):
+#     """供查詢用：返回完整預約資料（不含敏感 id_number）"""
+#     user_email = serializers.ReadOnlyField(source='user.email')
+#     user_id = serializers.ReadOnlyField(source='user.id')
 
-    def create(self, validated_data):
-        """
-        建立新使用者，使用 Django 內建的 create_user
-        以確保密碼雜湊、安全性設定等都正確處理
-        """
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return user
+#     class Meta:
+#         model = Appointment
+#         fields = (
+#             'id', 'user_id', 'user_email', 'therapist',
+#             'slot', 'consultation_type', 'price',
+#             'status', 'created_at'
+#         )
+#         read_only_fields = fields
+
+# class AppointmentCreateSerializer(serializers.ModelSerializer):
+#     """
+#     建立預約時同時處理「預約即註冊」：
+#     - 輸入 email + id_number
+#     - 若用戶不存在，建立一筆 User 並 set_id_number
+#     - 若已存在，驗證 id_number 正確才繼續
+#     """
+#     email = serializers.EmailField(write_only=True)
+#     id_number = serializers.CharField(write_only=True)
+#     slot = serializers.PrimaryKeyRelatedField(
+#         queryset=AvailableSlot.objects.filter(is_booked=False),
+#         help_text='要預約的 AvailableSlot id，且該時段尚未被預約'
+#     )
+
+#     class Meta:
+#         model = Appointment
+#         fields = ['email', 'id_number', 'slot', 'consultation_type']
+
+#     def validate(self, attrs):
+#         email = attrs.get('email')
+#         id_number = attrs.get('id_number')
+#         user_qs = User.objects.filter(email=email)
+#         if user_qs.exists():
+#             user = user_qs.first()
+#             if not user.check_id_number(id_number):
+#                 raise serializers.ValidationError("身分證號驗證失敗")
+#         return attrs
+
+#     def create(self, validated_data):
+#         email = validated_data.pop('email')
+#         id_number = validated_data.pop('id_number')
+#         # 取得或建立 user
+#         user, created = User.objects.get_or_create(
+#             email=email,
+#             defaults={'username': email}
+#         )
+#         # 若是新 user，或 id_number_hash 不存在，設定身分證雜湊
+#         if created or not user.check_id_number(id_number):
+#             user.set_id_number(id_number)
+#             user.save()
+#         # 建立預約，perform_create 會自動計價並標記 slot
+#         appointment = Appointment.objects.create(user=user, **validated_data)
+#         return appointment

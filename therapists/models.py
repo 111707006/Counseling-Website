@@ -63,3 +63,10 @@ class AvailableTime(models.Model):
 
     def __str__(self):
         return f"{self.therapist.name} — {self.get_day_of_week_display()} {self.start_time}-{self.end_time}"
+
+class AvailableSlot(models.Model):
+    therapist = models.ForeignKey(TherapistProfile, on_delete=models.CASCADE)
+    slot_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"Slot for {self.therapist} at {self.slot_time}"

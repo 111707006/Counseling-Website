@@ -16,11 +16,12 @@ class TherapistProfileSerializer(serializers.ModelSerializer):
     available_times = AvailableTimeSerializer(many=True, read_only=True)
 
     class Meta:
-        model = TherapistProfile
-        # 顯式列出，避免不必要欄位洩漏
-        fields = (
-            'id', 'name', 'title', 'license_number', 'education',
-            'experience', 'specialties', 'beliefs', 'publications',
-            'photo', 'available_times''consultation_modes',     # 新增
-            'pricing',               # 新增
+         model = TherapistProfile
+         fields = (
+            'id', 'name', 'title', 'license_number', 'education', 'experience',
+            'specialties', 'beliefs', 'publications', 'photo',
+            'available_times',  # ← 修正：加逗號
+            'consultation_modes',
+            'pricing',
+            'created_at',       # ← 新增：註冊／建立時間
         )

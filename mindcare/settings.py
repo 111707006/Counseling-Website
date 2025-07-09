@@ -63,12 +63,12 @@ AUTH_USER_MODEL = 'users.User'
 # ✅ 資料庫（Docker 預設對接 PostgreSQL）
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_DB", "mindcare"),
-        'USER': os.getenv("POSTGRES_USER", "postgres"),
-        'PASSWORD': os.getenv("POSTGRES_PASSWORD", "postgres"),
-        'HOST': 'db',  # 對應 docker-compose 服務名
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.mysql',  # 改為 MySQL
+        'NAME': 'mindcare',  # 資料庫名稱
+        'USER': 'root',  # 使用者名稱
+        'PASSWORD': 'password',  # 密碼
+        'HOST': 'localhost',  # 主機
+        'PORT': '3306',  # 預設 MySQL 端口
     }
 }
 

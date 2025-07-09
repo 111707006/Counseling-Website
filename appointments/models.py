@@ -4,9 +4,6 @@ from django.conf import settings
 from therapists.models import AvailableSlot, TherapistProfile
 
 class Appointment(models.Model):
-    """
-    預約模型：記錄使用者對心理師的預約資訊
-    """
     CONSULTATION_CHOICES = [
         ('online', '線上'),
         ('offline', '實體'),
@@ -25,13 +22,13 @@ class Appointment(models.Model):
         help_text='預約的使用者'
     )
     therapist = models.ForeignKey(
-        TherapistProfile,
+        'therapists.TherapistProfile',
         on_delete=models.CASCADE,
         related_name='appointments',
         help_text='預約的心理師'
     )
     slot = models.OneToOneField(
-        AvailableSlot,
+        'therapists.AvailableSlot',
         on_delete=models.CASCADE,
         related_name='appointment',
         help_text='對應的可預約時段；被預約後自動標記為已預約'
@@ -59,11 +56,20 @@ class Appointment(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        # 如果前端沒給 price，自動從 therapist.pricing 拿對應金額
         if self.price in (None, Decimal('0'), ''):
             pricing_dict = getattr(self.therapist, 'pricing', {}) or {}
             self.price = pricing_dict.get(self.consultation_type, Decimal('0.00'))
         super().save(*args, **kwargs)
 
+        if not self.slot.is_booked:
+            self.slot.is_booked = True
+            self.slot.save(update_fields=['is_booked'])
+
+    def delete(self, *args, **kwargs):
+        slot = self.slot
+        super().delete(*args, **kwargs)
+        slot.is_booked = False
+        slot.save(update_fields=['is_booked'])
+
     def __str__(self):
-        return f"{self.user.username} → {self.therapist.name} @ {self.slot.start_time}"
+        return f"{self.user.email} → {self.therapist.name} @ {self.slot.start_time}"
