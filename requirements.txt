@@ -1,4 +1,9 @@
 Django>=4.2
+
 djangorestframework>=3.14
-psycopg2-binary
 mysqlclient
+djangorestframework-simplejwt
+django-cors-headers
+python-dotenv
+django-filter
+Pillow
