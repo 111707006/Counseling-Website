@@ -67,6 +67,6 @@ class AvailableTime(models.Model):
 class AvailableSlot(models.Model):
     therapist = models.ForeignKey(TherapistProfile, on_delete=models.CASCADE)
     slot_time = models.DateTimeField()
+    is_booked = models.BooleanField(default=False, help_text="是否已被預約")
 
-    def __str__(self):
-        return f"Slot for {self.therapist} at {self.slot_time}"
+    def __str__(self):        return f"Slot for {self.therapist} at {self.slot_time}"

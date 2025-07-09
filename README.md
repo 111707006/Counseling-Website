@@ -17,7 +17,7 @@
 
 前後端分離架構，適合搭配 React / Vue / Next.js
 
-使用 PostgreSQL 資料庫、Docker 容器化部署（支援 Render）
+使用 MySQL 資料庫、Docker 容器化部署（支援 Render）
 
 整合 SendGrid 寄送預約通知信件
 ---
@@ -60,7 +60,7 @@ Backend (Django + DRF)
 └──admin/ 後台管理界面
 
 
-資料庫:資料庫：PostgreSQL
+資料庫: MySQL
 Deployment: Docker
 部署:Render 
 第三方工具：SendGrid（Email 通知）
@@ -104,3 +104,16 @@ Deployment: Docker
 - 保留 Django `username` 欄位於後端作為內部識別，前端不顯示
 - 心理師／管理員登入仍使用 JWT（原有 token API 留作後台使用）
 
+
+## ⚙️ 本地環境建立
+### 1. 下載並安裝相依套件
+```bash
+./setup_env.sh
+```
+此指令會建立虛擬環境並安裝 `requirements.txt` 內的套件，同時複製 `.env.template` 為 `.env`。
+
+### 2. 啟動開發伺服器
+```bash
+docker-compose up
+```
+執行後 Docker 會同時啟動 MySQL 與 Django，完成後可透過 `http://localhost:8000/` 存取後端服務。

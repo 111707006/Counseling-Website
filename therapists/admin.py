@@ -40,8 +40,7 @@ class TherapistProfileAdmin(admin.ModelAdmin):
         return "; ".join(f"{mode}: {price}" for mode, price in obj.pricing.items())
     get_pricing_summary.short_description = "收費資訊"
 
-    # 開啟 autocomplete 功能
-    autocomplete_fields = ('available_times',)  # 讓可預約時段與心理師進行聯動搜索
+    # 開啟 autocomplete 功能（沒有可用 FK，故移除錯誤設定）
 
 @admin.register(AvailableTime)
 class AvailableTimeAdmin(admin.ModelAdmin):
