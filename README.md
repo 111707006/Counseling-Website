@@ -17,7 +17,10 @@
 
 前後端分離架構，適合搭配 React / Vue / Next.js
 
-使用 PostgreSQL 資料庫、Docker 容器化部署（支援 Render）
+使用 MYSQL 資料庫
+
+## 暫不實現
+Docker 容器化部署（支援 Render）
 
 整合 SendGrid 寄送預約通知信件
 ---
@@ -60,10 +63,7 @@ Backend (Django + DRF)
 └──admin/ 後台管理界面
 
 
-資料庫:資料庫：PostgreSQL
-Deployment: Docker
-部署:Render 
-第三方工具：SendGrid（Email 通知）
+資料庫:資料庫：MySQL
 
 模組功能簡述
 
