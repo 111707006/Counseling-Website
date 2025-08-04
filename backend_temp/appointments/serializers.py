@@ -260,9 +260,12 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
                         )
         
         # 發送郵件通知
-        from .notifications import send_appointment_created_notification
+        from .notifications import send_appointment_created_notification, send_appointment_user_confirmation
         try:
+            # 發送給管理員/心理師
             send_appointment_created_notification(appointment)
+            # 發送確認郵件給用戶
+            send_appointment_user_confirmation(appointment)
         except Exception as e:
             print(f"郵件通知發送失敗: {e}")
         

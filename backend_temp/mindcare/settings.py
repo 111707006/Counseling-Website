@@ -197,16 +197,16 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ 郵件設定（開發階段使用控制台輸出）
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # 開發時用console
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 正式環境用SMTP
+# ✅ 郵件設定（實際發送郵件）
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # 開發時用console
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 正式環境用SMTP
 
-# SMTP 設定（正式環境時啟用）
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# SMTP 設定
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 
 DEFAULT_FROM_EMAIL = 'noreply@mindcare.com'
-ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@mindcare.com')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'tpeap01@cyc.tw')

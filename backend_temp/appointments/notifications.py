@@ -57,23 +57,44 @@ def send_appointment_created_notification(appointment: Appointment):
         'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商'
     }
     
+    # 獲取用戶詳細資訊
+    detail = appointment.detail if hasattr(appointment, 'detail') else None
+    
     # 建立郵件內容（純文字格式）
     message = f"""
 親愛的 {recipient_name}，
 
-有新的預約申請需要您的處理：
+📅 有新的預約申請需要您的處理：
 
-預約編號：{appointment.id}
-申請人：{appointment.user.email}
-心理師：{appointment.therapist.name if appointment.therapist else '待指定'}
-諮商方式：{context['consultation_type_display']}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 預約資訊
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-偏好時間：
-{chr(10).join([f"- {p['date']} {p['period']}" for p in preferred_periods])}
+預約編號: {appointment.id}
+申請時間: {appointment.created_at.strftime('%Y-%m-%d %H:%M')}
 
-請登入後台處理此預約申請。
+👤 申請人資訊:
+- 電子郵件: {appointment.user.email}
+- 姓名: {detail.name if detail and detail.name else '未提供'}
+- 聯絡電話: {detail.phone if detail and detail.phone else '未提供'}
 
-系統自動發送
+🏥 諮商資訊:
+- 指定心理師: {appointment.therapist.name if appointment.therapist else '待指定'}
+- 諮商方式: {context['consultation_type_display']}
+
+📝 諮商需求:
+- 主要關注議題: {detail.main_concerns if detail and detail.main_concerns else '未提供'}
+- 曾接受心理諮商: {'是' if detail and detail.previous_therapy else '否'}
+- 特殊需求: {detail.special_needs if detail and detail.special_needs else '無'}
+
+⏰ 偏好時間:
+{chr(10).join([f"   • {p['date']} {p['period']}" for p in preferred_periods]) if preferred_periods else '   • 未指定'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+請登入管理後台處理此預約申請: http://localhost:8000/admin
+
+💝 心理諮商服務系統自動發送
     """
     
     # 嘗試發送郵件
@@ -93,6 +114,95 @@ def send_appointment_created_notification(appointment: Appointment):
         # 發送失敗，印出錯誤訊息
         print(f"郵件發送失敗: {e}")
         return False  # 回傳失敗
+
+def send_appointment_user_confirmation(appointment: Appointment):
+    """
+    預約建立後發送確認郵件給用戶
+    參數: appointment - 新建立的預約物件
+    回傳: True/False - 發送是否成功
+    """
+    # 獲取用戶詳細資訊
+    detail = appointment.detail if hasattr(appointment, 'detail') else None
+    
+    # 設定郵件主旨
+    subject = f'預約申請已收到 - 預約編號 {appointment.id}'
+    
+    # 準備偏好時間資料
+    preferred_periods = []
+    for period in appointment.preferred_periods.all():
+        period_display = {
+            'morning': '上午 (09:00-12:00)',
+            'afternoon': '下午 (13:00-17:00)',
+            'evening': '晚上 (18:00-21:00)'
+        }.get(period.period, period.period)
+        
+        preferred_periods.append({
+            'date': period.date.strftime('%Y-%m-%d'),
+            'period': period_display
+        })
+    
+    # 建立郵件內容
+    message = f"""
+親愛的 {detail.name if detail and detail.name else '用戶'}，
+
+感謝您選擇我們的心理諮商服務！
+
+📅 您的預約申請已成功提交，以下是您的申請資訊：
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 預約資訊
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+預約編號: {appointment.id}
+申請時間: {appointment.created_at.strftime('%Y-%m-%d %H:%M')}
+
+👤 申請人資訊:
+- 姓名: {detail.name if detail and detail.name else '未提供'}
+- 電子郵件: {appointment.user.email}
+- 聯絡電話: {detail.phone if detail and detail.phone else '未提供'}
+
+🏥 諮商資訊:
+- 指定心理師: {appointment.therapist.name if appointment.therapist else '由我們為您安排合適的心理師'}
+- 諮商方式: {'線上諮商' if appointment.consultation_type == 'online' else '實體諮商'}
+
+📝 您的需求:
+- 主要關注議題: {detail.main_concerns if detail and detail.main_concerns else '未提供'}
+- 曾接受心理諮商: {'是' if detail and detail.previous_therapy else '否'}
+- 特殊需求: {detail.special_needs if detail and detail.special_needs else '無'}
+
+⏰ 您的偏好時間:
+{chr(10).join([f"   • {p['date']} {p['period']}" for p in preferred_periods]) if preferred_periods else '   • 未指定'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 接下來會發生什麼？
+
+1. 我們的專業團隊會在 24-48 小時內審核您的申請
+2. 我們會根據您的需求為您安排最合適的心理師
+3. 確認後我們會透過電子郵件與您聯繫，安排具體的諮商時間
+4. 如有緊急需求，請直接撥打我們的服務專線
+
+📧 如有任何疑問，歡迎回覆此郵件或聯繫我們的客服團隊。
+
+祝您身心健康！
+
+💝 心理諮商服務系統
+    """
+    
+    # 嘗試發送郵件
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@mindcare.com'),
+            recipient_list=[appointment.user.email],
+            fail_silently=False,
+        )
+        print(f"用戶確認郵件已發送給: {appointment.user.email}")
+        return True
+    except Exception as e:
+        print(f"用戶確認郵件發送失敗: {e}")
+        return False
 
 def send_appointment_confirmed_notification(appointment: Appointment, confirmed_datetime):
     """
