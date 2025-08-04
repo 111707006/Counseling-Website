@@ -1,22 +1,25 @@
 from rest_framework.permissions import BasePermission
+from therapists.models import TherapistProfile
 
-class IsUser(BasePermission):
+class IsAppointmentOwner(BasePermission):
     """
-    僅限 role='user' 的使用者
+    僅允許預約的 user 本人操作（例如取消）。
+    """
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_authenticated and obj.user == request.user
+
+class IsTherapistOwner(BasePermission):
+    """
+    僅允許心理師查看／列出屬於自己的預約。
     """
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'user'
+        return (
+            request.user.is_authenticated and
+            TherapistProfile.objects.filter(user=request.user).exists()
+        )
 
-class IsTherapist(BasePermission):
-    """
-    僅限 role='therapist' 的心理師
-    """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'therapist'
-
-class IsAdmin(BasePermission):
-    """
-    僅限 role='admin' 的管理員
-    """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'admin'
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.user.is_authenticated and
+            obj.therapist.user == request.user
+        )

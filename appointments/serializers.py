@@ -1,31 +1,34 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Appointment
 from therapists.models import AvailableSlot
+from .models import Appointment
+import hashlib
 
-class SlotSerializer(serializers.ModelSerializer):
-    """
-    用於顯示心理師可預約時段
-    """
-    class Meta:
-        model = AvailableSlot
-        fields = ['id', 'start_time', 'end_time']
+User = get_user_model()
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    """
-    用於讀取預約紀錄的序列化器
-    """
-    slot = SlotSerializer(read_only=True)  # 顯示時段資訊
+    slot = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = serializers.ReadOnlyField(source='user.email')
+    therapist = serializers.ReadOnlyField(source='therapist.name')
+
     class Meta:
         model = Appointment
-        # 列出所有需要給前端的欄位
-        fields = ['id', 'user', 'therapist', 'slot', 'consultation_type', 'status', 'created_at']
-        read_only_fields = ['id', 'user', 'therapist', 'slot', 'status', 'created_at']
+        fields = [
+            'id', 'user', 'therapist', 'slot',
+            'consultation_type', 'price',
+            'status', 'created_at'
+        ]
+        read_only_fields = fields
 
 class AppointmentCreateSerializer(serializers.ModelSerializer):
-    """
-    用於建立預約的序列化器
-    前端只需提供 slot 與 consultation_type
-    """
+    email = serializers.EmailField(
+        write_only=True,
+        help_text='用戶電子郵件，作為帳號唯一識別'
+    )
+    id_number = serializers.CharField(
+        write_only=True,
+        help_text='用戶身分證號，後端雜湊比對'
+    )
     slot = serializers.PrimaryKeyRelatedField(
         queryset=AvailableSlot.objects.filter(is_booked=False),
         help_text='要預約的 AvailableSlot id，且該時段尚未被預約'
@@ -37,29 +40,21 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = ['slot', 'consultation_type']
-
-    def validate(self, attrs):
-        """
-        確保前端不誤傳 therapist 等欄位
-        """
-        return attrs
+        fields = ['email', 'id_number', 'slot', 'consultation_type']
 
     def create(self, validated_data):
-        """
-        建立預約並且鎖定時段（is_booked=True）
-        """
-        user = self.context['request'].user
-        slot = validated_data['slot']
-        # 將時段標記為已預約
-        slot.is_booked = True
-        slot.save()
+        email = validated_data.pop('email')
+        raw_id = validated_data.pop('id_number')
 
-        # 建立 Appointment，psychotherapist 與 user 由 slot 與 context 設定
-        appointment = Appointment.objects.create(
-            user=user,
-            therapist=slot.therapist,
-            slot=slot,
-            consultation_type=validated_data['consultation_type']
-        )
+        try:
+            user = User.objects.get(email=email)
+            if not user.check_id_number(raw_id):
+                raise serializers.ValidationError({'id_number': '身分證號不符'})
+        except User.DoesNotExist:
+            user = User(username=email, email=email)
+            user.set_unusable_password()
+            user.set_id_number(raw_id)
+            user.save()
+
+        appointment = Appointment.objects.create(user=user, **validated_data)
         return appointment

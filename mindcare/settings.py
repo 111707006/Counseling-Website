@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'appointments',
     'assessments',
     'articles',
+    'payments',
 ]
 
 # ✅ 中介軟體（React 跨來源支援、Admin 正常啟動所需）
@@ -50,6 +51,23 @@ MIDDLEWARE = [
 # ✅ 主 URL 配置
 ROOT_URLCONF = 'mindcare.urls'
 
+# ✅ 模板設定，供 Django Admin 及其他頁面使用
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 # ✅ REST Framework 設定（使用 SimpleJWT）
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -60,15 +78,15 @@ REST_FRAMEWORK = {
 # ✅ 自訂使用者模型
 AUTH_USER_MODEL = 'users.User'
 
-# ✅ 資料庫（Docker 預設對接 PostgreSQL）
+# ✅ 資料庫設定（改用 MySQL，可透過環境變數調整）
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_DB", "mindcare"),
-        'USER': os.getenv("POSTGRES_USER", "postgres"),
-        'PASSWORD': os.getenv("POSTGRES_PASSWORD", "postgres"),
-        'HOST': 'db',  # 對應 docker-compose 服務名
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DATABASE', 'mindcare'),
+        'USER': os.getenv('MYSQL_USER', 'root'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'password'),
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
     }
 }
 
