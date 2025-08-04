@@ -1,0 +1,414 @@
+Bad Request: /api/appointments/
+[24/Jul/2025 12:24:24] "POST /api/appointments/ HTTP/1.1" 400 97
+Bad Request: /api/appointments/
+[24/Jul/2025 12:26:39] "POST /api/appointments/ HTTP/1.1" 400 34
+Bad Request: /api/appointments/
+[24/Jul/2025 12:26:53] "POST /api/appointments/ HTTP/1.1" 400 34
+Bad Request: /api/appointments/
+[24/Jul/2025 12:53:51] "POST /api/appointments/ HTTP/1.1" 400 34
+[24/Jul/2025 12:54:09] "OPTIONS /api/appointments/ HTTP/1.1" 200 0
+DEBUG: MYSQL_PASSWORD from env = jay920917
+DEBUG: MYSQL_DB from env = mindcare_v2
+Performing system checks...
+
+System check identified no issues (0 silenced).
+July 24, 2025 - 12:18:47
+Django version 4.2, using settings 'mindcare.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: 
+ =?utf-8?b?5paw6aCQ57SE55Sz6KuLIC0gYTAwMDEyNTc3NTA0MjY3QGdtYWlsLmNvbQ==?=
+From: noreply@mindcare.com
+To: admin@mindcare.com
+Date: Thu, 24 Jul 2025 04:54:10 -0000
+Message-ID: <175333285004.17428.9683059219886637635@MSI>
+
+
+親愛的 管理員，
+
+有新的預約申請需要您的處理：
+
+預約編號：8
+申請人：a00012577504267@gmail.com
+心理師：張心理師
+諮商方式：實體諮商
+
+偏好時間：
+- 2025-07-25 上午 (09:00-12:00)
+
+請登入後台處理此預約申請。
+
+系統自動發送
+    
+-------------------------------------------------------------------------------
+[24/Jul/2025 12:54:10] "POST /api/appointments/ HTTP/1.1" 201 588
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 12:55:54] "POST /api/appointments/query HTTP/1.1" 500 83155
+[24/Jul/2025 12:55:58] "OPTIONS /api/therapists/specialties/ HTTP/1.1" 200 0
+[24/Jul/2025 12:55:58] "OPTIONS /api/therapists/profiles/ HTTP/1.1" 200 0
+[24/Jul/2025 12:55:58] "OPTIONS /api/therapists/profiles/ HTTP/1.1" 200 0
+[24/Jul/2025 12:55:58] "OPTIONS /api/therapists/specialty-categories/ HTTP/1.1" 200 0
+[24/Jul/2025 12:55:58] "OPTIONS /api/therapists/specialty-categories/ HTTP/1.1" 200 0
+[24/Jul/2025 12:55:58] "OPTIONS /api/therapists/specialties/ HTTP/1.1" 200 0
+[24/Jul/2025 12:55:58] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 12:55:58] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+[24/Jul/2025 12:55:58] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 12:55:58] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 12:55:58] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 12:55:58] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+Bad Request: /api/appointments/
+[24/Jul/2025 12:56:33] "POST /api/appointments/ HTTP/1.1" 400 49
+Bad Request: /api/appointments/
+[24/Jul/2025 12:57:15] "POST /api/appointments/ HTTP/1.1" 400 49
+預約通知郵件已發送給: admin@mindcare.com
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: =?utf-8?b?5paw6aCQ57SE55Sz6KuLIC0gcGVpeXVtODk4MTNAZ21haWwuY29t?=
+From: noreply@mindcare.com
+To: admin@mindcare.com
+Date: Thu, 24 Jul 2025 05:00:15 -0000
+Message-ID: <175333321524.17428.10567574839680647354@MSI>
+
+
+親愛的 管理員，
+
+有新的預約申請需要您的處理：
+
+預約編號：9
+申請人：peiyum89813@gmail.com
+心理師：待指定
+諮商方式：實體諮商
+
+偏好時間：
+- 2025-07-30 下午 (13:00-17:00)
+- 2025-07-30 上午 (09:00-12:00)
+
+請登入後台處理此預約申請。
+
+系統自動發送
+    
+-------------------------------------------------------------------------------
+[24/Jul/2025 13:00:15] "POST /api/appointments/ HTTP/1.1" 201 671
+[24/Jul/2025 13:03:46] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 13:03:46] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 13:03:46] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+[24/Jul/2025 13:03:46] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 13:03:46] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 13:03:46] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+Bad Request: /api/appointments/
+[24/Jul/2025 13:04:52] "POST /api/appointments/ HTTP/1.1" 400 49
+預約通知郵件已發送給: admin@mindcare.com
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: =?utf-8?b?5paw6aCQ57SE55Sz6KuLIC0gb2RzZ0Bsb3Y0ay5jb20=?=
+From: noreply@mindcare.com
+To: admin@mindcare.com
+Date: Thu, 24 Jul 2025 05:05:25 -0000
+Message-ID: <175333352507.17428.9467693193281627668@MSI>
+
+
+親愛的 管理員，
+
+有新的預約申請需要您的處理：
+
+預約編號：10
+申請人：odsg@lov4k.com
+心理師：李心理師
+諮商方式：實體諮商
+
+偏好時間：
+- 2025-07-27 下午 (13:00-17:00)
+- 2025-07-27 上午 (09:00-12:00)
+
+請登入後台處理此預約申請。
+
+系統自動發送
+    
+-------------------------------------------------------------------------------
+[24/Jul/2025 13:05:25] "POST /api/appointments/ HTTP/1.1" 201 669
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:05:46] "POST /api/appointments/query HTTP/1.1" 500 83155
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:06:03] "POST /api/appointments/query HTTP/1.1" 500 83155
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:06:05] "POST /api/appointments/query HTTP/1.1" 500 83155
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:07:26] "POST /api/appointments/query HTTP/1.1" 500 83155
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:09:49] "POST /api/appointments/query HTTP/1.1" 500 83155
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:09:56] "POST /api/appointments/query HTTP/1.1" 500 83155
+[24/Jul/2025 13:10:50] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 13:10:50] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 13:10:50] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+[24/Jul/2025 13:10:50] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 13:10:50] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 13:10:50] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+預約通知郵件已發送給: admin@mindcare.com
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: =?utf-8?b?5paw6aCQ57SE55Sz6KuLIC0gdGVzdC51c2VyQGV4YW1wbGUuY29t?=
+From: noreply@mindcare.com
+To: admin@mindcare.com
+Date: Thu, 24 Jul 2025 05:12:11 -0000
+Message-ID: <175333393102.17428.2438964803824459635@MSI>
+
+
+親愛的 管理員，
+
+有新的預約申請需要您的處理：
+
+預約編號：11
+申請人：test.user@example.com
+心理師：待指定
+諮商方式：實體諮商
+
+偏好時間：
+- 2025-07-26 下午 (13:00-17:00)
+- 2025-07-26 上午 (09:00-12:00)
+- 2025-07-27 下午 (13:00-17:00)
+
+請登入後台處理此預約申請。
+
+系統自動發送
+    
+-------------------------------------------------------------------------------
+[24/Jul/2025 13:12:11] "POST /api/appointments/ HTTP/1.1" 201 767
+Internal Server Error: /api/appointments/query
+Traceback (most recent call last):
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\utils\deprecation.py", line 136, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 108, in process_response
+    return self.response_redirect_class(self.get_full_path_with_slash(request))
+  File "C:\Users\jay\OneDrive\桌面\Counseling Website\.venv\lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/api/appointments/query/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[24/Jul/2025 13:12:40] "POST /api/appointments/query HTTP/1.1" 500 83155
+[24/Jul/2025 13:13:28] "OPTIONS /api/appointments/query/ HTTP/1.1" 200 0
+[24/Jul/2025 13:13:28] "POST /api/appointments/query/ HTTP/1.1" 200 769
+[24/Jul/2025 13:21:00] "GET /api/assessments/tests/ HTTP/1.1" 200 217
+[24/Jul/2025 13:21:00] "GET /api/assessments/tests/ HTTP/1.1" 200 217
+[24/Jul/2025 14:03:20] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:20] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:25] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:25] "OPTIONS /api/therapists/profiles/?specialties=21 HTTP/1.1" 200 0
+[24/Jul/2025 14:03:25] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:25] "GET /api/therapists/profiles/?specialties=21 HTTP/1.1" 200 2
+[24/Jul/2025 14:03:25] "GET /api/therapists/profiles/?specialties=21 HTTP/1.1" 200 2
+[24/Jul/2025 14:03:27] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:27] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:33] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:33] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 14:03:33] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 14:03:33] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:03:33] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+[24/Jul/2025 14:03:33] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+Not Found: /api/appointments/query/
+[24/Jul/2025 14:04:50] "POST /api/appointments/query/ HTTP/1.1" 404 45
+[24/Jul/2025 14:05:01] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 14:05:01] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:05:01] "GET /api/therapists/specialty-categories/ HTTP/1.1" 200 310
+[24/Jul/2025 14:05:01] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+[24/Jul/2025 14:05:01] "GET /api/therapists/specialties/ HTTP/1.1" 200 4601
+[24/Jul/2025 14:05:01] "GET /api/therapists/profiles/ HTTP/1.1" 200 5302
+[24/Jul/2025 14:07:43] "GET /api/articles HTTP/1.1" 301 0
+[24/Jul/2025 15:17:05] "GET /admin/ HTTP/1.1" 302 0
+[24/Jul/2025 15:17:06] "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4190
+[24/Jul/2025 15:17:06] "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2929
+[24/Jul/2025 15:17:06] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2694
+[24/Jul/2025 15:17:06] "GET /static/admin/css/base.css HTTP/1.1" 200 21207
+[24/Jul/2025 15:17:06] "GET /static/admin/css/login.css HTTP/1.1" 200 958
+[24/Jul/2025 15:17:06] "GET /static/admin/css/responsive.css HTTP/1.1" 200 18557
+[24/Jul/2025 15:17:06] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+[24/Jul/2025 15:17:06] "GET /static/admin/js/theme.js HTTP/1.1" 200 1943
+Not Found: /favicon.ico
+[24/Jul/2025 15:17:07] "GET /favicon.ico HTTP/1.1" 404 2901
+[24/Jul/2025 15:17:25] "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[24/Jul/2025 15:17:25] "GET /admin/ HTTP/1.1" 200 10627
+[24/Jul/2025 15:17:26] "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+[24/Jul/2025 15:17:26] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+[24/Jul/2025 15:17:26] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+[24/Jul/2025 15:17:58] "GET /admin/therapists/therapistprofile/ HTTP/1.1" 200 17479
+[24/Jul/2025 15:17:59] "GET /static/admin/css/changelists.css HTTP/1.1" 200 6584
+[24/Jul/2025 15:17:59] "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+[24/Jul/2025 15:17:59] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 15:17:59] "GET /static/admin/js/core.js HTTP/1.1" 200 5682
+[24/Jul/2025 15:17:59] "GET /static/admin/js/actions.js HTTP/1.1" 200 7872
+[24/Jul/2025 15:17:59] "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+[24/Jul/2025 15:17:59] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 8943
+[24/Jul/2025 15:17:59] "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+[24/Jul/2025 15:17:59] "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+[24/Jul/2025 15:17:59] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 292458
+[24/Jul/2025 15:17:59] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 232381
+[24/Jul/2025 15:17:59] "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+[24/Jul/2025 15:17:59] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+[24/Jul/2025 15:17:59] "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+[24/Jul/2025 15:18:11] "GET /admin/therapists/availabletime/ HTTP/1.1" 200 12346
+[24/Jul/2025 15:18:11] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 15:18:15] "GET /admin/auth/group/ HTTP/1.1" 200 11073
+[24/Jul/2025 15:18:15] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 15:18:18] "GET /admin/authtoken/tokenproxy/ HTTP/1.1" 200 13163
+[24/Jul/2025 15:18:44] "GET /admin/articles/article/ HTTP/1.1" 200 12917
+[24/Jul/2025 15:18:44] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 15:28:43] "GET /admin/ HTTP/1.1" 200 10627
+[24/Jul/2025 15:28:43] "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+[24/Jul/2025 15:28:44] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+[24/Jul/2025 15:29:36] "GET /admin/ HTTP/1.1" 200 10627
+Not Found: /
+[24/Jul/2025 15:29:48] "GET / HTTP/1.1" 404 2850
+[24/Jul/2025 15:30:45] "GET /admin/ HTTP/1.1" 200 10627
+[24/Jul/2025 15:30:48] "POST /admin/logout/ HTTP/1.1" 200 3570
+[24/Jul/2025 15:30:51] "GET /admin/ HTTP/1.1" 302 0
+[24/Jul/2025 15:30:51] "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4190
+[24/Jul/2025 15:30:51] "GET /static/admin/css/login.css HTTP/1.1" 200 958
+[24/Jul/2025 16:01:41] "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+[24/Jul/2025 16:01:41] "GET /admin/ HTTP/1.1" 200 10627
+[24/Jul/2025 16:01:41] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+[24/Jul/2025 16:01:41] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[24/Jul/2025 16:04:28] "GET /admin/ HTTP/1.1" 200 10627
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:25:17] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:25:37] "GET /admin/ HTTP/1.1" 200 10627
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:25:37] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:25:45] "GET /admin/therapists/specialtycategory/add/ HTTP/1.1" 200 16999
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:25:45] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:25:45] "GET /static/admin/js/inlines.js HTTP/1.1" 200 15526
+[24/Jul/2025 16:25:45] "GET /static/admin/css/forms.css HTTP/1.1" 200 8953
+[24/Jul/2025 16:25:45] "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 16:25:45] "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:45] "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+[24/Jul/2025 16:25:45] "GET /static/admin/css/widgets.css HTTP/1.1" 200 11952
+[24/Jul/2025 16:25:45] "GET /static/admin/img/icon-unknown.svg HTTP/1.1" 200 655
+[24/Jul/2025 16:25:45] "GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+[24/Jul/2025 16:25:45] "GET /static/admin/img/inline-delete.svg HTTP/1.1" 200 560
+[24/Jul/2025 16:25:48] "GET /admin/ HTTP/1.1" 200 10627
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:25:48] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:25:52] "GET /admin/therapists/therapistprofile/ HTTP/1.1" 200 17479
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:25:52] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:25:52] "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[24/Jul/2025 16:25:52] "GET /static/admin/img/search.svg HTTP/1.1" 304 0
+[24/Jul/2025 16:25:52] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 16:25:52] "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[24/Jul/2025 16:25:52] "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[24/Jul/2025 16:25:52] "GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+[24/Jul/2025 16:25:58] "GET /admin/ HTTP/1.1" 200 10627
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:25:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:26:00] "GET /admin/therapists/availabletime/ HTTP/1.1" 200 12346
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:26:00] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 16:26:00] "GET /admin/jsi18n/ HTTP/1.1" 200 7735
+[24/Jul/2025 16:26:05] "GET /admin/ HTTP/1.1" 200 10627
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 16:26:05] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 17:08:29] "GET /admin/ HTTP/1.1" 200 10612
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+[24/Jul/2025 17:08:30] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 3012
+[24/Jul/2025 17:08:30] "GET /static/admin/css/base.css HTTP/1.1" 200 21207
+[24/Jul/2025 17:08:30] "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2929
+[24/Jul/2025 17:08:30] "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2694
+[24/Jul/2025 17:08:30] "GET /static/admin/css/responsive.css HTTP/1.1" 200 18557
+[24/Jul/2025 17:08:30] "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+[24/Jul/2025 17:08:30] "GET /static/admin/js/theme.js HTTP/1.1" 200 1943
+[24/Jul/2025 17:08:30] "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+[24/Jul/2025 17:08:30] "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+[24/Jul/2025 17:08:30] "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+Not Found: /favicon.ico
+[24/Jul/2025 17:08:31] "GET /favicon.ico HTTP/1.1" 404 2901
