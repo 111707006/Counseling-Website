@@ -40,7 +40,8 @@
       "Bash(sc create:*)",
       "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe\" --initialize-insecure --datadir=\"/c/ProgramData/MySQL/MySQL Server 8.4/Data\" --console)",
       "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql.exe\" -u root -e \"CREATE DATABASE IF NOT EXISTS mindcare_v2; SHOW DATABASES;\")",
-      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql.exe\" -u root -e \"ALTER USER ''root''@''localhost'' IDENTIFIED BY ''jay920917'';\")"
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql.exe\" -u root -e \"ALTER USER ''root''@''localhost'' IDENTIFIED BY ''jay920917'';\")",
+      "Bash(\"C:\\Users\\�i�Ѯv\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe\" --version)"
     ],
     "deny": []
   }

@@ -7,30 +7,9 @@ from django.core.exceptions import ValidationError
 # ═══════════════════════════════════════════════════════════════════
 #  Specialty (專業領域)
 # ═══════════════════════════════════════════════════════════════════
-class SpecialtyCategory(models.Model):
-    """專業領域分類（如：理論取向、服務族群、議題專精等）"""
-    name = models.CharField(max_length=50, unique=True, help_text="分類名稱")
-    description = models.TextField(blank=True, help_text="分類說明")
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        verbose_name = "專業領域分類"
-        verbose_name_plural = "專業領域分類"
-        ordering = ['name']
-    
-    def __str__(self):
-        return self.name
-
-
 class Specialty(models.Model):
     """專業領域（如：認知行為治療、青少年諮商、創傷治療等）"""
     name = models.CharField(max_length=100, unique=True, help_text="專業領域名稱")
-    category = models.ForeignKey(
-        SpecialtyCategory, 
-        on_delete=models.CASCADE, 
-        related_name='specialties',
-        help_text="所屬分類"
-    )
     description = models.TextField(blank=True, help_text="專業領域說明")
     is_active = models.BooleanField(default=True, help_text="是否啟用")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -38,10 +17,10 @@ class Specialty(models.Model):
     class Meta:
         verbose_name = "專業領域"
         verbose_name_plural = "專業領域"
-        ordering = ['category__name', 'name']
+        ordering = ['name']
     
     def __str__(self):
-        return f"{self.category.name} - {self.name}"
+        return self.name
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -116,15 +95,9 @@ class TherapistProfile(models.Model):
             return ', '.join([specialty.name for specialty in self.specialties.all()])
         return self.specialties_text
 
-    def get_specialties_by_category(self):
-        """依分類整理專業領域"""
-        specialties_dict = {}
-        for specialty in self.specialties.all():
-            category_name = specialty.category.name
-            if category_name not in specialties_dict:
-                specialties_dict[category_name] = []
-            specialties_dict[category_name].append(specialty.name)
-        return specialties_dict
+    def get_specialties_list(self):
+        """取得專業領域列表"""
+        return [specialty.name for specialty in self.specialties.all()]
 
     def __str__(self):
         return self.name

@@ -111,70 +111,80 @@ export default function BSRS5TestPage() {
 
   // 獲取風險等級顏色和圖示
   const getRiskLevelStyle = (level: string) => {
-    switch (level) {
-      case '正常':
-        return {
-          color: 'text-green-600 bg-green-50 border-green-200',
-          icon: '✅'
-        }
-      case '輕度':
-        return {
-          color: 'text-yellow-600 bg-yellow-50 border-yellow-200',
-          icon: '⚠️'
-        }
-      case '中度':
-        return {
-          color: 'text-orange-600 bg-orange-50 border-orange-200',
-          icon: '🚨'
-        }
-      case '重度':
-        return {
-          color: 'text-red-600 bg-red-50 border-red-200',
-          icon: '🆘'
-        }
-      default:
-        return {
-          color: 'text-gray-600 bg-gray-50 border-gray-200',
-          icon: 'ℹ️'
-        }
+    // 檢查是否包含自殺風險標記
+    if (level.includes('自殺風險') || level.includes('自殺想法')) {
+      return {
+        color: 'text-red-600 bg-red-50 border-red-200',
+        icon: '🆘'
+      }
+    }
+    
+    // 根據主要風險等級判斷
+    if (level.includes('身心適應良好')) {
+      return {
+        color: 'text-green-600 bg-green-50 border-green-200',
+        icon: '✅'
+      }
+    } else if (level.includes('輕度情緒困擾')) {
+      return {
+        color: 'text-yellow-600 bg-yellow-50 border-yellow-200',
+        icon: '⚠️'
+      }
+    } else if (level.includes('中度情緒困擾')) {
+      return {
+        color: 'text-orange-600 bg-orange-50 border-orange-200',
+        icon: '🚨'
+      }
+    } else if (level.includes('重度情緒困擾')) {
+      return {
+        color: 'text-red-600 bg-red-50 border-red-200',
+        icon: '🆘'
+      }
+    } else if (level.includes('建議尋求專業協助')) {
+      return {
+        color: 'text-red-600 bg-red-50 border-red-200',
+        icon: '🆘'
+      }
+    } else {
+      return {
+        color: 'text-gray-600 bg-gray-50 border-gray-200',
+        icon: 'ℹ️'
+      }
     }
   }
 
   // 獲取建議文字
   const getRecommendation = (level: string, score: number) => {
-    // 檢查是否有自殺意念風險（第6題）
-    const suicideQuestion = questions.find(q => q.order === 6)
-    const suicideAnswer = suicideQuestion ? answers[suicideQuestion.id] : 0
-    const hasSuicideRisk = suicideAnswer && suicideAnswer >= 1
-
-    if (hasSuicideRisk) {
-      return "⚠️ 檢測到自殺意念風險，無論總分高低，強烈建議立即尋求專業心理師或精神科醫師的協助。"
+    // 檢查是否包含自殺風險標記
+    if (level.includes('自殺風險') || level.includes('自殺想法')) {
+      return "⚠️ 檢測到自殺意念風險，無論總分高低，強烈建議立即尋求專業心理師或精神科醫師的協助。如有緊急情況，請撥打24小時生命線1995或緊急求助電話。"
     }
 
-    switch (level) {
-      case '正常':
-        return "您的心理狀態良好！請繼續保持健康的生活方式和正向的心態。"
-      case '輕度':
-        return "您有輕度心理困擾，建議多與親友談談，適度抒發情緒，並注意休息與放鬆。"
-      case '中度':
-        return "您有中度心理困擾，建議尋求心理諮商或專業協助，以獲得更好的支持。"
-      case '重度':
-        return "您有重度心理困擾，需要高度關懷，強烈建議尋求精神科治療或專業心理治療。"
-      default:
-        return "感謝您完成測驗。"
+    if (level.includes('身心適應良好')) {
+      return "✅ 您的身心適應狀況良好！請繼續保持健康的生活方式和正向的心態。"
+    } else if (level.includes('輕度情緒困擾')) {
+      return "⚠️ 您有輕度情緒困擾，建議找家人或朋友談談，適度抒發情緒，給予情緒支持，並注意休息與放鬆。"
+    } else if (level.includes('中度情緒困擾')) {
+      return "🚨 您有中度情緒困擾，建議尋求心理諮商或接受專業諮詢，以獲得更好的支持和協助。"
+    } else if (level.includes('重度情緒困擾')) {
+      return "🆘 您有重度情緒困擾，需高關懷，建議轉介精神科治療或接受專業輔導。請盡快尋求專業協助。"
+    } else if (level.includes('建議尋求專業協助')) {
+      return "🆘 雖然您的前5題得分較低，但檢測到有自殺想法，建議來心理諮商所尋求專業協助。"
+    } else {
+      return "感謝您完成測驗。如有任何疑問，歡迎諮詢專業人員。"
     }
   }
 
-  // 獲取分數解釋
+  // 獲取分數解釋（前5題總分）
   const getScoreInterpretation = (score: number) => {
     if (score <= 5) {
-      return "身心適應狀況良好"
+      return "身心適應狀況良好（0-5分）"
     } else if (score <= 9) {
-      return "輕度情緒困擾"
+      return "輕度情緒困擾（6-9分）"
     } else if (score <= 14) {
-      return "中度情緒困擾"
+      return "中度情緒困擾（10-14分）"
     } else {
-      return "重度情緒困擾"
+      return "重度情緒困擾（≥15分）"
     }
   }
 

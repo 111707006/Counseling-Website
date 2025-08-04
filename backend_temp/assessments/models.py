@@ -53,8 +53,39 @@ class Response(models.Model):
                 self.risk_level = '中度關注'
             else:
                 self.risk_level = '需要關注'
+        elif self.test.code == 'BSRS5':
+            # BSRS-5 特殊處理：前5題 + 自殺想法檢查
+            items_list = list(self.items.all())
+            
+            # 分別計算前5題和第6題（自殺想法）的分數
+            main_score = 0  # 前5題總分
+            suicide_score = 0  # 第6題分數
+            
+            for item in items_list:
+                if item.question.order <= 5:
+                    main_score += item.choice.score
+                elif item.question.order == 6:
+                    suicide_score = item.choice.score
+            
+            self.total_score = main_score  # 主要分數只計算前5題
+            
+            # 根據前5題評估風險等級
+            if main_score <= 5:
+                self.risk_level = '身心適應良好'
+            elif main_score <= 9:
+                self.risk_level = '輕度情緒困擾'
+            elif main_score <= 14:
+                self.risk_level = '中度情緒困擾'
+            else:
+                self.risk_level = '重度情緒困擾'
+            
+            # 特殊處理：前5題<6分但自殺想法≥2分時
+            if main_score < 6 and suicide_score >= 2:
+                self.risk_level = '建議尋求專業協助（自殺風險）'
+            elif suicide_score >= 2:  # 任何情況下自殺想法≥2分都需要特別關注
+                self.risk_level += '（有自殺風險，需特別關注）'
         else:
-            # BSRS-5 raw sum → 0–20
+            # 其他測驗的預設處理
             self.total_score = total
             if total <= 5:
                 self.risk_level = '正常'

@@ -16,12 +16,10 @@ import { Calendar, Plus, Trash2, Loader2, User, Shield, Briefcase, Users, Clock,
 import { useToast } from "@/hooks/use-toast"
 import { 
   getSpecialties, 
-  getSpecialtyCategories,
   getTherapistsBySpecialty, 
   getTherapists,
   createAppointment,
   type Specialty, 
-  type SpecialtyCategory,
   type TherapistProfile, 
   type AppointmentCreateRequest,
   type PreferredPeriod
@@ -33,7 +31,6 @@ export default function BookAppointmentPage() {
 
   // 狀態管理
   const [specialties, setSpecialties] = useState<Specialty[]>([])
-  const [specialtyCategories, setSpecialtyCategories] = useState<SpecialtyCategory[]>([])
   const [therapists, setTherapists] = useState<TherapistProfile[]>([])
   const [filteredTherapists, setFilteredTherapists] = useState<TherapistProfile[]>([])
   const [loading, setLoading] = useState(true)
@@ -63,14 +60,12 @@ export default function BookAppointmentPage() {
     const loadInitialData = async () => {
       try {
         setLoading(true)
-        const [specialtiesData, categoriesData, therapistsData] = await Promise.all([
+        const [specialtiesData, therapistsData] = await Promise.all([
           getSpecialties(),
-          getSpecialtyCategories(),
           getTherapists()
         ])
         
         setSpecialties(specialtiesData)
-        setSpecialtyCategories(categoriesData)
         setTherapists(therapistsData)
         setFilteredTherapists(therapistsData)
       } catch (error) {
@@ -294,20 +289,10 @@ export default function BookAppointmentPage() {
                         <SelectValue placeholder="選擇您需要的專業領域" />
                       </SelectTrigger>
                       <SelectContent>
-                        {specialtyCategories.map(category => (
-                          <div key={category.id}>
-                            <div className="px-2 py-1 text-xs font-medium text-gray-500 bg-gray-50">
-                              {category.name}
-                            </div>
-                            {specialties
-                              .filter(s => s.category.id === category.id)
-                              .map(specialty => (
-                                <SelectItem key={specialty.id} value={specialty.id.toString()}>
-                                  {specialty.name}
-                                </SelectItem>
-                              ))
-                            }
-                          </div>
+                        {specialties.map(specialty => (
+                          <SelectItem key={specialty.id} value={specialty.id.toString()}>
+                            {specialty.name}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                       </Select>

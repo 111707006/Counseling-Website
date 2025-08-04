@@ -109,27 +109,52 @@ export default function WHO5TestPage() {
     }
   }
 
-  // 獲取風險等級顏色
-  const getRiskLevelColor = (level: string) => {
-    switch (level) {
-      case '良好': return 'text-green-600 bg-green-50 border-green-200'
-      case '中度關注': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case '需要關注': return 'text-red-600 bg-red-50 border-red-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+  // 獲取風險等級顏色和圖示
+  const getRiskLevelStyle = (level: string) => {
+    if (level.includes('良好')) {
+      return {
+        color: 'text-green-600 bg-green-50 border-green-200',
+        icon: '✅'
+      }
+    } else if (level.includes('中度關注')) {
+      return {
+        color: 'text-yellow-600 bg-yellow-50 border-yellow-200',
+        icon: '⚠️'
+      }
+    } else if (level.includes('需要關注')) {
+      return {
+        color: 'text-red-600 bg-red-50 border-red-200',
+        icon: '🆘'
+      }
+    } else {
+      return {
+        color: 'text-gray-600 bg-gray-50 border-gray-200',
+        icon: 'ℹ️'
+      }
     }
   }
 
   // 獲取建議文字
   const getRecommendation = (level: string, score: number) => {
-    switch (level) {
-      case '良好':
-        return "您的幸福感狀況良好！請繼續保持健康的生活方式和積極的心態。"
-      case '中度關注':
-        return "您的幸福感需要一些關注。建議嘗試放鬆活動、規律作息，或與親友分享感受。"
-      case '需要關注':
-        return "建議您尋求專業心理師的協助，以獲得更好的支持和指導。"
-      default:
-        return "感謝您完成測驗。"
+    if (level.includes('良好')) {
+      return "✅ 您的幸福感狀況良好！請繼續保持健康的生活方式和積極的心態。"
+    } else if (level.includes('中度關注')) {
+      return "⚠️ 您的幸福感需要一些關注。建議嘗試放鬆活動、規律作息，或與親友分享感受。"
+    } else if (level.includes('需要關注')) {
+      return "🆘 建議您尋求專業心理師的協助，以獲得更好的支持和指導。"
+    } else {
+      return "感謝您完成測驗。如有任何疑問，歡迎諮詢專業人員。"
+    }
+  }
+
+  // 獲取分數解釋
+  const getScoreInterpretation = (score: number) => {
+    if (score >= 50) {
+      return "良好的幸福感（≥50分）"
+    } else if (score >= 29) {
+      return "中度關注（29-49分）"
+    } else {
+      return "需要關注（<29分）"
     }
   }
 
@@ -147,6 +172,8 @@ export default function WHO5TestPage() {
   }
 
   if (testCompleted && result) {
+    const riskStyle = getRiskLevelStyle(result.risk_level)
+    
     return (
       <div className="min-h-screen py-8" style={{backgroundImage: 'url("/images/bg-texture.png")', backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="container mx-auto px-4">
@@ -166,12 +193,15 @@ export default function WHO5TestPage() {
                     {result.total_score}
                   </div>
                   <div className="text-gray-600">總分 (滿分 100)</div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    {getScoreInterpretation(result.total_score)}
+                  </div>
                 </div>
 
                 {/* 風險等級 */}
-                <div className={`p-4 rounded-lg border ${getRiskLevelColor(result.risk_level)}`}>
+                <div className={`p-4 rounded-lg border ${riskStyle.color}`}>
                   <div className="flex items-center justify-center space-x-2 mb-2">
-                    {result.risk_level === '需要關注' && <AlertTriangle className="h-5 w-5" />}
+                    <span className="text-2xl">{riskStyle.icon}</span>
                     <span className="font-semibold text-lg">{result.risk_level}</span>
                   </div>
                   <p className="text-center text-sm">

@@ -36,12 +36,18 @@ async function apiRequest<T>(
       // 嘗試讀取錯誤詳細資訊
       let errorDetail = '';
       try {
-        const errorData = await response.json();
-        errorDetail = JSON.stringify(errorData, null, 2);
-        console.error('API Error Details:', errorData);
-      } catch {
-        errorDetail = await response.text();
-        console.error('API Error Text:', errorDetail);
+        const responseText = await response.text();
+        try {
+          const errorData = JSON.parse(responseText);
+          errorDetail = JSON.stringify(errorData, null, 2);
+          console.error('API Error Details:', errorData);
+        } catch {
+          errorDetail = responseText;
+          console.error('API Error Text:', errorDetail);
+        }
+      } catch (readError) {
+        errorDetail = 'Unable to read error response';
+        console.error('Failed to read error response:', readError);
       }
       throw new Error(`API Error: ${response.status} ${response.statusText}\nDetails: ${errorDetail}`);
     }
@@ -56,17 +62,9 @@ async function apiRequest<T>(
 
 // 心理師相關 API
 
-export interface SpecialtyCategory {
-  id: number;
-  name: string;
-  description: string;
-}
-
 export interface Specialty {
   id: number;
   name: string;
-  category: SpecialtyCategory;
-  category_name: string;
   description: string;
   is_active: boolean;
 }
@@ -88,7 +86,7 @@ export interface TherapistProfile {
   experience: string;
   specialties: Specialty[];
   specialties_display: string;
-  specialties_by_category: Record<string, string[]>;
+  specialties_list: string[];
   specialties_text: string;
   beliefs: string;
   publications: string[];
@@ -109,11 +107,6 @@ export async function getTherapist(id: number): Promise<TherapistProfile> {
   return apiRequest<TherapistProfile>(`/api/therapists/profiles/${id}/`);
 }
 
-// 獲取專業領域分類
-export async function getSpecialtyCategories(): Promise<SpecialtyCategory[]> {
-  return apiRequest<SpecialtyCategory[]>('/api/therapists/specialty-categories/');
-}
-
 // 獲取專業領域
 export async function getSpecialties(): Promise<Specialty[]> {
   return apiRequest<Specialty[]>('/api/therapists/specialties/');
@@ -123,7 +116,6 @@ export async function getSpecialties(): Promise<Specialty[]> {
 export async function searchTherapists(params: {
   search?: string;
   specialties?: number[];
-  specialties__category?: number;
   consultation_modes?: string;
 }): Promise<TherapistProfile[]> {
   const queryParams = new URLSearchParams();
@@ -134,10 +126,6 @@ export async function searchTherapists(params: {
   
   if (params.specialties?.length) {
     params.specialties.forEach(id => queryParams.append('specialties', id.toString()));
-  }
-  
-  if (params.specialties__category) {
-    queryParams.append('specialties__category', params.specialties__category.toString());
   }
   
   if (params.consultation_modes) {

@@ -25,64 +25,17 @@ const iconMapping: Record<string, any> = {
   // 預設
   "全部": User,
   
-  // 理論取向
-  "認知行為治療": Brain,
-  "心理動力取向": Brain,
-  "人本主義取向": Heart,
-  "存在主義治療": Hands,
-  "完形治療": Brain,
-  "敘事治療": Heart,
-  "焦點解決短期治療": Settings,
-  "接納與承諾治療": Heart,
-  
-  // 議題專精
-  "焦慮症治療": AlertCircle,
-  "憂鬱症治療": Heart,
-  "創傷治療": AlertCircle,
-  "成癮治療": AlertCircle,
-  "飲食障礙": Heart,
-  "睡眠障礙": Brain,
-  "強迫症治療": Brain,
-  "恐慌症治療": AlertCircle,
-  "ADHD": Brain,
-  "自閉症譜系": Brain,
-  
-  // 關係與家庭
-  "伴侶諮商": Heart,
-  "婚姻治療": Heart,
-  "家族治療": Users,
-  "親子關係": Users,
-  "離婚諮商": Heart,
-  
-  // 特定族群
-  "兒童心理治療": Baby,
-  "青少年諮商": GraduationCap,
-  "老人心理學": Users,
-  "LGBTQ+友善": Heart,
-  "多元文化": Globe,
-  
-  // 職場與生活
-  "職場諮商": Briefcase,
-  "生涯諮商": Briefcase,
-  "壓力管理": AlertCircle,
-  "情緒管理": Heart,
-  "人際關係": Users,
+  // 新的專業領域分類
   "自我探索": Hands,
-  "生命意義": Hands,
-  
-  // 特殊治療方式
-  "藝術治療": Heart,
-  "音樂治療": Heart,
-  "舞蹈治療": Heart,
-  "遊戲治療": Baby,
-  "沙遊治療": Baby,
-  "生理回饋治療": Brain,
-  "正念療法": Brain,
-  "催眠治療": Brain,
-  
-  // 性相關
-  "性治療": UserCheck,
-  "性創傷": UserCheck,
+  "壓力調適": AlertCircle,
+  "人際關係": Users,
+  "親密關係": Heart,
+  "生涯諮商": Briefcase,
+  "情緒調節": Heart,
+  "親子溝通": Users,
+  "家庭關係": Users,
+  "創傷與失落": AlertCircle,
+  "憂鬱與焦慮適應": Brain,
 }
 
 // 預設的全部分類
@@ -90,8 +43,6 @@ const defaultGeneralSpecialty = {
   id: 0,
   name: "全部",
   description: "查看所有心理師",
-  category: { id: 0, name: "全部", description: "" },
-  category_name: "全部",
   is_active: true
 }
 
@@ -192,9 +143,6 @@ export default function TherapistCategories() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-orange-900">{specialty.name}</h3>
-                        {specialty.category_name !== "全部" && (
-                          <p className="text-xs font-medium text-orange-700">{specialty.category_name}</p>
-                        )}
                         <p className="text-xs text-orange-600 mt-1">{specialty.description || "專業心理治療服務"}</p>
                       </div>
                     </CardContent>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TherapistProfile, AvailableTime, Specialty, SpecialtyCategory
+from .models import TherapistProfile, AvailableTime, Specialty
 
 class AvailableTimeInline(admin.TabularInline):
     model = AvailableTime
@@ -68,41 +68,19 @@ class AvailableTimeAdmin(admin.ModelAdmin):
     autocomplete_fields = ('therapist',)  # 讓可預約時段更方便地選擇心理師
 
 
-@admin.register(SpecialtyCategory)
-class SpecialtyCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'get_specialties_count', 'created_at')
+@admin.register(Specialty)
+class SpecialtyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'get_therapists_count', 'is_active', 'created_at')
+    list_filter = ('is_active', 'created_at')
     search_fields = ('name', 'description')
     ordering = ('name',)
     
-    def get_specialties_count(self, obj):
-        return obj.specialties.count()
-    get_specialties_count.short_description = "專業領域數量"
-
-
-class SpecialtyInline(admin.TabularInline):
-    model = Specialty
-    extra = 1
-    fields = ('name', 'description', 'is_active')
-
-
-@admin.register(Specialty)
-class SpecialtyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'get_therapists_count', 'is_active', 'created_at')
-    list_filter = ('category', 'is_active', 'created_at')
-    search_fields = ('name', 'description', 'category__name')
-    ordering = ('category__name', 'name')
-    list_select_related = ('category',)
-    
     fieldsets = (
         (None, {
-            'fields': ('name', 'category', 'description', 'is_active')
+            'fields': ('name', 'description', 'is_active')
         }),
     )
     
     def get_therapists_count(self, obj):
         return obj.therapists.count()
     get_therapists_count.short_description = "使用療師數量"
-
-
-# 在 SpecialtyCategoryAdmin 中加入 inline
-SpecialtyCategoryAdmin.inlines = [SpecialtyInline]

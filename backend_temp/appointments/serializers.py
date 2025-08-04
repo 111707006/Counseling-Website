@@ -133,30 +133,37 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
         help_text='指定的心理師ID'
     )
     specialty = serializers.IntegerField(
+        write_only=True,
         required=False,
         help_text='專業領域ID'
     )
     preferred_periods = serializers.JSONField(
+        write_only=True,
         required=False,
         help_text='偏好時間段'
     )
     name = serializers.CharField(
+        write_only=True,
         required=True,
         help_text='用戶姓名'
     )
     phone = serializers.CharField(
+        write_only=True,
         required=True,
         help_text='聯絡電話'
     )
     main_concerns = serializers.CharField(
+        write_only=True,
         required=True,
         help_text='主要關注議題'
     )
     previous_therapy = serializers.BooleanField(
+        write_only=True,
         required=False,
         help_text='是否曾接受過心理諮商'
     )
     urgency = serializers.CharField(
+        write_only=True,
         required=False,
         allow_blank=True,
         allow_null=True,
@@ -164,6 +171,7 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
         help_text='緊急程度'
     )
     special_needs = serializers.CharField(
+        write_only=True,
         required=False,
         allow_blank=True,
         allow_null=True,
