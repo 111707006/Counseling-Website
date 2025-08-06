@@ -64,37 +64,37 @@ def send_appointment_created_notification(appointment: Appointment):
     message = f"""
 親愛的 {recipient_name}，
 
-📅 有新的預約申請需要您的處理：
+有新的預約申請需要您的處理：
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 預約資訊
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+========================================
+預約資訊
+========================================
 
 預約編號: {appointment.id}
 申請時間: {appointment.created_at.strftime('%Y-%m-%d %H:%M')}
 
-👤 申請人資訊:
+申請人資訊:
 - 電子郵件: {appointment.user.email}
 - 姓名: {detail.name if detail and detail.name else '未提供'}
 - 聯絡電話: {detail.phone if detail and detail.phone else '未提供'}
 
-🏥 諮商資訊:
+諮商資訊:
 - 指定心理師: {appointment.therapist.name if appointment.therapist else '待指定'}
 - 諮商方式: {context['consultation_type_display']}
 
-📝 諮商需求:
+諮商需求:
 - 主要關注議題: {detail.main_concerns if detail and detail.main_concerns else '未提供'}
 - 曾接受心理諮商: {'是' if detail and detail.previous_therapy else '否'}
 - 特殊需求: {detail.special_needs if detail and detail.special_needs else '無'}
 
-⏰ 偏好時間:
-{chr(10).join([f"   • {p['date']} {p['period']}" for p in preferred_periods]) if preferred_periods else '   • 未指定'}
+偏好時間:
+{chr(10).join([f"   - {p['date']} {p['period']}" for p in preferred_periods]) if preferred_periods else '   - 未指定'}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+========================================
 
 請登入管理後台處理此預約申請: http://localhost:8000/admin
 
-💝 心理諮商服務系統自動發送
+心理諮商系統自動發送
     """
     
     # 嘗試發送郵件
@@ -125,7 +125,7 @@ def send_appointment_user_confirmation(appointment: Appointment):
     detail = appointment.detail if hasattr(appointment, 'detail') else None
     
     # 設定郵件主旨
-    subject = f'預約申請已收到 - 預約編號 {appointment.id}'
+    subject = f'預約申請已收到'
     
     # 準備偏好時間資料
     preferred_periods = []
@@ -147,46 +147,45 @@ def send_appointment_user_confirmation(appointment: Appointment):
 
 感謝您選擇我們的心理諮商服務！
 
-📅 您的預約申請已成功提交，以下是您的申請資訊：
+您的預約申請已成功提交，以下是您的申請資訊：
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 預約資訊
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+========================================
+預約資訊
+========================================
 
-預約編號: {appointment.id}
 申請時間: {appointment.created_at.strftime('%Y-%m-%d %H:%M')}
 
-👤 申請人資訊:
+申請人資訊:
 - 姓名: {detail.name if detail and detail.name else '未提供'}
 - 電子郵件: {appointment.user.email}
 - 聯絡電話: {detail.phone if detail and detail.phone else '未提供'}
 
-🏥 諮商資訊:
+諮商資訊:
 - 指定心理師: {appointment.therapist.name if appointment.therapist else '由我們為您安排合適的心理師'}
 - 諮商方式: {'線上諮商' if appointment.consultation_type == 'online' else '實體諮商'}
 
-📝 您的需求:
+您的需求:
 - 主要關注議題: {detail.main_concerns if detail and detail.main_concerns else '未提供'}
 - 曾接受心理諮商: {'是' if detail and detail.previous_therapy else '否'}
 - 特殊需求: {detail.special_needs if detail and detail.special_needs else '無'}
 
-⏰ 您的偏好時間:
-{chr(10).join([f"   • {p['date']} {p['period']}" for p in preferred_periods]) if preferred_periods else '   • 未指定'}
+您的偏好時間:
+{chr(10).join([f"   - {p['date']} {p['period']}" for p in preferred_periods]) if preferred_periods else '   - 未指定'}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+========================================
 
-📞 接下來會發生什麼？
+接下來會發生什麼？
 
 1. 我們的專業團隊會在 24-48 小時內審核您的申請
 2. 我們會根據您的需求為您安排最合適的心理師
 3. 確認後我們會透過電子郵件與您聯繫，安排具體的諮商時間
 4. 如有緊急需求，請直接撥打我們的服務專線
 
-📧 如有任何疑問，歡迎回覆此郵件或聯繫我們的客服團隊。
+如有任何疑問，歡迎回覆此郵件或聯繫我們的客服團隊。
 
 祝您身心健康！
 
-💝 心理諮商服務系統
+心理諮商系統
     """
     
     # 嘗試發送郵件
@@ -211,8 +210,8 @@ def send_appointment_confirmed_notification(appointment: Appointment, confirmed_
     參數: confirmed_datetime - 管理員確認的具體時間
     回傳: True/False - 發送是否成功
     """
-    # 設定確認通知的郵件主旨，包含預約編號以便識別
-    subject = f'預約確認通知 - 預約編號 {appointment.id}'
+    # 設定確認通知的郵件主旨
+    subject = f'預約確認通知'
     
     # 建立確認通知的郵件內容
     message = f"""
@@ -220,7 +219,6 @@ def send_appointment_confirmed_notification(appointment: Appointment, confirmed_
 
 您的預約已確認！
 
-預約編號：{appointment.id}
 心理師：{appointment.therapist.name if appointment.therapist else '待安排'}
 確認時間：{confirmed_datetime.strftime('%Y-%m-%d %H:%M')}
 諮商方式：{'線上諮商' if appointment.consultation_type == 'online' else '實體諮商'}
@@ -278,7 +276,7 @@ def send_appointment_rejected_notification(appointment: Appointment, rejection_r
     回傳: True/False - 發送是否成功
     """
     # 設定拒絕通知的郵件主旨
-    subject = f'預約申請結果通知 - 預約編號 {appointment.id}'
+    subject = f'預約申請結果通知'
     
     # 建立拒絕通知的郵件內容
     message = f"""
@@ -286,7 +284,6 @@ def send_appointment_rejected_notification(appointment: Appointment, rejection_r
 
 很抱歉，您的預約申請未能安排成功。
 
-預約編號：{appointment.id}
 申請心理師：{appointment.therapist.name if appointment.therapist else '未指定'}
 申請時間：{appointment.created_at.strftime('%Y-%m-%d %H:%M')}
 諮商方式：{'線上諮商' if appointment.consultation_type == 'online' else '實體諮商'}

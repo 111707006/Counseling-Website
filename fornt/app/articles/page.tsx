@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 import { getArticles, Article, processImageUrls } from "@/lib/api"
 
 export default function ArticlesPage() {
@@ -86,7 +87,7 @@ export default function ArticlesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+      <div className="min-h-screen py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">載入中...</div>
         </div>
@@ -95,7 +96,7 @@ export default function ArticlesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+    <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-green-800 mb-4">心理健康文章</h1>
@@ -131,7 +132,19 @@ export default function ArticlesPage() {
         {/* Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.map((article) => (
-            <Card key={article.id} className="bg-white/90 backdrop-blur-sm hover:shadow-lg transition-shadow">
+            <Card key={article.id} className="bg-white/90 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
+              {/* Featured Image */}
+              {article.featured_image_url && (
+                <div className="relative h-48 w-full bg-white">
+                  <Image
+                    src={article.featured_image_url}
+                    alt={article.title}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              )}
+              
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex gap-1 flex-wrap">
@@ -152,10 +165,16 @@ export default function ArticlesPage() {
                 </div>
                 <CardTitle className="text-xl text-green-800 line-clamp-2">{article.title}</CardTitle>
               </CardHeader>
+              
               <CardContent className="space-y-4">
+                {/* Display excerpt if available, otherwise content preview */}
                 <p className="text-gray-600 line-clamp-3">
-                  {article.content.replace(/<[^>]*>/g, "").substring(0, 150)}...
+                  {article.excerpt 
+                    ? article.excerpt 
+                    : article.content.replace(/<[^>]*>/g, "").substring(0, 150) + "..."
+                  }
                 </p>
+
 
                 {article.tags && article.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">

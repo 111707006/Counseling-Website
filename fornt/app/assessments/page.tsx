@@ -72,7 +72,7 @@ export default function AssessmentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+      <div className="min-h-screen py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">載入中...</div>
         </div>
@@ -81,7 +81,7 @@ export default function AssessmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+    <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-green-800 mb-4">專業心理測驗</h1>

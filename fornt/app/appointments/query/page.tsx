@@ -102,7 +102,7 @@ export default function QueryAppointmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+    <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <Card className="bg-white/90 backdrop-blur-sm mb-8">
@@ -153,7 +153,6 @@ export default function QueryAppointmentPage() {
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-green-800">預約編號：{appointment.id}</h3>
                         <p className="text-green-600">心理師：{appointment.therapist}</p>
                         {appointment.detail?.name && (
                           <p className="text-sm text-gray-600">申請人：{appointment.detail.name}</p>
