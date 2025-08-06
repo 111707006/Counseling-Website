@@ -54,36 +54,6 @@ export default function RootLayout({
           </div>
         </nav>
         {children}
-        <footer className="bg-green-800 text-white py-12 mt-16">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="text-xl font-bold mb-4">張老師台北心理諮商所</h3>
-                <p className="text-green-200">專業心理諮商服務，陪伴您找到內心的平靜與力量</p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">服務項目</h4>
-                <ul className="space-y-2 text-green-200">
-                  <li>個人心理諮商</li>
-                  <li>伴侶諮商</li>
-                  <li>家庭治療</li>
-                  <li>心理測驗評估</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-4">聯絡資訊</h4>
-                <div className="space-y-2 text-green-200">
-                  <p>電話：(02) 1234-5678</p>
-                  <p>地址：台北市中正區○○路123號</p>
-                  <p>Email：info@counseling.com.tw</p>
-                </div>
-              </div>
-            </div>
-            <div className="border-t border-green-700 mt-8 pt-8 text-center text-green-200">
-              <p>&copy; 2024 張老師台北心理諮商所. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
         <Toaster />
       </body>
     </html>
