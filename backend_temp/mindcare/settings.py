@@ -127,26 +127,40 @@ CKEDITOR_BROWSE_SHOW_DIRS = True
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'full',
+        'toolbar': [
+            ['Bold', 'Italic', 'Underline', 'Strike'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['Table', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['Font', 'FontSize'],
+            ['Source']
+        ],
         'height': 300,
         'width': '100%',
+        'removePlugins': 'exportpdf,uploadimage,uploadwidget,filetools,notification,clipboard',
+        'allowedContent': True,
+        'forcePasteAsPlainText': True,
+        'disableNativeSpellChecker': False,
     },
     'article': {
         'toolbar': [
             ['Bold', 'Italic', 'Underline', 'Strike'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['Link', 'Unlink'],
-            ['Image', 'Table', 'HorizontalRule'],
+            ['Table', 'HorizontalRule'],
             ['TextColor', 'BGColor'],
-            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['Font', 'FontSize'],
             ['Source']
         ],
         'height': 400,
         'width': '100%',
-        'filebrowserUploadUrl': '/ckeditor/upload/',
-        'filebrowserUploadMethod': 'form',
-        'removeDialogTabs': 'image:Link',
+        'removePlugins': 'exportpdf,uploadimage,uploadwidget,filetools,notification,elementspath',
         'allowedContent': True,
+        'forcePasteAsPlainText': True,
+        'disableNativeSpellChecker': False,
         'removeButtons': '',
         'dialog_backgroundCoverOpacity': 0.5,
         'dialog_backgroundCoverColor': 'black',
@@ -198,7 +212,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ✅ 郵件設定（實際發送郵件）
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # 開發時用console
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # 開發時用console（暫時）
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 正式環境用SMTP
 
 # SMTP 設定
@@ -208,5 +222,22 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 
-DEFAULT_FROM_EMAIL = 'noreply@mindcare.com'
+DEFAULT_FROM_EMAIL = 'junjieliao339@gmail.com'
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'tpeap01@cyc.tw')
+
+# ✅ CORS設定（允許前端跨域請求）
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001", 
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1:3002", 
+    "http://127.0.0.1:3003",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# 允許所有headers（開發用）
+CORS_ALLOW_ALL_ORIGINS = True

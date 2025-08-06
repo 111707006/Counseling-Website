@@ -1,6 +1,6 @@
 // API 基礎配置
-// 使用相對路徑，透過Next.js的API代理轉發到Django後端
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+// 直接連接到Django後端，避免代理問題
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 // 處理圖片URL的輔助函數
 export function processImageUrls(content: string): string {
@@ -93,7 +93,6 @@ export interface TherapistProfile {
   photo: string | null;
   available_times: AvailableTime[];
   consultation_modes: string[];
-  pricing: Record<string, number>;
   created_at: string;
 }
 
@@ -298,13 +297,28 @@ export async function getAssessmentResults(): Promise<AssessmentResult[]> {
 
 // 文章相關 API
 
+export interface ArticleImage {
+  id: number;
+  image: string;
+  image_url: string;
+  caption: string;
+  order: number;
+  created_at: string;
+}
+
 export interface Article {
   id: number;
   title: string;
+  excerpt: string;
   content: string;
   tags: string[];
   author: number | null;
+  author_name: string;
   published_at: string;
+  is_published: boolean;
+  featured_image: string | null;
+  featured_image_url: string | null;
+  images: ArticleImage[];
 }
 
 // 獲取所有文章

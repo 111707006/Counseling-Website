@@ -331,12 +331,11 @@ export default function BookAppointmentPage() {
                                     const hasOnline = modes.includes('online');
                                     const hasOffline = modes.includes('offline');
                                     
-                                    if (hasOnline && hasOffline) return '線上/實體 ';
-                                    if (hasOnline) return '線上 ';
-                                    if (hasOffline) return '實體 ';
-                                    return '未設定 ';
+                                    if (hasOnline && hasOffline) return '線上/實體諮商';
+                                    if (hasOnline) return '線上諮商';
+                                    if (hasOffline) return '實體諮商';
+                                    return '未設定諮商方式';
                                   })()}
-                                  - NT$ {Math.min(...Object.values(therapist.pricing))}-{Math.max(...Object.values(therapist.pricing))}
                                 </span>
                               </div>
                             </SelectItem>
