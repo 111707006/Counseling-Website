@@ -1,20 +1,60 @@
 # articles/serializers.py
 
 from rest_framework import serializers
-from .models import Article
+from .models import Article, ArticleImage
+
+class ArticleImageSerializer(serializers.ModelSerializer):
+    """
+    文章圖片序列化器
+    """
+    image_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = ArticleImage
+        fields = ['id', 'image', 'image_url', 'caption', 'order', 'created_at']
+        read_only_fields = ['created_at']
+    
+    def get_image_url(self, obj):
+        """返回圖片完整URL"""
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
 
 class ArticleSerializer(serializers.ModelSerializer):
     """
     Article 序列化器
-    - fields: 所有模型欄位都可讀寫
-    - read_only_fields: 僅將 published_at 設為唯讀，由後端自動填入
+    - 包含所有欄位和關聯的圖片
+    - 支援特色圖片URL和作者名稱的動態欄位
     """
+    featured_image_url = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
+    images = ArticleImageSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Article
-        # 所有欄位都包含
-        fields = ['id', 'title', 'content', 'tags', 'author', 'published_at']
-        # 僅 published_at 由後端自動處理，不允許前端寫入
+        fields = [
+            'id', 'title', 'excerpt', 'content', 'featured_image', 'featured_image_url',
+            'tags', 'author', 'author_name', 'is_published', 'published_at', 'images'
+        ]
         read_only_fields = ['published_at']
+
+    def get_featured_image_url(self, obj):
+        """返回特色圖片完整URL"""
+        if obj.featured_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.featured_image.url)
+            return obj.featured_image.url
+        return None
+
+    def get_author_name(self, obj):
+        """返回作者用戶名或郵箱"""
+        if obj.author:
+            return obj.author.username if obj.author.username else obj.author.email
+        return None
 
     def create(self, validated_data):
         """

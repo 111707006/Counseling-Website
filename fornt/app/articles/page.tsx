@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import Link from "next/link"
 import Image from "next/image"
 import { getArticles, Article, processImageUrls } from "@/lib/api"
@@ -133,15 +134,63 @@ export default function ArticlesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.map((article) => (
             <Card key={article.id} className="bg-white/90 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
-              {/* Featured Image */}
-              {article.featured_image_url && (
+              {/* Image Display - Carousel if multiple images, single image if only featured image */}
+              {((article.images && article.images.length > 0) || article.featured_image_url) && (
                 <div className="relative h-48 w-full bg-white">
-                  <Image
-                    src={article.featured_image_url}
-                    alt={article.title}
-                    fill
-                    className="object-contain"
-                  />
+                  {article.images && article.images.length > 1 ? (
+                    // Multiple images - show carousel
+                    <Carousel 
+                      className="w-full h-full"
+                      opts={{
+                        align: "start",
+                        loop: true,
+                      }}
+                    >
+                      <CarouselContent>
+                        {article.images
+                          .sort((a, b) => a.order - b.order)
+                          .map((image) => (
+                            <CarouselItem key={image.id}>
+                              <div className="relative h-48 w-full bg-white flex items-center justify-center">
+                                <Image
+                                  src={image.image_url}
+                                  alt={image.caption || article.title}
+                                  fill
+                                  className="object-contain"
+                                />
+                              </div>
+                            </CarouselItem>
+                          ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2 h-6 w-6 bg-black/50 border-0 hover:bg-black/70" />
+                      <CarouselNext className="right-2 h-6 w-6 bg-black/50 border-0 hover:bg-black/70" />
+                      
+                      {/* Image count indicator */}
+                      <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
+                        {article.images.length} 張圖片
+                      </div>
+                    </Carousel>
+                  ) : article.images && article.images.length === 1 ? (
+                    // Single image from images array
+                    <div className="bg-white flex items-center justify-center h-full">
+                      <Image
+                        src={article.images[0].image_url}
+                        alt={article.images[0].caption || article.title}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : article.featured_image_url ? (
+                    // Featured image only
+                    <div className="bg-white flex items-center justify-center h-full">
+                      <Image
+                        src={article.featured_image_url}
+                        alt={article.title}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               )}
               

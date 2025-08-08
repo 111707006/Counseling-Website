@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'appointments',
     'assessments',
     'articles',
+    'announcements',
 ]
 
 # ✅ 中介軟體（React 跨來源支援、Admin 正常啟動所需）
@@ -150,25 +151,24 @@ CKEDITOR_CONFIGS = {
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
             ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['Link', 'Unlink'],
-            ['Table', 'HorizontalRule'],
+            ['Image', '-', 'Table', 'HorizontalRule'],
             ['TextColor', 'BGColor'],
             ['Font', 'FontSize'],
             ['Source']
         ],
         'height': 400,
         'width': '100%',
-        'removePlugins': 'exportpdf,uploadimage,uploadwidget,filetools,notification,elementspath',
+        'removePlugins': 'exportpdf,elementspath',  # 只保留不需要的外掛
+        'extraPlugins': 'uploadimage,image2',  # 啟用圖片上傳外掛
         'allowedContent': True,
-        'forcePasteAsPlainText': True,
+        'forcePasteAsPlainText': False,  # 允許富文本粘貼
         'disableNativeSpellChecker': False,
         'removeButtons': '',
         'dialog_backgroundCoverOpacity': 0.5,
         'dialog_backgroundCoverColor': 'black',
-        'removePlugins': 'elementspath',
         'resize_enabled': False,
         'image2_captionedClass': 'image-captioned',
         'image2_alignClasses': ['image-align-left', 'image-align-center', 'image-align-right'],
-        'extraPlugins': 'image2',
         # 圖片預設設定
         'image_previewText': ' ',
         'filebrowserImageUploadUrl': '/ckeditor/upload/',
@@ -211,8 +211,8 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ 郵件設定（實際發送郵件）
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # 開發時用console（暫時）
+# ✅ 郵件設定
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # 開發時用console
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 正式環境用SMTP
 
 # SMTP 設定
@@ -222,7 +222,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 
-DEFAULT_FROM_EMAIL = 'junjieliao339@gmail.com'
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'junjieliao339@gmail.com')
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'tpeap01@cyc.tw')
 
 # ✅ CORS設定（允許前端跨域請求）

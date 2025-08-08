@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import Link from "next/link"
+import Image from "next/image"
 import { getArticle, Article, processImageUrls } from "@/lib/api"
 
 export default function ArticleDetailPage() {
@@ -101,7 +103,68 @@ export default function ArticleDetailPage() {
               <CardTitle className="text-3xl text-green-800 leading-tight">
                 {article.title}
               </CardTitle>
+              
+              {/* Display excerpt if available */}
+              {article.excerpt && (
+                <div className="mt-4">
+                  <p className="text-gray-600 text-lg leading-relaxed">{article.excerpt}</p>
+                </div>
+              )}
             </CardHeader>
+            
+            {/* Image Carousel - Display images if available */}
+            {article.images && article.images.length > 0 && (
+              <div className="px-6 pb-6">
+                <div className="relative">
+                  <Carousel 
+                    className="w-full max-w-4xl mx-auto"
+                    opts={{
+                      align: "start",
+                      loop: true,
+                    }}
+                  >
+                    <CarouselContent>
+                      {article.images
+                        .sort((a, b) => a.order - b.order)
+                        .map((image, index) => (
+                          <CarouselItem key={image.id}>
+                            <div className="relative w-full overflow-hidden rounded-lg shadow-lg bg-white flex items-center justify-center" style={{ height: '400px' }}>
+                              <Image
+                                src={image.image_url}
+                                alt={image.caption || `文章圖片 ${index + 1}`}
+                                fill
+                                className="object-contain transition-transform duration-300 hover:scale-105"
+                              />
+                              {/* Image Caption */}
+                              {image.caption && (
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                                  <p className="text-white text-sm">{image.caption}</p>
+                                </div>
+                              )}
+                            </div>
+                          </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    {article.images.length > 1 && (
+                      <>
+                        <CarouselPrevious className="left-4" />
+                        <CarouselNext className="right-4" />
+                      </>
+                    )}
+                  </Carousel>
+                  
+                  {/* Image Count Indicator */}
+                  {article.images.length > 1 && (
+                    <div className="text-center mt-2">
+                      <p className="text-sm text-gray-500">
+                        {article.images.length} 張圖片
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <CardContent className="prose prose-lg max-w-none">
               <div 
                 className="text-gray-700 leading-relaxed article-content"

@@ -1,7 +1,9 @@
 'use client'
 import Link from "next/link"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { Button } from '@/components/ui/button'
+import { getHomepageAnnouncements, type AnnouncementHomepageData } from '@/lib/api'
 
 export default function HomePage() {
   const images = [
@@ -14,6 +16,23 @@ export default function HomePage() {
   
   const [currentIndex, setCurrentIndex] = useState(0)
   const imagesPerView = 4
+  const [homepageAnnouncements, setHomepageAnnouncements] = useState<AnnouncementHomepageData | null>(null)
+  const [announcementsLoading, setAnnouncementsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchHomepageAnnouncements = async () => {
+      try {
+        const data = await getHomepageAnnouncements()
+        setHomepageAnnouncements(data)
+      } catch (error) {
+        console.error('Error fetching homepage announcements:', error)
+      } finally {
+        setAnnouncementsLoading(false)
+      }
+    }
+
+    fetchHomepageAnnouncements()
+  }, [])
   
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => 
@@ -131,23 +150,53 @@ export default function HomePage() {
             <p>在這裡，慢慢找到屬於你的聲音與步調...</p>
           </div>
 
-          <div className="absolute bottom-[8%] left-1/2 transform -translate-x-1/2 text-center">
-            <p
-              className="text-lg "
-              style={{
-                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-              }}
-            >
-              心理諮商是一次與自己的語言整理
-            </p>
-            <p
-              className="text-lg  mt-1"
-              style={{
-                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-              }}
-            >
-              找出自己真正的聲音...
-            </p>
+          {/* 最新消息布告欄 - 小巧設計 */}
+          <div className="absolute bottom-[8%] left-1/2 transform -translate-x-1/2 w-full max-w-sm">
+            <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-300 p-3">
+              {/* 布告欄標題 */}
+              <div className="text-center mb-2">
+                <h3 className="text-sm font-bold text-black">📢 最新消息</h3>
+                <div className="w-12 h-0.5 bg-black mx-auto mt-1"></div>
+              </div>
+              
+              {/* 消息列表 */}
+              {announcementsLoading ? (
+                <div className="text-center py-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mx-auto"></div>
+                  <p className="text-xs text-gray-500 mt-1">載入中...</p>
+                </div>
+              ) : (
+                <div className="space-y-1 text-left">
+                  {homepageAnnouncements?.recent_announcements?.slice(0, 2).map((announcement) => (
+                    <Link key={announcement.id} href={`/announcements/${announcement.id}`} className="block">
+                      <div className="flex items-start space-x-1 hover:bg-gray-50 rounded p-1 transition-colors">
+                        <span className="text-black text-xs mt-0.5 flex-shrink-0">•</span>
+                        <p className="text-gray-700 hover:text-black cursor-pointer text-xs leading-tight">
+                          {announcement.title.length > 40 ? announcement.title.substring(0, 40) + '...' : announcement.title}
+                        </p>
+                      </div>
+                    </Link>
+                  )) || (
+                    <div className="text-center py-1">
+                      <p className="text-gray-500 text-xs">暫無最新消息</p>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* 查看更多按鈕 */}
+              <div className="text-center mt-2 pt-1 border-t border-gray-200">
+                <Link href="/announcements">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-gray-400 text-black hover:bg-gray-100 text-xs h-6 px-2"
+                  >
+                    查看更多
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
           <Image
             src="/images/clean-hero-design.png"
@@ -313,6 +362,13 @@ export default function HomePage() {
           >
             <div className="text-2xl mb-2">📋</div>
             <div className="text-amber-800 font-semibold">專業心理測驗</div>
+          </Link>
+          <Link
+            href="/announcements"
+            className="bg-gray-200 hover:bg-gray-300 p-4 rounded-lg text-center transition-colors col-span-2"
+          >
+            <div className="text-2xl mb-2">📢</div>
+            <div className="text-gray-800 font-semibold">最新消息</div>
           </Link>
         </div>
       </section>

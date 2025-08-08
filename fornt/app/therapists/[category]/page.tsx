@@ -158,17 +158,17 @@ export default function TherapistListPage() {
                       )}
 
                       {/* 諮商模式與收費 */}
-                      {therapist.consultation_modes.length > 0 && (
+                      {therapist.consultation_modes && therapist.consultation_modes.length > 0 && (
                         <div className="text-orange-700 text-sm">
                           <strong>諮商方式：</strong>
                           {therapist.consultation_modes.map(mode => 
-                            `${mode === 'online' ? '線上' : '實體'}（$${therapist.pricing[mode] || 'N/A'}）`
+                            `${mode === 'online' ? '線上' : '實體'}${therapist.pricing?.[mode] ? `（$${therapist.pricing[mode]}）` : ''}`
                           ).join('、')}
                         </div>
                       )}
 
                       {/* 可預約時段 */}
-                      {therapist.available_times.length > 0 && (
+                      {therapist.available_times && therapist.available_times.length > 0 && (
                         <div className="text-orange-700 text-xs">
                           <strong>可預約時段：</strong>
                           <div className="mt-1 flex flex-wrap gap-1">

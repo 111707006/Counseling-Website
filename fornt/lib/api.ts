@@ -89,10 +89,11 @@ export interface TherapistProfile {
   specialties_list: string[];
   specialties_text: string;
   beliefs: string;
-  publications: string[];
+  // publications: string[];  // 暫時移除
   photo: string | null;
   available_times: AvailableTime[];
-  consultation_modes: string[];
+  consultation_modes?: string[];  // 設為可選，防止錯誤
+  pricing?: { [key: string]: number };  // 設為可選，防止錯誤
   created_at: string;
 }
 
@@ -351,5 +352,122 @@ export async function updateArticle(id: number, data: Partial<Article>): Promise
 export async function deleteArticle(id: number): Promise<void> {
   return apiRequest<void>(`/api/articles/articles/${id}/`, {
     method: 'DELETE',
+  });
+}
+
+// 公告相關 API
+
+export interface AnnouncementCategory {
+  id: number;
+  name: string;
+  description: string;
+  color: string;
+  is_active: boolean;
+  order: number;
+  announcements_count: number;
+  created_at: string;
+}
+
+export interface AnnouncementImage {
+  id: number;
+  image: string;
+  image_url: string;
+  caption: string;
+  order: number;
+  created_at: string;
+}
+
+export interface AnnouncementAuthor {
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface Announcement {
+  id: number;
+  title: string;
+  summary: string;
+  content: string;
+  category?: AnnouncementCategory;
+  featured_image_url?: string;
+  additional_images: AnnouncementImage[];
+  priority: 'low' | 'medium' | 'high';
+  priority_display: string;
+  status: 'draft' | 'published' | 'archived';
+  status_display: string;
+  is_pinned: boolean;
+  show_on_homepage: boolean;
+  publish_date: string;
+  expire_date?: string;
+  author: AnnouncementAuthor;
+  views_count: number;
+  likes_count: number;
+  can_display: boolean;
+  is_expired: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AnnouncementListResponse {
+  count: number;
+  next?: string;
+  previous?: string;
+  results: Announcement[];
+}
+
+export interface AnnouncementHomepageData {
+  pinned_announcements: Announcement[];
+  recent_announcements: Announcement[];
+}
+
+export interface AnnouncementStats {
+  total_published: number;
+  total_categories: number;
+  monthly_announcements: number;
+}
+
+// 獲取公告列表
+export async function getAnnouncements(params?: {
+  search?: string;
+  category?: string;
+  priority?: string;
+  page?: number;
+}): Promise<AnnouncementListResponse> {
+  const queryParams = new URLSearchParams();
+  
+  if (params?.search) queryParams.append('search', params.search);
+  if (params?.category) queryParams.append('category', params.category);
+  if (params?.priority) queryParams.append('priority', params.priority);
+  if (params?.page) queryParams.append('page', params.page.toString());
+  
+  const endpoint = `/api/announcements/${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+  return apiRequest<AnnouncementListResponse>(endpoint);
+}
+
+// 獲取單一公告詳情
+export async function getAnnouncement(id: number): Promise<Announcement> {
+  return apiRequest<Announcement>(`/api/announcements/${id}/`);
+}
+
+// 獲取公告分類列表
+export async function getAnnouncementCategories(): Promise<AnnouncementCategory[]> {
+  return apiRequest<AnnouncementCategory[]>('/api/announcements/categories/');
+}
+
+// 獲取首頁公告
+export async function getHomepageAnnouncements(): Promise<AnnouncementHomepageData> {
+  return apiRequest<AnnouncementHomepageData>('/api/announcements/homepage/');
+}
+
+// 獲取公告統計
+export async function getAnnouncementStats(): Promise<AnnouncementStats> {
+  return apiRequest<AnnouncementStats>('/api/announcements/stats/');
+}
+
+// 為公告點讚
+export async function likeAnnouncement(id: number): Promise<{ success: boolean; likes_count: number }> {
+  return apiRequest<{ success: boolean; likes_count: number }>(`/api/announcements/${id}/like/`, {
+    method: 'POST',
   });
 }

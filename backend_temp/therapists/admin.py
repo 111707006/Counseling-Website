@@ -87,9 +87,10 @@ class TherapistProfileAdmin(admin.ModelAdmin):
     
     list_display = (
         'name', 'title', 'license_number', 'get_user_email',
-        'get_consultation_modes', 'created_at'
+        # 'get_consultation_modes', # 暫時移除
+        'created_at'
     )
-    list_filter = ('consultation_modes', 'specialties')
+    list_filter = ('specialties',)  # 移除 consultation_modes
     search_fields = ('name', 'specialties__name', 'specialties_text', 'license_number', 'user__email')
     ordering = ('-created_at',)
     inlines = [AvailableTimeInline]
@@ -107,9 +108,9 @@ class TherapistProfileAdmin(admin.ModelAdmin):
             'fields': ('specialties', 'specialties_text'),
             'description': '新的關聯式專業領域和舊的文字描述（過渡期保留）'
         }),
-        ('服務設定', {
-            'fields': ('consultation_modes',)
-        }),
+        # ('服務設定', {
+        #     'fields': ('consultation_modes',)
+        # }),  # 暫時移除
     )
     
     filter_horizontal = ('specialties',)  # 讓專業領域選擇更友善
@@ -121,9 +122,9 @@ class TherapistProfileAdmin(admin.ModelAdmin):
         return "未關聯用戶"
     get_user_email.short_description = "用戶 Email"
 
-    def get_consultation_modes(self, obj):
-        return ", ".join(obj.consultation_modes)
-    get_consultation_modes.short_description = "諮詢模式"
+    # def get_consultation_modes(self, obj):
+    #     return ", ".join(obj.consultation_modes)
+    # get_consultation_modes.short_description = "諮詢模式"  # 暫時移除
 
 @admin.register(AvailableTime)
 class AvailableTimeAdmin(admin.ModelAdmin):

@@ -40,9 +40,8 @@ class TherapistProfileSerializer(serializers.ModelSerializer):
             'specialties_display',  # 顯示文字
             'specialties_list',     # 專業領域列表
             'specialties_text',     # 舊格式（向後相容）
-            'beliefs', 'publications', 'photo',
+            'beliefs', 'photo',  # 'publications' 暫時移除
             'available_times',
-            'consultation_modes',
-            'pricing',
+            # 'consultation_modes', 'pricing',  # 暫時移除
             'created_at',
         )

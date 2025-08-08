@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/appointments/', include('appointments.urls')),
     path('api/assessments/', include('assessments.urls')),
     path('api/articles/', include('articles.urls')),
+    path('api/announcements/', include('announcements.urls')),  # 公告API
     path('api/', include('articles.urls')),
     path('api/auth/token/', obtain_auth_token),  # 登入 API
     path('ckeditor/', include('ckeditor_uploader.urls')),  # CKEditor 上傳

@@ -57,37 +57,38 @@ class TherapistProfile(models.Model):
         help_text="專長文字描述（舊格式，逐步淘汰）"
     )
     beliefs         = models.TextField(help_text="諮商信念 / 理念")
-    publications    = models.JSONField(default=list, help_text="文章列表（字串陣列）")
+    # publications    = models.JSONField(default=list, help_text="文章列表（字串陣列）")  # 暫時移除
     photo           = models.ImageField(upload_to='therapists/', null=True, blank=True)
     created_at      = models.DateTimeField(auto_now_add=True)
 
-    # 諮詢模式 & 收費
+    # 諮詢模式 & 收費 (暫時移除)
     CONSULTATION_CHOICES = [('online','線上'), ('offline','實體')]
-    consultation_modes = models.JSONField(
-        default=list,
-        help_text="可提供諮詢模式，例如：['online','offline']"
-    )
-    pricing = models.JSONField(
-        default=dict,
-        help_text="各模式收費，如：{'online':1200,'offline':1500}"
-    )
+    # consultation_modes = models.JSONField(
+    #     default=list,
+    #     help_text="可提供諮詢模式，例如：['online','offline']"
+    # )
+    # pricing = models.JSONField(
+    #     default=dict,
+    #     help_text="各模式收費，如：{'online':1200,'offline':1500}"
+    # )
 
     # ───────── 驗證 ─────────
     def clean(self):
         super().clean()
-        # 1) consultation_modes 只能包含合法選項
-        illegal = [m for m in self.consultation_modes
-                   if m not in dict(self.CONSULTATION_CHOICES)]
-        if illegal:
-            raise ValidationError({"consultation_modes": f"非法模式: {illegal}"})
-        # 2) 每個模式都需有 pricing
-        missing_price = [m for m in self.consultation_modes if m not in self.pricing]
-        if missing_price:
-            raise ValidationError({"pricing": f"缺少定價: {missing_price}"})
-        # 3) 價格需 > 0
-        for mode, price in self.pricing.items():
-            if Decimal(price) <= 0:
-                raise ValidationError({"pricing": f"{mode} 價格必須 > 0"})
+        # 暫時移除驗證邏輯
+        # # 1) consultation_modes 只能包含合法選項
+        # illegal = [m for m in self.consultation_modes
+        #            if m not in dict(self.CONSULTATION_CHOICES)]
+        # if illegal:
+        #     raise ValidationError({"consultation_modes": f"非法模式: {illegal}"})
+        # # 2) 每個模式都需有 pricing
+        # missing_price = [m for m in self.consultation_modes if m not in self.pricing]
+        # if missing_price:
+        #     raise ValidationError({"pricing": f"缺少定價: {missing_price}"})
+        # # 3) 價格需 > 0
+        # for mode, price in self.pricing.items():
+        #     if Decimal(price) <= 0:
+        #         raise ValidationError({"pricing": f"{mode} 價格必須 > 0"})
 
     def get_specialties_display(self):
         """取得專業領域的顯示文字"""
