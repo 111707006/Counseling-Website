@@ -174,7 +174,7 @@ export default function BookAppointmentPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+      <div className="min-h-screen bg-gradient-to-b from-brand-bg to-brand-orange/10 py-12">
         <div className="container mx-auto px-4 flex justify-center items-center min-h-[400px]">
           <div className="flex items-center space-x-2">
             <Loader2 className="h-6 w-6 animate-spin" />
@@ -191,11 +191,11 @@ export default function BookAppointmentPage() {
         <div className="max-w-2xl mx-auto">
           <Card className="bg-white/95 backdrop-blur-sm shadow-xl">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl text-green-800 flex items-center justify-center gap-2">
+              <CardTitle className="text-2xl text-brand-text flex items-center justify-center gap-2">
                 <Calendar className="h-6 w-6" />
                 預約心理諮商
               </CardTitle>
-              <p className="text-green-600 mt-1 text-sm">請依序填寫以下資料，我們會透過Email與您聯繫確認時間</p>
+              <p className="text-brand-text/70 mt-1 text-sm">請依序填寫以下資料，我們會透過Email與您聯繫確認時間</p>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -203,8 +203,8 @@ export default function BookAppointmentPage() {
                 {/* 1. 基本資料 */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-green-600" />
-                    <h3 className="text-lg font-bold text-green-800">基本資料</h3>
+                    <User className="h-4 w-4 text-brand-text/70" />
+                    <h3 className="text-lg font-bold text-brand-text">基本資料</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -248,8 +248,8 @@ export default function BookAppointmentPage() {
                 {/* 2. 身分證字號 */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-green-600" />
-                    <h3 className="text-lg font-bold text-green-800">身分驗證</h3>
+                    <Shield className="h-4 w-4 text-brand-text/70" />
+                    <h3 className="text-lg font-bold text-brand-text">身分驗證</h3>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -273,8 +273,8 @@ export default function BookAppointmentPage() {
                 {/* 3. 專業領域與心理師選擇 (選填) */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Briefcase className="h-4 w-4 text-green-600" />
-                    <h3 className="text-lg font-bold text-green-800">專業領域與心理師偏好</h3>
+                    <Briefcase className="h-4 w-4 text-brand-text/70" />
+                    <h3 className="text-lg font-bold text-brand-text">專業領域與心理師偏好</h3>
                     <span className="text-sm text-gray-500 font-normal">(選填)</span>
                   </div>
                   
@@ -346,7 +346,7 @@ export default function BookAppointmentPage() {
                         <p className="text-xs text-gray-500 mt-1">若要指定心理師，請先選擇專業領域</p>
                       )}
                       {formData.specialty && filteredTherapists.length === 0 && (
-                        <p className="text-xs text-amber-600 mt-1">該專業領域目前無可預約的心理師</p>
+                        <p className="text-xs text-brand-orange mt-1">該專業領域目前無可預約的心理師</p>
                       )}
                     </div>
                   </div>
@@ -356,8 +356,8 @@ export default function BookAppointmentPage() {
                 {/* 4. 偏好時間 */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-green-600" />
-                    <h3 className="text-lg font-bold text-green-800">偏好時間</h3>
+                    <Clock className="h-4 w-4 text-brand-text/70" />
+                    <h3 className="text-lg font-bold text-brand-text">偏好時間</h3>
                   </div>
                   
                   {formData.preferred_periods?.map((period, index) => (
@@ -438,8 +438,8 @@ export default function BookAppointmentPage() {
                 {/* 6. 線上/實體選擇 */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-green-600" />
-                    <h3 className="text-lg font-bold text-green-800">諮商方式</h3>
+                    <Calendar className="h-4 w-4 text-brand-text/70" />
+                    <h3 className="text-lg font-bold text-brand-text">諮商方式</h3>
                   </div>
                   
                   <RadioGroup
@@ -467,8 +467,8 @@ export default function BookAppointmentPage() {
                 {/* 7. 需求與注意事項 */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4 text-green-600" />
-                    <h3 className="text-lg font-bold text-green-800">需求與注意事項</h3>
+                    <MessageSquare className="h-4 w-4 text-brand-text/70" />
+                    <h3 className="text-lg font-bold text-brand-text">需求與注意事項</h3>
                   </div>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -513,7 +513,7 @@ export default function BookAppointmentPage() {
                 <div className="pt-4 border-t">
                   <Button
                     type="submit"
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
+                    className="w-full bg-brand-button hover:bg-brand-button/80 text-white py-3 text-base"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (

@@ -152,26 +152,26 @@ export default function HomePage() {
 
           {/* 最新消息布告欄 - 小巧設計 */}
           <div className="absolute bottom-[8%] left-1/2 transform -translate-x-1/2 w-full max-w-sm">
-            <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-300 p-3">
+            <div className="bg-brand-bg/95 backdrop-blur-sm rounded-lg shadow-lg border border-brand-orange/30 p-3">
               {/* 布告欄標題 */}
               <div className="text-center mb-2">
-                <h3 className="text-sm font-bold text-black">📢 最新消息</h3>
-                <div className="w-12 h-0.5 bg-black mx-auto mt-1"></div>
+                <h3 className="text-sm font-bold text-brand-text">📢 最新消息</h3>
+                <div className="w-12 h-0.5 bg-brand-text mx-auto mt-1"></div>
               </div>
               
               {/* 消息列表 */}
               {announcementsLoading ? (
                 <div className="text-center py-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mx-auto"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-text mx-auto"></div>
                   <p className="text-xs text-gray-500 mt-1">載入中...</p>
                 </div>
               ) : (
                 <div className="space-y-1 text-left">
                   {homepageAnnouncements?.recent_announcements?.slice(0, 2).map((announcement) => (
                     <Link key={announcement.id} href={`/announcements/${announcement.id}`} className="block">
-                      <div className="flex items-start space-x-1 hover:bg-gray-50 rounded p-1 transition-colors">
-                        <span className="text-black text-xs mt-0.5 flex-shrink-0">•</span>
-                        <p className="text-gray-700 hover:text-black cursor-pointer text-xs leading-tight">
+                      <div className="flex items-start space-x-1 hover:bg-brand-orange/10 rounded p-1 transition-colors">
+                        <span className="text-brand-text text-xs mt-0.5 flex-shrink-0">•</span>
+                        <p className="text-brand-text/70 hover:text-brand-text cursor-pointer text-xs leading-tight">
                           {announcement.title.length > 40 ? announcement.title.substring(0, 40) + '...' : announcement.title}
                         </p>
                       </div>
@@ -185,12 +185,12 @@ export default function HomePage() {
               )}
               
               {/* 查看更多按鈕 */}
-              <div className="text-center mt-2 pt-1 border-t border-gray-200">
+              <div className="text-center mt-2 pt-1 border-t border-brand-orange/20">
                 <Link href="/announcements">
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="border-gray-400 text-black hover:bg-gray-100 text-xs h-6 px-2"
+                    className="border-brand-orange/40 text-brand-text hover:bg-brand-orange/10 text-xs h-6 px-2"
                   >
                     查看更多
                   </Button>
@@ -279,8 +279,8 @@ export default function HomePage() {
 
           {/* 心理健康文章 - 左中人物 */}
           <Link href="/articles">
-            <div className="absolute top-[35%] left-[8%] w-[22%] h-[18%] hover:bg-amber-200/20 transition-colors duration-300 rounded-lg cursor-pointer group">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-amber-800/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+            <div className="absolute top-[35%] left-[8%] w-[22%] h-[18%] hover:bg-brand-orange/20 transition-colors duration-300 rounded-lg cursor-pointer group">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-orange/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
                 瀏覽健康文章
               </div>
             </div>
@@ -288,8 +288,8 @@ export default function HomePage() {
 
           {/* 心理師介紹 - 左下人物 */}
           <Link href="/therapists">
-            <div className="absolute top-[40%] left-[73%] w-[25%] h-[20%] hover:bg-amber-200/20 transition-colors duration-300 rounded-lg cursor-pointer group">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-amber-800/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+            <div className="absolute top-[40%] left-[73%] w-[25%] h-[20%] hover:bg-brand-orange/20 transition-colors duration-300 rounded-lg cursor-pointer group">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-orange/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
                 認識心理師團隊
               </div>
             </div>
@@ -306,28 +306,28 @@ export default function HomePage() {
 
           {/* 預約諮詢按鈕熱區 */}
           <Link href="/appointments/book">
-            <div className="absolute top-[27%] left-[12%] w-[18%] h-[5%] hover:bg-amber-300/30 transition-colors duration-300 rounded-full cursor-pointer group">
+            <div className="absolute top-[27%] left-[12%] w-[18%] h-[5%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
              
             </div>
           </Link>
 
           {/* 心理健康文章按鈕熱區 */}
           <Link href="/articles">
-            <div className="absolute top-[37%] left-[30%] w-[20%] h-[4%] hover:bg-amber-300/30 transition-colors duration-300 rounded-full cursor-pointer group">
+            <div className="absolute top-[37%] left-[30%] w-[20%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
               
             </div>
           </Link>
 
           {/* 心理師介紹按鈕熱區 */}
           <Link href="/therapists">
-            <div className="absolute top-[53.5%] left-[47%] w-[21%] h-[4%] hover:bg-amber-300/30 transition-colors duration-300 rounded-full cursor-pointer group">
+            <div className="absolute top-[53.5%] left-[47%] w-[21%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
               
             </div>
           </Link>
 
           {/* 專業心理測驗按鈕熱區 */}
           <Link href="/assessments">
-            <div className="absolute top-[69%] left-[39%] w-[20%] h-[4%] hover:bg-amber-300/30 transition-colors duration-300 rounded-full cursor-pointer group">
+            <div className="absolute top-[69%] left-[39%] w-[20%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
               
             </div>
           </Link>
@@ -337,10 +337,10 @@ export default function HomePage() {
         <div className="md:hidden mt-8 grid grid-cols-2 gap-4">
           <Link
             href="/appointments/book"
-            className="bg-amber-200 hover:bg-amber-300 p-4 rounded-lg text-center transition-colors"
+            className="bg-brand-orange/80 hover:bg-brand-orange p-4 rounded-lg text-center transition-colors"
           >
             <div className="text-2xl mb-2">📞</div>
-            <div className="text-amber-800 font-semibold">預約諮詢</div>
+            <div className="text-brand-text font-semibold">預約諮詢</div>
           </Link>
           <Link
             href="/articles"
@@ -358,10 +358,10 @@ export default function HomePage() {
           </Link>
           <Link
             href="/assessments"
-            className="bg-amber-200 hover:bg-amber-300 p-4 rounded-lg text-center transition-colors"
+            className="bg-brand-orange/80 hover:bg-brand-orange p-4 rounded-lg text-center transition-colors"
           >
             <div className="text-2xl mb-2">📋</div>
-            <div className="text-amber-800 font-semibold">專業心理測驗</div>
+            <div className="text-brand-text font-semibold">專業心理測驗</div>
           </Link>
           <Link
             href="/announcements"
@@ -514,8 +514,8 @@ export default function HomePage() {
 
                 {/* 營業時間 */}
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-4 h-4 text-brand-orange" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                     </svg>
                   </div>

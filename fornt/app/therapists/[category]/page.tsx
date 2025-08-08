@@ -68,13 +68,13 @@ export default function TherapistListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
+    <div className="min-h-screen bg-gradient-to-br from-brand-bg to-brand-bg">
       <div className="container mx-auto p-6">
         {/* 返回按鈕 */}
         <Button
           variant="ghost"
           onClick={() => router.back()}
-          className="mb-6 text-orange-700 hover:text-orange-800 hover:bg-orange-200"
+          className="mb-6 text-brand-text hover:text-brand-orange/80 hover:bg-brand-orange/20"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           返回分類選擇
@@ -82,15 +82,15 @@ export default function TherapistListPage() {
 
         {/* 頁面標題 */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-orange-800 mb-2">{specialtyName} - 專業心理師</h1>
-          <p className="text-orange-600">為您推薦具備相關專業領域的心理師</p>
+          <h1 className="text-3xl font-bold text-brand-text mb-2">{specialtyName} - 專業心理師</h1>
+          <p className="text-brand-orange-600">為您推薦具備相關專業領域的心理師</p>
         </div>
 
         {/* 載入狀態 */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
-            <span className="ml-2 text-orange-600">載入中...</span>
+            <Loader2 className="w-8 h-8 animate-spin text-brand-orange-500" />
+            <span className="ml-2 text-brand-orange-600">載入中...</span>
           </div>
         ) : error ? (
           <div className="flex justify-center items-center h-64">
@@ -99,7 +99,7 @@ export default function TherapistListPage() {
               <p className="text-red-600 mb-4">{error}</p>
               <Button 
                 onClick={() => window.location.reload()} 
-                className="bg-orange-500 hover:bg-orange-600 text-white"
+                className="bg-brand-orange-500 hover:bg-brand-orange/80 text-white"
               >
                 重新載入
               </Button>
@@ -112,31 +112,31 @@ export default function TherapistListPage() {
               {therapists.map((therapist) => (
                 <Card
                   key={therapist.id}
-                  className="bg-white border-orange-200 hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="bg-brand-bg border-brand-orange/30 hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   <CardContent className="p-4">
                     <div className="text-center mb-3">
                       <img
                         src={therapist.photo || "/placeholder.svg"}
                         alt={therapist.name}
-                        className="w-20 h-20 rounded-full mx-auto mb-2 border-3 border-orange-200"
+                        className="w-20 h-20 rounded-full mx-auto mb-2 border-3 border-brand-orange/30"
                       />
-                      <h3 className="text-lg font-bold text-orange-900">{therapist.name}</h3>
-                      <p className="text-orange-600 font-medium text-sm">{therapist.title}</p>
+                      <h3 className="text-lg font-bold text-brand-text">{therapist.name}</h3>
+                      <p className="text-brand-orange-600 font-medium text-sm">{therapist.title}</p>
                     </div>
 
                     <div className="space-y-2">
                       {/* 專長 */}
                       <div>
-                        <h4 className="font-semibold text-orange-800 mb-1 text-sm">專長領域：</h4>
+                        <h4 className="font-semibold text-brand-text mb-1 text-sm">專長領域：</h4>
                         <div className="flex flex-wrap gap-1">
                           {therapist.specialties.map((specialty) => (
-                            <span key={specialty.id} className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">
+                            <span key={specialty.id} className="px-2 py-0.5 bg-brand-orange/20 text-brand-text rounded-full text-xs">
                               {specialty.name}
                             </span>
                           ))}
                           {therapist.specialties.length === 0 && therapist.specialties_text && (
-                            <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">
+                            <span className="px-2 py-0.5 bg-brand-orange/20 text-brand-text rounded-full text-xs">
                               {therapist.specialties_text}
                             </span>
                           )}
@@ -145,21 +145,21 @@ export default function TherapistListPage() {
 
                       {/* 學歷 */}
                       {therapist.education && (
-                        <div className="text-orange-700 text-sm">
+                        <div className="text-brand-text text-sm">
                           <strong>學歷：</strong>{therapist.education}
                         </div>
                       )}
 
                       {/* 經歷 */}
                       {therapist.experience && (
-                        <div className="text-orange-700 text-sm">
+                        <div className="text-brand-text text-sm">
                           <strong>經歷：</strong>{therapist.experience}
                         </div>
                       )}
 
                       {/* 諮商模式與收費 */}
                       {therapist.consultation_modes && therapist.consultation_modes.length > 0 && (
-                        <div className="text-orange-700 text-sm">
+                        <div className="text-brand-text text-sm">
                           <strong>諮商方式：</strong>
                           {therapist.consultation_modes.map(mode => 
                             `${mode === 'online' ? '線上' : '實體'}${therapist.pricing?.[mode] ? `（$${therapist.pricing[mode]}）` : ''}`
@@ -169,7 +169,7 @@ export default function TherapistListPage() {
 
                       {/* 可預約時段 */}
                       {therapist.available_times && therapist.available_times.length > 0 && (
-                        <div className="text-orange-700 text-xs">
+                        <div className="text-brand-text text-xs">
                           <strong>可預約時段：</strong>
                           <div className="mt-1 flex flex-wrap gap-1">
                             {therapist.available_times.slice(0, 3).map((time) => (
@@ -178,7 +178,7 @@ export default function TherapistListPage() {
                               </span>
                             ))}
                             {therapist.available_times.length > 3 && (
-                              <span className="text-orange-600 text-xs">等{therapist.available_times.length}個時段</span>
+                              <span className="text-brand-orange-600 text-xs">等{therapist.available_times.length}個時段</span>
                             )}
                           </div>
                         </div>
@@ -186,13 +186,13 @@ export default function TherapistListPage() {
 
                       {/* 信念 */}
                       {therapist.beliefs && (
-                        <p className="text-orange-600 text-xs leading-relaxed">{therapist.beliefs}</p>
+                        <p className="text-brand-orange-600 text-xs leading-relaxed">{therapist.beliefs}</p>
                       )}
 
                       {/* 預約按鈕 */}
                       <Button
                         onClick={() => handleBooking(therapist.id)}
-                        className="w-full bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-semibold py-1.5 text-sm rounded-lg transition-all duration-300"
+                        className="w-full bg-brand-button hover:bg-brand-button/80 text-white font-semibold py-1.5 text-sm rounded-lg transition-all duration-300"
                       >
                         立即預約
                       </Button>
@@ -205,8 +205,8 @@ export default function TherapistListPage() {
             {/* 如果沒有心理師 */}
             {therapists.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-orange-600 text-lg">此專業領域暫無可預約的心理師</p>
-                <p className="text-orange-500 mt-2">請選擇其他專業領域或稍後再試</p>
+                <p className="text-brand-orange-600 text-lg">此專業領域暫無可預約的心理師</p>
+                <p className="text-brand-orange-500 mt-2">請選擇其他專業領域或稍後再試</p>
               </div>
             )}
           </>

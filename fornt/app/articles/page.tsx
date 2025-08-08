@@ -100,8 +100,8 @@ export default function ArticlesPage() {
     <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-green-800 mb-4">心理健康文章</h1>
-          <p className="text-xl text-green-600">探索心理健康知識，學習自我照顧的方法</p>
+          <h1 className="text-4xl font-bold text-brand-text mb-4">心理健康文章</h1>
+          <p className="text-xl text-brand-text/70">探索心理健康知識，學習自我照顧的方法</p>
         </div>
 
         {/* Search and Filter */}
@@ -212,7 +212,7 @@ export default function ArticlesPage() {
                     {new Date(article.published_at).toLocaleDateString("zh-TW")}
                   </span>
                 </div>
-                <CardTitle className="text-xl text-green-800 line-clamp-2">{article.title}</CardTitle>
+                <CardTitle className="text-xl text-brand-text line-clamp-2">{article.title}</CardTitle>
               </CardHeader>
               
               <CardContent className="space-y-4">
@@ -236,7 +236,7 @@ export default function ArticlesPage() {
                 )}
 
                 <Link href={`/articles/${article.id}`}>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white">閱讀全文</Button>
+                  <Button className="w-full bg-brand-button hover:bg-brand-button/80 text-white">閱讀全文</Button>
                 </Link>
               </CardContent>
             </Card>

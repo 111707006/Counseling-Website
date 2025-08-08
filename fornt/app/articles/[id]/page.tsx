@@ -41,7 +41,7 @@ export default function ArticleDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+      <div className="min-h-screen bg-gradient-to-b from-brand-bg to-brand-bg py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">載入中...</div>
         </div>
@@ -51,7 +51,7 @@ export default function ArticleDetailPage() {
 
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+      <div className="min-h-screen bg-gradient-to-b from-brand-bg to-brand-bg py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <p className="text-red-600 mb-4">{error || "文章不存在"}</p>
@@ -68,7 +68,7 @@ export default function ArticleDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-amber-50 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-brand-bg to-brand-bg py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
@@ -100,7 +100,7 @@ export default function ArticleDetailPage() {
                   })}
                 </span>
               </div>
-              <CardTitle className="text-3xl text-green-800 leading-tight">
+              <CardTitle className="text-3xl text-brand-text leading-tight">
                 {article.title}
               </CardTitle>
               
@@ -311,7 +311,7 @@ export default function ArticleDetailPage() {
               {/* Tags Section */}
               {article.tags && article.tags.length > 0 && (
                 <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-green-800 mb-3">相關標籤</h3>
+                  <h3 className="text-lg font-semibold text-brand-text mb-3">相關標籤</h3>
                   <div className="flex flex-wrap gap-2">
                     {article.tags.map((tag, index) => (
                       <Badge key={index} variant="outline" className="text-sm">
@@ -327,7 +327,7 @@ export default function ArticleDetailPage() {
           {/* Navigation */}
           <div className="mt-8 text-center">
             <Link href="/articles">
-              <Button className="bg-green-600 hover:bg-green-700 text-white">
+              <Button className="bg-brand-button hover:bg-brand-button/80 text-white">
                 瀏覽更多文章
               </Button>
             </Link>

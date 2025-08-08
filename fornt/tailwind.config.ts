@@ -13,6 +13,13 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+  			// 自定義品牌色彩
+  			brand: {
+  				orange: 'rgb(208, 126, 66)', // 主要橘色 RGB:208 126 66
+  				text: 'rgb(24, 27, 23)',     // 文字色 RGB:24 27 23
+  				bg: 'rgb(249, 246, 241)',    // 背景白色 RGB:249 246 241
+  				button: '#725C3A',           // 按鈕色 #725C3A
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

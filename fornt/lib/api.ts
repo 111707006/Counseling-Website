@@ -433,7 +433,7 @@ export async function getAnnouncements(params?: {
   category?: string;
   priority?: string;
   page?: number;
-}): Promise<AnnouncementListResponse> {
+}): Promise<Announcement[]> {
   const queryParams = new URLSearchParams();
   
   if (params?.search) queryParams.append('search', params.search);
@@ -442,7 +442,7 @@ export async function getAnnouncements(params?: {
   if (params?.page) queryParams.append('page', params.page.toString());
   
   const endpoint = `/api/announcements/${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-  return apiRequest<AnnouncementListResponse>(endpoint);
+  return apiRequest<Announcement[]>(endpoint);
 }
 
 // 獲取單一公告詳情

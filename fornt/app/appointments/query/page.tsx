@@ -107,8 +107,8 @@ export default function QueryAppointmentPage() {
         <div className="max-w-4xl mx-auto">
           <Card className="bg-white/90 backdrop-blur-sm mb-8">
             <CardHeader className="text-center">
-              <CardTitle className="text-3xl text-green-800">查詢預約紀錄</CardTitle>
-              <p className="text-green-600 mt-2">請輸入您的電子郵件和身分證字號查詢預約狀況</p>
+              <CardTitle className="text-3xl text-brand-text">查詢預約紀錄</CardTitle>
+              <p className="text-brand-text/70 mt-2">請輸入您的電子郵件和身分證字號查詢預約狀況</p>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleQuery} className="space-y-4">
@@ -135,7 +135,7 @@ export default function QueryAppointmentPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full bg-brand-button hover:bg-brand-button/80 text-white"
                   disabled={isQuerying}
                 >
                   {isQuerying ? "查詢中..." : "查詢預約"}
@@ -147,13 +147,13 @@ export default function QueryAppointmentPage() {
           {/* Appointments List */}
           {appointments.length > 0 && (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-green-800 mb-4">您的預約紀錄</h2>
+              <h2 className="text-2xl font-bold text-brand-text mb-4">您的預約紀錄</h2>
               {appointments.map((appointment) => (
                 <Card key={appointment.id} className="bg-white/90 backdrop-blur-sm">
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <p className="text-green-600">心理師：{appointment.therapist}</p>
+                        <p className="text-brand-text/70">心理師：{appointment.therapist}</p>
                         {appointment.detail?.name && (
                           <p className="text-sm text-gray-600">申請人：{appointment.detail.name}</p>
                         )}
@@ -170,7 +170,7 @@ export default function QueryAppointmentPage() {
                       {appointment.confirmed_datetime ? (
                         <div>
                           <p className="text-sm text-gray-600">確認時間</p>
-                          <p className="font-medium text-green-700">
+                          <p className="font-medium text-brand-text">
                             {new Date(appointment.confirmed_datetime).toLocaleString("zh-TW", {
                               year: 'numeric',
                               month: '2-digit',
