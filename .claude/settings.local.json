@@ -67,7 +67,9 @@
       "Bash(\"D:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld.exe\" --defaults-file=\"D:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini\" --console)",
       "Bash(\"D:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld.exe\" --datadir=\"D:\\ProgramData\\MySQL\\MySQL Server 8.0\\Data\" --port=3306 --console)",
       "Bash(\"C:\\Program Files\\MySQL\\MySQL Server 8.4\\bin\\mysqld.exe\" --datadir=\"C:\\ProgramData\\MySQL\\MySQL Server 8.4\\Data\" --port=3306 --console)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(dir:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
