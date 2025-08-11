@@ -10,8 +10,6 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { 
   Calendar, 
-  Eye, 
-  Heart, 
   Pin, 
   ArrowLeft, 
   User, 
@@ -65,7 +63,6 @@ export default function AnnouncementDetailPage() {
   const [announcement, setAnnouncement] = useState<AnnouncementDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isLiking, setIsLiking] = useState(false)
 
   const announcementId = params.id as string
 
@@ -96,33 +93,6 @@ export default function AnnouncementDetailPage() {
     }
   }
 
-  const handleLike = async () => {
-    if (isLiking || !announcement) return
-
-    try {
-      setIsLiking(true)
-      const response = await fetch(`http://localhost:8000/api/announcements/${announcement.id}/like/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          setAnnouncement(prev => prev ? {
-            ...prev,
-            likes_count: data.likes_count
-          } : null)
-        }
-      }
-    } catch (error) {
-      console.error('Error liking announcement:', error)
-    } finally {
-      setIsLiking(false)
-    }
-  }
 
   const handleShare = () => {
     if (navigator.share) {
@@ -273,20 +243,6 @@ export default function AnnouncementDetailPage() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-4 w-4" />
-                    {announcement.views_count}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLike}
-                    disabled={isLiking}
-                    className="flex items-center gap-1 text-red-500 hover:text-red-600"
-                  >
-                    <Heart className={`h-4 w-4 ${isLiking ? 'animate-pulse' : ''}`} />
-                    {announcement.likes_count}
-                  </Button>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -359,15 +315,6 @@ export default function AnnouncementDetailPage() {
               </div>
 
               <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  onClick={handleLike}
-                  disabled={isLiking}
-                  className="flex items-center gap-2"
-                >
-                  <Heart className={`h-4 w-4 ${isLiking ? 'animate-pulse' : ''}`} />
-                  {isLiking ? '按讚中...' : `讚好 (${announcement.likes_count})`}
-                </Button>
                 
                 <Button onClick={handleShare} className="flex items-center gap-2">
                   <Share2 className="h-4 w-4" />

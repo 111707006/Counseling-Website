@@ -105,15 +105,15 @@ export default function ArticlesPage() {
         </div>
 
         {/* Search and Filter */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="flex flex-col gap-6">
             <Input
               placeholder="搜尋文章..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1"
+              className="w-full"
             />
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap justify-center">
               <Button variant={selectedTag === "" ? "default" : "outline"} onClick={() => setSelectedTag("")}>
                 全部
               </Button>
@@ -134,10 +134,20 @@ export default function ArticlesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.map((article) => (
             <Card key={article.id} className="bg-white/90 backdrop-blur-sm hover:shadow-lg transition-shadow overflow-hidden">
-              {/* Image Display - Carousel if multiple images, single image if only featured image */}
-              {((article.images && article.images.length > 0) || article.featured_image_url) && (
+              {/* Image Display - Priority: Featured image > Multiple images carousel > Single image */}
+              {(article.featured_image_url || (article.images && article.images.length > 0)) && (
                 <div className="relative h-48 w-full bg-white">
-                  {article.images && article.images.length > 1 ? (
+                  {article.featured_image_url ? (
+                    // Featured image - highest priority
+                    <div className="bg-white flex items-center justify-center h-full">
+                      <Image
+                        src={article.featured_image_url}
+                        alt={article.title}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : article.images && article.images.length > 1 ? (
                     // Multiple images - show carousel
                     <Carousel 
                       className="w-full h-full"
@@ -176,16 +186,6 @@ export default function ArticlesPage() {
                       <Image
                         src={article.images[0].image_url}
                         alt={article.images[0].caption || article.title}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : article.featured_image_url ? (
-                    // Featured image only
-                    <div className="bg-white flex items-center justify-center h-full">
-                      <Image
-                        src={article.featured_image_url}
-                        alt={article.title}
                         fill
                         className="object-contain"
                       />

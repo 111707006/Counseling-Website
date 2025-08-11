@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
+import { Calendar, Eye, Pin } from 'lucide-react'
 
 interface AssessmentTest {
   code: string
@@ -162,6 +165,69 @@ export default function AssessmentsPage() {
                 <p className="text-gray-600">目前沒有可用的測驗</p>
               </div>
             )}
+          </div>
+
+          {/* 最新消息預覽區塊 */}
+          <div className="mt-16 max-w-4xl mx-auto">
+            {/* 最新消息卡片 */}
+            <Card className="border-brand-orange/30 hover:shadow-lg transition-shadow duration-200 mb-6">
+              <CardContent className="p-6">
+                <div className="flex flex-col lg:flex-row gap-4">
+                  {/* 特色圖片 */}
+                  <div className="lg:w-48 h-32 relative rounded-lg overflow-hidden bg-gray-200">
+                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                      <div className="text-4xl">📢</div>
+                    </div>
+                  </div>
+
+                  {/* 內容區域 */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="secondary" className="bg-brand-orange/20 text-brand-text border-brand-orange/40">
+                          <Pin className="h-3 w-3 mr-1" />
+                          置頂
+                        </Badge>
+                        
+                        <Badge className="text-white bg-brand-orange">
+                          重要公告
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <Link href="/announcements/1">
+                      <h3 className="text-xl font-semibold text-brand-text hover:text-brand-orange transition-colors mb-2">
+                        新年度心理諮商預約開始受理，歡迎來電諮詢
+                      </h3>
+                    </Link>
+
+                    <p className="text-brand-text/70 mb-4 line-clamp-2">
+                      親愛的朋友們，新的一年即將到來，我們很高興宣布新年度的心理諮商預約已經開始受理。無論您是希望探索自我、處理情緒困擾，或是尋求人際關係的協助，我們專業的心理師團隊都將竭誠為您服務...
+                    </p>
+
+                    {/* 元數據 */}
+                    <div className="flex items-center justify-between text-sm text-brand-text/60">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          2024年1月15日
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Eye className="h-4 w-4" />
+                          156
+                        </div>
+                      </div>
+
+                      <Link href="/announcements/1">
+                        <Button variant="outline" size="sm" className="border-brand-orange/40 text-brand-text hover:bg-brand-orange/10">
+                          閱讀更多
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
         </div>

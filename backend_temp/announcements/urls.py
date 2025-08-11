@@ -19,6 +19,4 @@ urlpatterns = [
     # 公告統計
     path('stats/', views.announcement_stats, name='announcement-stats'),
     
-    # 點讚功能
-    path('<int:announcement_id>/like/', views.increment_likes, name='increment-likes'),
 ]

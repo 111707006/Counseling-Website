@@ -51,7 +51,6 @@ class AnnouncementListSerializer(serializers.ModelSerializer):
     category = AnnouncementCategorySerializer(read_only=True)
     author = AuthorSerializer(read_only=True)
     featured_image_url = serializers.SerializerMethodField()
-    priority_display = serializers.CharField(source='get_priority_display', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     can_display = serializers.BooleanField(read_only=True)
     
@@ -59,9 +58,9 @@ class AnnouncementListSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = [
             'id', 'title', 'summary', 'category', 'featured_image_url',
-            'priority', 'priority_display', 'status', 'status_display',
+            'status', 'status_display',
             'is_pinned', 'show_on_homepage', 'publish_date', 'expire_date',
-            'author', 'views_count', 'likes_count', 'can_display',
+            'author', 'views_count', 'can_display',
             'created_at', 'updated_at'
         ]
     
@@ -81,7 +80,6 @@ class AnnouncementDetailSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)
     additional_images = AnnouncementImageSerializer(many=True, read_only=True)
     featured_image_url = serializers.SerializerMethodField()
-    priority_display = serializers.CharField(source='get_priority_display', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     can_display = serializers.BooleanField(read_only=True)
     
@@ -90,9 +88,9 @@ class AnnouncementDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'summary', 'content', 'category', 
             'featured_image_url', 'additional_images',
-            'priority', 'priority_display', 'status', 'status_display',
+            'status', 'status_display',
             'is_pinned', 'show_on_homepage', 'publish_date', 'expire_date',
-            'author', 'views_count', 'likes_count', 'can_display',
+            'author', 'views_count', 'can_display',
             'created_at', 'updated_at'
         ]
     
@@ -113,7 +111,7 @@ class AnnouncementCreateUpdateSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = [
             'title', 'summary', 'content', 'category',
-            'featured_image', 'priority', 'status', 
+            'featured_image', 'status', 
             'is_pinned', 'show_on_homepage', 
             'publish_date', 'expire_date'
         ]
@@ -153,7 +151,7 @@ class AnnouncementHomepageSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = [
             'id', 'title', 'summary', 'category_name', 'category_color',
-            'featured_image_url', 'priority', 'is_pinned', 'publish_date'
+            'featured_image_url', 'is_pinned', 'publish_date'
         ]
     
     def get_featured_image_url(self, obj):

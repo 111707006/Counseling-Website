@@ -65,149 +65,220 @@ export default function HomePage() {
     >
 
         <div className="relative max-w-4xl mx-auto">
-          {/* Title Text Overlay */}
-          <div className="absolute top-[8%] left-1/2 transform -translate-x-1/2 text-center">
-            <h1
-              className="font-bold mb-2"
+          {/* Scaled Container for clean-hero-design.png and all overlays */}
+          <div className="relative transform scale-110 origin-center">
+            {/* Title Text Overlay */}
+            <div className="absolute top-[8%] left-1/2 transform -translate-x-1/2 text-center">
+              <h1
+                className="font-bold mb-2"
+                style={{
+                  fontSize: 'calc(2rem + 5px)', // 3xl 約2rem，+5px
+                  color: '#000',
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+                  position: 'relative',
+                  top: '5px',
+                  left: '15px',
+                }}
+              >
+                張老師台北心理諮商所
+              </h1>
+            </div>
+
+            {/* Subtitle Text */}
+            <div className="absolute top-[15%] left-1/2 transform -translate-x-1/2 text-center">
+              <p
+                className="text-lg md:text-xl mb-1"
+                style={{
+                  color: '#000',
+                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+                }}
+              >
+                心理諮商是一次與自己的語言整理
+              </p>
+              <p
+                className="text-base md:text-lg"
+                style={{
+                  color: '#000',
+                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+                }}
+              >
+                找出自己真正的聲音...
+              </p>
+            </div>
+
+            {/* Additional descriptive text overlays */}
+            <div
+              className="absolute top-[26%] right-[30%] text-sm max-w-xs text-center"
               style={{
-                fontSize: 'calc(2rem + 5px)', // 3xl 約2rem，+5px
                 color: '#000',
-                textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-                position: 'relative',
-                top: '5px',
-                left: '15px',
+                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
               }}
             >
-              張老師台北心理諮商所
-            </h1>
-          </div>
-
-          {/* Subtitle Text */}
-          <div className="absolute top-[15%] left-1/2 transform -translate-x-1/2 text-center">
-            <p
-              className="text-lg md:text-xl mb-1"
+              <p>從一通電話開始，張老師開啟了陪伴的旅程。</p>
+              <p>台北諮商所秉持著關懷、專業與經驗的初心，</p>
+              <p>期盼在您需要的時刻，成為那個陪伴您任您的人。</p>
+            </div>
+            <div
+              className="absolute top-[38%] right-[15%] max-w-xs text-center"
               style={{
                 color: '#000',
+                fontSize: '1.2rem',
                 textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
               }}
             >
               心理諮商是一次與自己的語言整理
-            </p>
-            <p
-              className="text-base md:text-lg"
+            </div>
+            <div
+              className="absolute top-[44%] right-[26%]  max-w-xs text-center"
               style={{
-                color: '#000',
                 textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
               }}
             >
-              找出自己真正的聲音...
-            </p>
-          </div>
-
-          {/* Additional descriptive text overlays */}
-          <div
-            className="absolute top-[26%] right-[30%] text-sm max-w-xs text-center"
-            style={{
-              color: '#000',
-              textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-            }}
-          >
-            <p>從一通電話開始，張老師開啟了陪伴的旅程。</p>
-            <p>台北諮商所秉持著關懷、專業與經驗的初心，</p>
-            <p>期盼在您需要的時刻，成為那個陪伴您任您的人。</p>
-          </div>
-          <div
-            className="absolute top-[38%] right-[15%] max-w-xs text-center"
-            style={{
-              color: '#000',
-              fontSize: '1.2rem',
-              textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-            }}
-          >
-            心理諮商是一次與自己的語言整理
-          </div>
-          <div
-            className="absolute top-[44%] right-[26%]  max-w-xs text-center"
-            style={{
-              textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-            }}
-          >
-            
-            <p className="mb-2">所內聚集了專業且擁有豐富經驗的心理師，</p>
-            <p className="mb-2">無論您面臨什麼樣的困擾或需求，</p>
-            <p className="mb-2">我們都會成為您堅實的支持與幫助。</p>
-            <p>能成為您堅實的支持與幫助。</p>
-          </div>
-
-          <div
-            className="absolute top-[62%] left-[35%]  max-w-xs text-center"
-            style={{
-              fontSize: '1.1rem',
-              textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-            }}
-          >
-            <p className="mb-1">心理測驗，是一次與自己對話的起點。</p>
-            <p>在這裡，慢慢找到屬於你的聲音與步調...</p>
-          </div>
-
-          {/* 最新消息布告欄 - 小巧設計 */}
-          <div className="absolute bottom-[8%] left-1/2 transform -translate-x-1/2 w-full max-w-sm">
-            <div className="bg-brand-bg/95 backdrop-blur-sm rounded-lg shadow-lg border border-brand-orange/30 p-3">
-              {/* 布告欄標題 */}
-              <div className="text-center mb-2">
-                <h3 className="text-sm font-bold text-brand-text">📢 最新消息</h3>
-                <div className="w-12 h-0.5 bg-brand-text mx-auto mt-1"></div>
-              </div>
               
-              {/* 消息列表 */}
-              {announcementsLoading ? (
-                <div className="text-center py-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-text mx-auto"></div>
-                  <p className="text-xs text-gray-500 mt-1">載入中...</p>
+              <p className="mb-2">所內聚集了專業且擁有豐富經驗的心理師，</p>
+              <p className="mb-2">無論您面臨什麼樣的困擾或需求，</p>
+              <p className="mb-2">我們都會成為您堅實的支持與幫助。</p>
+              <p>能成為您堅實的支持與幫助。</p>
+            </div>
+
+            <div
+              className="absolute top-[62%] left-[35%]  max-w-xs text-center"
+              style={{
+                fontSize: '1.1rem',
+                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+              }}
+            >
+              <p className="mb-1">心理測驗，是一次與自己對話的起點。</p>
+              <p>在這裡，慢慢找到屬於你的聲音與步調...</p>
+            </div>
+
+            {/* 最新消息布告欄 - 小巧設計 */}
+            <div className="absolute bottom-[8%] left-1/2 transform -translate-x-1/2 w-full max-w-sm">
+              <div className="bg-brand-bg/95 backdrop-blur-sm rounded-lg shadow-lg border border-brand-orange/30 p-3">
+                {/* 布告欄標題 */}
+                <div className="text-center mb-2">
+                  <h3 className="text-sm font-bold text-brand-text">📢 最新消息</h3>
+                  <div className="w-12 h-0.5 bg-brand-text mx-auto mt-1"></div>
                 </div>
-              ) : (
-                <div className="space-y-1 text-left">
-                  {homepageAnnouncements?.recent_announcements?.slice(0, 2).map((announcement) => (
-                    <Link key={announcement.id} href={`/announcements/${announcement.id}`} className="block">
-                      <div className="flex items-start space-x-1 hover:bg-brand-orange/10 rounded p-1 transition-colors">
-                        <span className="text-brand-text text-xs mt-0.5 flex-shrink-0">•</span>
-                        <p className="text-brand-text/70 hover:text-brand-text cursor-pointer text-xs leading-tight">
-                          {announcement.title.length > 40 ? announcement.title.substring(0, 40) + '...' : announcement.title}
-                        </p>
+                
+                {/* 消息列表 */}
+                {announcementsLoading ? (
+                  <div className="text-center py-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-text mx-auto"></div>
+                    <p className="text-xs text-gray-500 mt-1">載入中...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-1 text-left">
+                    {homepageAnnouncements?.recent_announcements?.slice(0, 2).map((announcement) => (
+                      <Link key={announcement.id} href={`/announcements/${announcement.id}`} className="block">
+                        <div className="flex items-start space-x-1 hover:bg-brand-orange/10 rounded p-1 transition-colors">
+                          <span className="text-brand-text text-xs mt-0.5 flex-shrink-0">•</span>
+                          <p className="text-brand-text/70 hover:text-brand-text cursor-pointer text-xs leading-tight">
+                            {announcement.title.length > 40 ? announcement.title.substring(0, 40) + '...' : announcement.title}
+                          </p>
+                        </div>
+                      </Link>
+                    )) || (
+                      <div className="text-center py-1">
+                        <p className="text-gray-500 text-xs">暫無最新消息</p>
                       </div>
-                    </Link>
-                  )) || (
-                    <div className="text-center py-1">
-                      <p className="text-gray-500 text-xs">暫無最新消息</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                )}
+                
+                {/* 查看更多按鈕 */}
+                <div className="text-center mt-2 pt-1 border-t border-brand-orange/20">
+                  <Link href="/announcements">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="border-brand-orange/40 text-brand-text hover:bg-brand-orange/10 text-xs h-6 px-2"
+                    >
+                      查看更多
+                    </Button>
+                  </Link>
                 </div>
-              )}
-              
-              {/* 查看更多按鈕 */}
-              <div className="text-center mt-2 pt-1 border-t border-brand-orange/20">
-                <Link href="/announcements">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="border-brand-orange/40 text-brand-text hover:bg-brand-orange/10 text-xs h-6 px-2"
-                  >
-                    查看更多
-                  </Button>
-                </Link>
               </div>
             </div>
-          </div>
-          <Image
-            src="/images/clean-hero-design.png"
-            alt="張老師台北心理諮商所服務介紹"
-            width={1200}
-            height={1600}
-            className="w-full h-auto"
-            priority
-          />
 
-          {/* Social Media Icons - Right Side */}
+            {/* Main hero image */}
+            <Image
+              src="/images/clean-hero-design.png"
+              alt="張老師台北心理諮商所服務介紹"
+              width={1200}
+              height={1600}
+              className="w-full h-auto"
+              priority
+            />
+
+            {/* Clickable Hotspots */}
+           
+            {/* === [按鈕熱區] 立即預約（右上角人物） === */}
+            <Link href="/appointments/book">
+              <div className="absolute top-[19%] left-[70%] w-[25%] h-[15%] hover:bg-green-200/20 transition-colors duration-300 rounded-lg cursor-pointer group">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-green-800/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+                  點擊預約諮詢
+                </div>
+              </div>
+            </Link>
+
+            {/* 心理健康文章 - 左中人物 */}
+            <Link href="/articles">
+              <div className="absolute top-[35%] left-[8%] w-[22%] h-[18%] hover:bg-brand-orange/20 transition-colors duration-300 rounded-lg cursor-pointer group">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-orange/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+                  瀏覽健康文章
+                </div>
+              </div>
+            </Link>
+
+            {/* 心理師介紹 - 左下人物 */}
+            <Link href="/therapists">
+              <div className="absolute top-[40%] left-[73%] w-[25%] h-[20%] hover:bg-brand-orange/20 transition-colors duration-300 rounded-lg cursor-pointer group">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-orange/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+                  認識心理師團隊
+                </div>
+              </div>
+            </Link>
+
+            {/* 專業心理測驗 - 右下人物 */}
+            <Link href="/assessments">
+              <div className="absolute top-[52%] right-[70%] w-[25%] h-[18%] hover:bg-green-200/20 transition-colors duration-300 rounded-lg cursor-pointer group">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-green-800/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+                  開始心理測驗
+                </div>
+              </div>
+            </Link>
+
+            {/* 預約諮詢按鈕熱區 */}
+            <Link href="/appointments/book">
+              <div className="absolute top-[27%] left-[12%] w-[18%] h-[5%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
+               
+              </div>
+            </Link>
+
+            {/* 心理健康文章按鈕熱區 */}
+            <Link href="/articles">
+              <div className="absolute top-[37%] left-[30%] w-[20%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
+                
+              </div>
+            </Link>
+
+            {/* 心理師介紹按鈕熱區 */}
+            <Link href="/therapists">
+              <div className="absolute top-[53.5%] left-[47%] w-[21%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
+                
+              </div>
+            </Link>
+
+            {/* 專業心理測驗按鈕熱區 */}
+            <Link href="/assessments">
+              <div className="absolute top-[69%] left-[39%] w-[20%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
+                
+              </div>
+            </Link>
+          </div>
+
+          {/* Social Media Icons - Right Side - Outside scaled container */}
           <div className="fixed top-[20%] right-4 flex flex-col space-y-4 z-50">
             {/* Instagram */}
             <a
@@ -265,72 +336,6 @@ export default function HomePage() {
               </div>
             </a>
           </div>
-
-          {/* Clickable Hotspots */}
-         
-          {/* === [按鈕熱區] 立即預約（右上角人物） === */}
-          <Link href="/appointments/book">
-            <div className="absolute top-[19%] left-[70%] w-[25%] h-[15%] hover:bg-green-200/20 transition-colors duration-300 rounded-lg cursor-pointer group">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-green-800/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
-                點擊預約諮詢
-              </div>
-            </div>
-          </Link>
-
-          {/* 心理健康文章 - 左中人物 */}
-          <Link href="/articles">
-            <div className="absolute top-[35%] left-[8%] w-[22%] h-[18%] hover:bg-brand-orange/20 transition-colors duration-300 rounded-lg cursor-pointer group">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-orange/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
-                瀏覽健康文章
-              </div>
-            </div>
-          </Link>
-
-          {/* 心理師介紹 - 左下人物 */}
-          <Link href="/therapists">
-            <div className="absolute top-[40%] left-[73%] w-[25%] h-[20%] hover:bg-brand-orange/20 transition-colors duration-300 rounded-lg cursor-pointer group">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-brand-orange/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
-                認識心理師團隊
-              </div>
-            </div>
-          </Link>
-
-          {/* 專業心理測驗 - 右下人物 */}
-          <Link href="/assessments">
-            <div className="absolute top-[52%] right-[70%] w-[25%] h-[18%] hover:bg-green-200/20 transition-colors duration-300 rounded-lg cursor-pointer group">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-green-800/90 text-white p-2 rounded-lg text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
-                開始心理測驗
-              </div>
-            </div>
-          </Link>
-
-          {/* 預約諮詢按鈕熱區 */}
-          <Link href="/appointments/book">
-            <div className="absolute top-[27%] left-[12%] w-[18%] h-[5%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
-             
-            </div>
-          </Link>
-
-          {/* 心理健康文章按鈕熱區 */}
-          <Link href="/articles">
-            <div className="absolute top-[37%] left-[30%] w-[20%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
-              
-            </div>
-          </Link>
-
-          {/* 心理師介紹按鈕熱區 */}
-          <Link href="/therapists">
-            <div className="absolute top-[53.5%] left-[47%] w-[21%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
-              
-            </div>
-          </Link>
-
-          {/* 專業心理測驗按鈕熱區 */}
-          <Link href="/assessments">
-            <div className="absolute top-[69%] left-[39%] w-[20%] h-[4%] hover:bg-brand-orange/30 transition-colors duration-300 rounded-full cursor-pointer group">
-              
-            </div>
-          </Link>
         </div>
 
         {/* Mobile Navigation Cards - 只在小螢幕顯示 */}

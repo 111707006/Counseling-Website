@@ -43,10 +43,6 @@
             <li>
                 <strong>{{ therapist.name }}</strong> - {{ therapist.title }}
                 <br>專長：{{ therapist.get_specialties_display }}
-                <br>收費：
-                {% for mode, price in therapist.pricing.items %}
-                    {{ mode }}: NT${{ price }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
             </li>
             {% endfor %}
         </ul>
@@ -66,7 +62,6 @@
                         {% for therapist in available_therapists %}
                         <option value="{{ therapist.id }}">
                             {{ therapist.name }} - {{ therapist.title }}
-                            ({{ therapist.consultation_modes|join:", " }})
                         </option>
                         {% endfor %}
                     </select>
@@ -76,7 +71,7 @@
         
         <div class="submit-row">
             <input type="submit" value="分配心理師" class="default" />
-            <a href="{% url 'admin:appointments_appointment_change' appointment.id %}" class="button cancel-link">取消</a>
+            <a href="{% url 'admin:appointments_appointment_changelist' %}" class="button cancel-link">取消</a>
         </div>
     </form>
 </div>

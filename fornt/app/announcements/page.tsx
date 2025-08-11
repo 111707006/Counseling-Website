@@ -179,10 +179,6 @@ export default function AnnouncementsPage() {
                             <Eye className="h-4 w-4" />
                             {announcement.views_count}
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Heart className="h-4 w-4" />
-                            {announcement.likes_count}
-                          </div>
                         </div>
 
                         <Link href={`/announcements/${announcement.id}`}>

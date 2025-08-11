@@ -37,11 +37,6 @@ class Announcement(models.Model):
         ('archived', '已封存'),
     ]
     
-    PRIORITY_CHOICES = [
-        ('low', '一般'),
-        ('medium', '重要'),
-        ('high', '緊急'),
-    ]
     
     title = models.CharField(max_length=200, verbose_name="標題")
     summary = models.CharField(
@@ -68,12 +63,6 @@ class Announcement(models.Model):
         null=True,
         help_text="特色圖片，建議尺寸: 800x400px",
         verbose_name="特色圖片"
-    )
-    priority = models.CharField(
-        max_length=10,
-        choices=PRIORITY_CHOICES,
-        default='low',
-        verbose_name="重要程度"
     )
     status = models.CharField(
         max_length=10,
@@ -114,10 +103,6 @@ class Announcement(models.Model):
     views_count = models.PositiveIntegerField(
         default=0,
         verbose_name="瀏覽次數"
-    )
-    likes_count = models.PositiveIntegerField(
-        default=0,
-        verbose_name="按讚數"
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="建立時間")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="更新時間")

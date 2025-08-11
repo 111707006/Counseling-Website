@@ -54,7 +54,7 @@ class AppointmentDetailInline(admin.StackedInline):
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'get_user_info', 'get_therapist_name', 'consultation_type_display',
-        'status_display', 'get_price_display', 'created_at', 'confirmed_at',
+        'status_display', 'created_at', 'confirmed_at',
         'get_action_buttons'
     )
     
@@ -71,7 +71,7 @@ class AppointmentAdmin(admin.ModelAdmin):
     
     readonly_fields = (
         'user', 'created_at', 'confirmed_at', 'get_user_detail_info',
-        'get_preferred_periods_display', 'get_price_display'
+        'get_preferred_periods_display'
     )
     
     inlines = [AppointmentDetailInline, PreferredPeriodInline]
@@ -82,9 +82,6 @@ class AppointmentAdmin(admin.ModelAdmin):
         }),
         ('心理師分配', {
             'fields': ('therapist', 'slot')
-        }),
-        ('價格資訊', {
-            'fields': ('get_price_display', 'price')
         }),
         ('偏好時段', {
             'fields': ('get_preferred_periods_display',)
@@ -147,12 +144,6 @@ class AppointmentAdmin(admin.ModelAdmin):
         )
     status_display.short_description = "狀態"
     
-    def get_price_display(self, obj):
-        """價格顯示"""
-        if obj.price:
-            return f"NT$ {obj.price:,.0f}"
-        return "未設定"
-    get_price_display.short_description = "費用"
     
     def get_user_detail_info(self, obj):
         """顯示用戶詳細資訊"""
@@ -217,10 +208,6 @@ class AppointmentAdmin(admin.ModelAdmin):
                 therapist = get_object_or_404(TherapistProfile, id=therapist_id)
                 appointment.therapist = therapist
                 
-                # 更新價格
-                if appointment.therapist and appointment.consultation_type:
-                    pricing = appointment.therapist.pricing or {}
-                    appointment.price = pricing.get(appointment.consultation_type, Decimal('0.00'))
                 
                 appointment.save()
                 

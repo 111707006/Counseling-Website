@@ -21,7 +21,7 @@ class AnnouncementListView(generics.ListAPIView):
     serializer_class = AnnouncementListSerializer
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'priority', 'is_pinned']
+    filterset_fields = ['category', 'is_pinned']
     search_fields = ['title', 'summary']
     ordering_fields = ['publish_date', 'created_at', 'views_count']
     ordering = ['-is_pinned', '-publish_date']
@@ -143,21 +143,3 @@ def announcement_stats(request):
     })
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def increment_likes(request, announcement_id):
-    """增加公告點讚數"""
-    try:
-        announcement = get_object_or_404(Announcement, id=announcement_id, status='published')
-        announcement.likes_count += 1
-        announcement.save(update_fields=['likes_count'])
-        
-        return Response({
-            'success': True,
-            'likes_count': announcement.likes_count
-        })
-    except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_400_BAD_REQUEST)

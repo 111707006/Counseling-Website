@@ -46,17 +46,17 @@ class AnnouncementCategoryAdmin(admin.ModelAdmin):
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
     list_display = [
-        'title', 'category', 'status', 'priority', 
+        'title', 'category', 'status', 
         'is_pinned', 'show_on_homepage', 'author', 'views_count', 
         'publish_date', 'created_at'
     ]
     list_filter = [
-        'status', 'priority', 'category', 'is_pinned', 
+        'status', 'category', 'is_pinned', 
         'show_on_homepage', 'publish_date', 'created_at'
     ]
     search_fields = ['title', 'summary', 'content']
-    list_editable = ['status', 'priority', 'is_pinned', 'show_on_homepage']
-    readonly_fields = ['views_count', 'likes_count', 'created_at', 'updated_at']
+    list_editable = ['status', 'is_pinned', 'show_on_homepage']
+    readonly_fields = ['views_count', 'created_at', 'updated_at']
     
     fieldsets = (
         ('基本資訊', {
@@ -68,13 +68,13 @@ class AnnouncementAdmin(admin.ModelAdmin):
         }),
         ('發布設定', {
             'fields': (
-                'status', 'priority', 'is_pinned', 'show_on_homepage',
+                'status', 'is_pinned', 'show_on_homepage',
                 'publish_date', 'expire_date'
             ),
             'classes': ['collapse']
         }),
         ('統計資訊', {
-            'fields': ('views_count', 'likes_count', 'created_at', 'updated_at'),
+            'fields': ('views_count', 'created_at', 'updated_at'),
             'classes': ['collapse']
         })
     )
@@ -99,20 +99,6 @@ class AnnouncementAdmin(admin.ModelAdmin):
         )
     status_display.short_description = '狀態'
     
-    def priority_display(self, obj):
-        """優先級顯示"""
-        colors = {
-            'low': '#6c757d',
-            'medium': '#ffc107',
-            'high': '#dc3545'
-        }
-        color = colors.get(obj.priority, '#6c757d')
-        return format_html(
-            '<span style="color: {}; font-weight: bold;">{}</span>',
-            color,
-            obj.get_priority_display()
-        )
-    priority_display.short_description = '優先級'
     
     def save_model(self, request, obj, form, change):
         """保存時自動設定作者"""
