@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from therapists.models import AvailableSlot, TherapistProfile
 
 
@@ -60,6 +61,28 @@ class Appointment(models.Model):
     confirmed_at = models.DateTimeField(
         null=True, blank=True,
         help_text='確認時間'
+    )
+    
+    # 新增欄位
+    ROOM_CHOICES = [
+        ('room_2', '諮商室 2'),
+        ('room_3', '諮商室 3'),
+        ('room_4', '諮商室 4'),
+        ('room_5', '諮商室 5'),
+        ('online_room', '線上會議室'),
+    ]
+    
+    consultation_room = models.CharField(
+        max_length=20,
+        choices=ROOM_CHOICES,
+        blank=True,
+        null=True,
+        help_text='指定的諮商室'
+    )
+    
+    admin_notes = models.TextField(
+        blank=True,
+        help_text='管理員備註（僅管理員可見）'
     )
 
     def save(self, *args, **kwargs):
@@ -172,3 +195,90 @@ class AppointmentDetail(models.Model):
 
     def __str__(self):
         return f"{self.appointment.user.email} - 詳細資訊"
+
+
+class ScheduledEmail(models.Model):
+    """排程郵件模型"""
+    EMAIL_TYPE_CHOICES = [
+        ('reminder_24h_user', '24小時提醒(用戶)'),
+        ('reminder_24h_therapist', '24小時提醒(心理師)'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', '待發送'),
+        ('sent', '已發送'),
+        ('failed', '發送失敗'),
+        ('cancelled', '已取消'),
+    ]
+    
+    appointment = models.ForeignKey(
+        Appointment,
+        on_delete=models.CASCADE,
+        related_name='scheduled_emails',
+        help_text='對應的預約'
+    )
+    email_type = models.CharField(
+        max_length=30,
+        choices=EMAIL_TYPE_CHOICES,
+        help_text='郵件類型'
+    )
+    recipient_email = models.EmailField(
+        help_text='收件人郵箱'
+    )
+    scheduled_time = models.DateTimeField(
+        help_text='預定發送時間'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        help_text='郵件狀態'
+    )
+    sent_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text='實際發送時間'
+    )
+    error_message = models.TextField(
+        blank=True,
+        help_text='錯誤訊息（如果發送失敗）'
+    )
+    retry_count = models.IntegerField(
+        default=0,
+        help_text='重試次數'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['scheduled_time']
+        unique_together = ['appointment', 'email_type']
+    
+    def __str__(self):
+        return f"{self.get_email_type_display()} - {self.recipient_email} @ {self.scheduled_time}"
+    
+    @property
+    def is_ready_to_send(self):
+        """檢查是否準備好發送"""
+        return (
+            self.status == 'pending' and
+            self.scheduled_time <= timezone.now()
+        )
+    
+    def mark_as_sent(self):
+        """標記為已發送"""
+        self.status = 'sent'
+        self.sent_at = timezone.now()
+        self.save(update_fields=['status', 'sent_at'])
+    
+    def mark_as_failed(self, error_message=''):
+        """標記為發送失敗"""
+        self.status = 'failed'
+        self.error_message = error_message
+        self.retry_count += 1
+        self.save(update_fields=['status', 'error_message', 'retry_count'])
+    
+    def cancel(self):
+        """取消發送"""
+        if self.status == 'pending':
+            self.status = 'cancelled'
+            self.save(update_fields=['status'])

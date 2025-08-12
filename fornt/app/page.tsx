@@ -338,48 +338,10 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Mobile Navigation Cards - 只在小螢幕顯示 */}
-        <div className="md:hidden mt-8 grid grid-cols-2 gap-4">
-          <Link
-            href="/appointments/book"
-            className="bg-brand-orange/80 hover:bg-brand-orange p-4 rounded-lg text-center transition-colors"
-          >
-            <div className="text-2xl mb-2">📞</div>
-            <div className="text-brand-text font-semibold">預約諮詢</div>
-          </Link>
-          <Link
-            href="/articles"
-            className="bg-green-200 hover:bg-green-300 p-4 rounded-lg text-center transition-colors"
-          >
-            <div className="text-2xl mb-2">📚</div>
-            <div className="text-green-800 font-semibold">心理健康文章</div>
-          </Link>
-          <Link
-            href="/therapists"
-            className="bg-green-200 hover:bg-green-300 p-4 rounded-lg text-center transition-colors"
-          >
-            <div className="text-2xl mb-2">👥</div>
-            <div className="text-green-800 font-semibold">心理師介紹</div>
-          </Link>
-          <Link
-            href="/assessments"
-            className="bg-brand-orange/80 hover:bg-brand-orange p-4 rounded-lg text-center transition-colors"
-          >
-            <div className="text-2xl mb-2">📋</div>
-            <div className="text-brand-text font-semibold">專業心理測驗</div>
-          </Link>
-          <Link
-            href="/announcements"
-            className="bg-gray-200 hover:bg-gray-300 p-4 rounded-lg text-center transition-colors col-span-2"
-          >
-            <div className="text-2xl mb-2">📢</div>
-            <div className="text-gray-800 font-semibold">最新消息</div>
-          </Link>
-        </div>
       </section>
 
       {/* Counseling Room Environment Section */}
-      <section className="py-12">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-black text-center mb-8">諮商室環境</h2>

@@ -46,7 +46,12 @@
                     <td>{{ period.date }}</td>
                     <td>{{ period.get_period_display }}</td>
                     <td>
-                        <button type="button" class="button small" onclick="selectPreferredTime('{{ period.date }}', '{{ period.period }}')">
+                        <button type="button" 
+                                class="button small" 
+                                onclick="selectPreferredTime('{{ period.date|date:'Y-m-d' }}', '{{ period.period }}')"
+                                data-date="{{ period.date|date:'Y-m-d' }}"
+                                data-period="{{ period.period }}"
+                                title="點擊設定此時段為預約時間">
                             選擇此時段
                         </button>
                     </td>
@@ -82,6 +87,8 @@
 
 <script>
 function selectPreferredTime(date, period) {
+    console.log('selectPreferredTime called with:', date, period);
+    
     // 根據時段設定建議時間
     let time = '';
     switch(period) {
@@ -98,17 +105,71 @@ function selectPreferredTime(date, period) {
             time = '09:00';
     }
     
-    // 設定日期時間輸入框的值
+    console.log('Calculated time:', time);
+    
+    // 設定日期時間輸入框的值 (日期已經是ISO格式 YYYY-MM-DD)
     const datetimeInput = document.getElementById('confirmed_datetime');
-    datetimeInput.value = date + 'T' + time;
+    if (datetimeInput) {
+        const dateTimeValue = date + 'T' + time;
+        console.log('Setting datetime input to:', dateTimeValue);
+        datetimeInput.value = dateTimeValue;
+        
+        // 觸發change事件以確保表單知道值已改變
+        datetimeInput.dispatchEvent(new Event('change'));
+        
+        // 視覺回饋：輸入框短暫變綠
+        datetimeInput.style.backgroundColor = '#e6ffe6';
+        setTimeout(() => {
+            datetimeInput.style.backgroundColor = '';
+        }, 1000);
+        
+        console.log('Datetime input value successfully set to:', datetimeInput.value);
+        
+        // 滾動到輸入框位置
+        datetimeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // 聚焦到輸入框
+        datetimeInput.focus();
+    } else {
+        console.error('confirmed_datetime input not found!');
+    }
 }
 
-// 設定最小日期為今天
+// 設定最小日期為今天並添加事件監聽器
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up datetime input...');
+    
     const now = new Date();
     const today = now.toISOString().slice(0, 16);
-    document.getElementById('confirmed_datetime').min = today;
+    const datetimeInput = document.getElementById('confirmed_datetime');
+    
+    if (datetimeInput) {
+        datetimeInput.min = today;
+        console.log('Set min datetime to:', today);
+    } else {
+        console.error('confirmed_datetime input not found during DOMContentLoaded!');
+    }
+    
+    // 為所有按鈕添加事件監聽器作為備用方案
+    const buttons = document.querySelectorAll('button[data-date][data-period]');
+    console.log('Found', buttons.length, 'time selection buttons');
+    
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const date = this.dataset.date;
+            const period = this.dataset.period;
+            console.log('Button clicked via event listener:', date, period);
+            selectPreferredTime(date, period);
+        });
+    });
 });
+
+// 測試函數 - 可在瀏覽器控制台調用
+function testSelectTime() {
+    console.log('Testing selectPreferredTime function...');
+    selectPreferredTime('2024-01-15', 'afternoon');
+}
 </script>
 
 <style>

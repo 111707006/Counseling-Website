@@ -8,7 +8,8 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from decimal import Decimal
 
-from .models import Appointment, PreferredPeriod, AppointmentDetail
+from .models import Appointment, PreferredPeriod, AppointmentDetail, ScheduledEmail
+from .forms import AppointmentAdminForm
 from therapists.models import TherapistProfile, AvailableSlot
 from .notifications import (
     send_appointment_confirmed_notification,
@@ -52,19 +53,20 @@ class AppointmentDetailInline(admin.StackedInline):
 
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
+    form = AppointmentAdminForm
     list_display = (
         'id', 'get_user_info', 'get_therapist_name', 'consultation_type_display',
-        'status_display', 'created_at', 'confirmed_at',
+        'get_room_display', 'status_display', 'created_at', 'confirmed_at',
         'get_action_buttons'
     )
     
     list_filter = (
-        'status', 'consultation_type', 'therapist', 'created_at'
+        'status', 'consultation_type', 'consultation_room', 'therapist', 'created_at'
     )
     
     search_fields = (
         'user__email', 'detail__name', 'detail__phone', 
-        'therapist__name', 'detail__main_concerns'
+        'therapist__name', 'detail__main_concerns', 'admin_notes'
     )
     
     ordering = ('-created_at',)
@@ -83,11 +85,17 @@ class AppointmentAdmin(admin.ModelAdmin):
         ('心理師分配', {
             'fields': ('therapist', 'slot')
         }),
+        ('諮商安排', {
+            'fields': ('consultation_room', 'admin_notes'),
+            'classes': ('collapse',),
+        }),
         ('偏好時段', {
-            'fields': ('get_preferred_periods_display',)
+            'fields': ('get_preferred_periods_display',),
+            'classes': ('collapse',),
         }),
         ('時間記錄', {
-            'fields': ('created_at', 'confirmed_at')
+            'fields': ('created_at', 'confirmed_at'),
+            'classes': ('collapse',),
         }),
     )
     
@@ -95,15 +103,15 @@ class AppointmentAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
+            path('calendar/', 
+                 self.admin_site.admin_view(self.calendar_view),
+                 name='appointments_appointment_calendar'),
             path('<int:appointment_id>/assign_therapist/', 
                  self.admin_site.admin_view(self.assign_therapist_view),
                  name='appointments_appointment_assign_therapist'),
             path('<int:appointment_id>/confirm_time/',
                  self.admin_site.admin_view(self.confirm_time_view), 
                  name='appointments_appointment_confirm_time'),
-            path('<int:appointment_id>/update_status/',
-                 self.admin_site.admin_view(self.update_status_view),
-                 name='appointments_appointment_update_status'),
         ]
         return custom_urls + urls
     
@@ -144,6 +152,12 @@ class AppointmentAdmin(admin.ModelAdmin):
         )
     status_display.short_description = "狀態"
     
+    def get_room_display(self, obj):
+        """顯示諮商室"""
+        if obj.consultation_room:
+            return obj.get_consultation_room_display()
+        return '-'
+    get_room_display.short_description = "諮商室"
     
     def get_user_detail_info(self, obj):
         """顯示用戶詳細資訊"""
@@ -175,6 +189,10 @@ class AppointmentAdmin(admin.ModelAdmin):
         """顯示操作按鈕"""
         buttons = []
         
+        # 編輯預約按鈕
+        edit_url = reverse('admin:appointments_appointment_change', args=[obj.id])
+        buttons.append(f'<a href="{edit_url}" class="button">編輯預約</a>')
+        
         if obj.status == 'pending':
             # 分配心理師按鈕
             if not obj.therapist:
@@ -187,14 +205,49 @@ class AppointmentAdmin(admin.ModelAdmin):
                 confirm_url = reverse('admin:appointments_appointment_confirm_time',
                                     args=[obj.id])
                 buttons.append(f'<a href="{confirm_url}" class="button">確認時間</a>')
-            
-            # 狀態管理按鈕
-            status_url = reverse('admin:appointments_appointment_update_status',
-                               args=[obj.id])
-            buttons.append(f'<a href="{status_url}" class="button">管理狀態</a>')
         
         return format_html(" ".join(buttons))
     get_action_buttons.short_description = "操作"
+    
+    # ===== 自定義保存方法 =====
+    
+    def save_model(self, request, obj, form, change):
+        """當在編輯頁面保存時的自定義處理"""
+        # 如果是修改（不是新建）並且狀態有變化
+        if change and 'status' in form.changed_data:
+            old_status = Appointment.objects.get(pk=obj.pk).status
+            new_status = obj.status
+            
+            # 保存對象
+            super().save_model(request, obj, form, change)
+            
+            # 根據新狀態發送相應的通知郵件
+            try:
+                if new_status == 'rejected':
+                    send_appointment_rejected_notification(obj, "狀態已更新為拒絕")
+                    messages.success(request, f'預約狀態已更新為「{obj.get_status_display()}」，已發送通知郵件給用戶')
+                elif new_status == 'cancelled':
+                    send_appointment_cancelled_notification(obj)
+                    messages.success(request, f'預約狀態已更新為「{obj.get_status_display()}」，已發送通知郵件')
+                else:
+                    messages.success(request, f'預約狀態已更新為「{obj.get_status_display()}」')
+                    
+                # 如果拒絕或取消，釋放時段
+                if new_status in ['rejected', 'cancelled'] and obj.slot:
+                    obj.slot.is_booked = False
+                    obj.slot.save()
+                    obj.slot = None
+                    obj.save()
+                    
+                    # 取消排程的提醒郵件
+                    from .schedulers import cancel_appointment_reminders
+                    cancel_appointment_reminders(obj)
+                    
+            except Exception as e:
+                messages.warning(request, f'狀態更新成功，但郵件發送失敗: {e}')
+        else:
+            # 正常保存
+            super().save_model(request, obj, form, change)
     
     # ===== 自定義視圖 =====
     
@@ -302,8 +355,120 @@ class AppointmentAdmin(admin.ModelAdmin):
         
         return TemplateResponse(request, 'admin/appointments/confirm_time.html', context)
     
+    def calendar_view(self, request):
+        """日曆排程系統"""
+        from django.db.models import Q
+        from datetime import datetime, timedelta
+        import json
+        from django.core.serializers.json import DjangoJSONEncoder
+        
+        # 獲取篩選參數
+        therapist_filter = request.GET.get('therapist', '')
+        room_filter = request.GET.get('room', '')
+        consultation_type_filter = request.GET.get('consultation_type', '')
+        start_date = request.GET.get('start_date', '')
+        end_date = request.GET.get('end_date', '')
+        
+        # 基本查詢：只顯示已確認的預約
+        queryset = Appointment.objects.filter(status='confirmed').select_related(
+            'user', 'therapist', 'slot', 'detail'
+        )
+        
+        # 應用篩選條件
+        if therapist_filter:
+            queryset = queryset.filter(therapist_id=therapist_filter)
+        if room_filter:
+            queryset = queryset.filter(consultation_room=room_filter)
+        if consultation_type_filter:
+            queryset = queryset.filter(consultation_type=consultation_type_filter)
+        if start_date and end_date:
+            try:
+                start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+                end_dt = datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=1)
+                queryset = queryset.filter(slot__slot_time__range=[start_dt, end_dt])
+            except ValueError:
+                pass
+        
+        # 準備日曆事件數據
+        events = []
+        therapist_colors = {
+            # 為不同心理師分配顏色
+            'default': '#667eea'
+        }
+        
+        color_palette = [
+            '#667eea', '#764ba2', '#f093fb', '#f5576c', 
+            '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+            '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3'
+        ]
+        
+        therapists = TherapistProfile.objects.all()
+        for i, therapist in enumerate(therapists):
+            therapist_colors[str(therapist.id)] = color_palette[i % len(color_palette)]
+        
+        for appointment in queryset:
+            if appointment.slot and appointment.slot.slot_time:
+                # 計算結束時間（預設1小時）
+                start_time = appointment.slot.slot_time
+                end_time = start_time + timedelta(hours=1)
+                
+                # 獲取心理師顏色
+                therapist_id = str(appointment.therapist.id) if appointment.therapist else 'default'
+                color = therapist_colors.get(therapist_id, therapist_colors['default'])
+                
+                event = {
+                    'id': appointment.id,
+                    'title': f"{appointment.detail.name if hasattr(appointment, 'detail') and appointment.detail.name else appointment.user.email}",
+                    'start': start_time.isoformat(),
+                    'end': end_time.isoformat(),
+                    'backgroundColor': color,
+                    'borderColor': color,
+                    'extendedProps': {
+                        'appointmentId': appointment.id,
+                        'therapist': appointment.therapist.name if appointment.therapist else '未分配',
+                        'therapistId': appointment.therapist.id if appointment.therapist else None,
+                        'room': appointment.get_consultation_room_display() if appointment.consultation_room else '未分配',
+                        'phone': appointment.detail.phone if hasattr(appointment, 'detail') else '',
+                        'email': appointment.user.email,
+                        'consultationType': appointment.get_consultation_type_display(),
+                        'notes': appointment.admin_notes or '',
+                        'status': appointment.get_status_display()
+                    }
+                }
+                events.append(event)
+        
+        # 獲取篩選選項
+        therapists_list = TherapistProfile.objects.all()
+        room_choices = Appointment.ROOM_CHOICES
+        consultation_type_choices = Appointment.CONSULTATION_CHOICES
+        
+        context = {
+            'title': '預約日曆排程系統',
+            'events': json.dumps(events, cls=DjangoJSONEncoder),
+            'therapist_colors': json.dumps(therapist_colors),
+            'therapists': therapists_list,
+            'room_choices': room_choices,
+            'consultation_type_choices': consultation_type_choices,
+            'filters': {
+                'therapist': therapist_filter,
+                'room': room_filter,
+                'consultation_type': consultation_type_filter,
+                'start_date': start_date,
+                'end_date': end_date
+            },
+            'opts': self.model._meta,
+            'has_view_permission': True,
+            'has_add_permission': True,
+            'has_change_permission': True,
+        }
+        
+        return TemplateResponse(request, 'admin/appointments/calendar.html', context)
+    
     def update_status_view(self, request, appointment_id):
         """狀態管理功能"""
+        print(f"DEBUG: Accessing update_status_view for appointment_id: {appointment_id}")
+        print(f"DEBUG: Request method: {request.method}")
+        print(f"DEBUG: User: {request.user}")
         appointment = get_object_or_404(Appointment, id=appointment_id)
         
         if request.method == 'POST':
@@ -401,3 +566,80 @@ class AppointmentDetailAdmin(admin.ModelAdmin):
             'fields': ('specialty_requested',)
         }),
     )
+
+
+@admin.register(ScheduledEmail) 
+class ScheduledEmailAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'get_appointment_info', 'email_type_display', 'recipient_email',
+        'scheduled_time', 'status_display', 'sent_at', 'retry_count'
+    )
+    
+    list_filter = (
+        'email_type', 'status', 'scheduled_time', 'created_at'
+    )
+    
+    search_fields = (
+        'appointment__user__email', 'appointment__detail__name', 
+        'recipient_email', 'appointment__id'
+    )
+    
+    readonly_fields = (
+        'appointment', 'email_type', 'recipient_email', 'scheduled_time',
+        'sent_at', 'error_message', 'retry_count', 'created_at', 'updated_at'
+    )
+    
+    ordering = ('-scheduled_time',)
+    
+    fieldsets = (
+        ('基本資訊', {
+            'fields': ('appointment', 'email_type', 'recipient_email')
+        }),
+        ('排程資訊', {
+            'fields': ('scheduled_time', 'status')
+        }),
+        ('執行結果', {
+            'fields': ('sent_at', 'error_message', 'retry_count')
+        }),
+        ('時間記錄', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+    
+    def get_appointment_info(self, obj):
+        """顯示預約資訊"""
+        appointment = obj.appointment
+        if hasattr(appointment, 'detail') and appointment.detail.name:
+            return f"#{appointment.id} - {appointment.detail.name}"
+        return f"#{appointment.id} - {appointment.user.email}"
+    get_appointment_info.short_description = "預約資訊"
+    
+    def email_type_display(self, obj):
+        """郵件類型顯示"""
+        return obj.get_email_type_display()
+    email_type_display.short_description = "郵件類型"
+    
+    def status_display(self, obj):
+        """狀態顯示（帶顏色）"""
+        colors = {
+            'pending': 'orange',
+            'sent': 'green',
+            'failed': 'red',
+            'cancelled': 'gray'
+        }
+        color = colors.get(obj.status, 'black')
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            color, obj.get_status_display()
+        )
+    status_display.short_description = "狀態"
+    
+    def get_queryset(self, request):
+        """優化查詢效能"""
+        return super().get_queryset(request).select_related(
+            'appointment', 'appointment__user', 'appointment__detail'
+        )
+    
+    def has_add_permission(self, request):
+        """禁止手動添加排程郵件"""
+        return False

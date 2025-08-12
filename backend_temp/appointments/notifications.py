@@ -1,8 +1,8 @@
 # 導入Django郵件發送功能
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 # 導入Django設定檔，用於讀取郵件配置
 from django.conf import settings
-# 導入模板渲染器（未來可用於HTML郵件模板）
+# 導入模板渲染器（用於HTML郵件模板）
 from django.template.loader import render_to_string
 # 導入HTML標籤去除功能（用於從HTML模板生成純文字版本）
 from django.utils.html import strip_tags
@@ -18,16 +18,10 @@ def send_appointment_created_notification(appointment: Appointment):
     # 設定郵件主旨，包含申請人Email以便識別
     subject = f'新預約申請 - {appointment.user.email}'
     
-    # 決定郵件收件人：優先發送給指定心理師，否則發送給管理員
-    if appointment.therapist and appointment.therapist.user and appointment.therapist.user.email:
-        # 如果預約有指定心理師且該心理師有綁定用戶帳號和Email
-        recipient_list = [appointment.therapist.user.email]  # 收件人列表
-        recipient_name = appointment.therapist.name          # 收件人姓名（用於郵件內容）
-    else:
-        # 如果沒有指定心理師，則發送給系統管理員
-        # 使用getattr安全地從settings取得ADMIN_EMAIL，如果沒設定則使用預設值
-        recipient_list = [getattr(settings, 'ADMIN_EMAIL', 'admin@example.com')]
-        recipient_name = "管理員"  # 管理員的顯示名稱
+    # 預約申請建立時統一發送給管理員處理
+    # 不發送給指定心理師，由管理員統一分配和處理
+    recipient_list = [getattr(settings, 'ADMIN_EMAIL', 'admin@example.com')]
+    recipient_name = "管理員"
     
     # 準備偏好時間資料，將資料庫中的時段轉換為易讀格式
     preferred_periods = []  # 儲存處理後的偏好時間列表
@@ -99,14 +93,35 @@ def send_appointment_created_notification(appointment: Appointment):
     
     # 嘗試發送郵件
     try:
-        send_mail(
-            subject=subject,      # 郵件主旨
-            message=message,      # 郵件內容
-            # 從settings安全地取得發件人Email，沒設定則使用預設值
+        # 準備模板上下文
+        template_context = {
+            'appointment': appointment,
+            'recipient_name': recipient_name,
+            'preferred_periods': preferred_periods,
+            'user_detail': appointment.detail if hasattr(appointment, 'detail') else None,
+            'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商',
+            'admin_url': 'http://localhost:8000/admin'
+        }
+        
+        # 渲染HTML模板
+        html_content = render_to_string('emails/appointment_created_admin.html', template_context)
+        # 從HTML生成純文字版本
+        text_content = strip_tags(html_content)
+        
+        # 創建郵件物件
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,  # 純文字版本
             from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
-            recipient_list=recipient_list,  # 收件人列表
-            fail_silently=False,           # 發送失敗時拋出異常而不是靜默失敗
+            to=recipient_list
         )
+        
+        # 添加HTML版本
+        email.attach_alternative(html_content, "text/html")
+        
+        # 發送郵件
+        email.send(fail_silently=False)
+        
         # 發送成功，印出日誌
         print(f"預約通知郵件已發送給: {', '.join(recipient_list)}")
         return True  # 回傳成功
@@ -190,17 +205,74 @@ def send_appointment_user_confirmation(appointment: Appointment):
     
     # 嘗試發送郵件
     try:
-        send_mail(
+        # 準備模板上下文
+        template_context = {
+            'appointment': appointment,
+            'preferred_periods': preferred_periods,
+            'user_detail': appointment.detail if hasattr(appointment, 'detail') else None,
+            'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商'
+        }
+        
+        # 渲染HTML模板
+        html_content = render_to_string('emails/appointment_created_user.html', template_context)
+        # 從HTML生成純文字版本
+        text_content = strip_tags(html_content)
+        
+        # 創建郵件物件
+        email = EmailMultiAlternatives(
             subject=subject,
-            message=message,
+            body=text_content,  # 純文字版本
             from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@mindcare.com'),
-            recipient_list=[appointment.user.email],
-            fail_silently=False,
+            to=[appointment.user.email]
         )
+        
+        # 添加HTML版本
+        email.attach_alternative(html_content, "text/html")
+        
+        # 發送郵件
+        email.send(fail_silently=False)
+        
         print(f"用戶確認郵件已發送給: {appointment.user.email}")
         return True
     except Exception as e:
         print(f"用戶確認郵件發送失敗: {e}")
+        return False
+
+def send_therapist_appointment_confirmed(appointment: Appointment, confirmed_datetime):
+    """
+    預約確認時發送通知給指定心理師
+    """
+    if not (appointment.therapist and appointment.therapist.user and appointment.therapist.user.email):
+        return False
+    
+    subject = f'預約確認通知 - {appointment.user.email}'
+    
+    try:
+        template_context = {
+            'appointment': appointment,
+            'confirmed_datetime': confirmed_datetime,
+            'therapist_name': appointment.therapist.name,
+            'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商'
+        }
+        
+        # 這裡可以創建專門的心理師通知模板
+        html_content = render_to_string('emails/appointment_confirmed.html', template_context)
+        text_content = strip_tags(html_content)
+        
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
+            to=[appointment.therapist.user.email]
+        )
+        
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=False)
+        
+        print(f"心理師確認通知已發送給: {appointment.therapist.user.email}")
+        return True
+    except Exception as e:
+        print(f"心理師確認通知發送失敗: {e}")
         return False
 
 def send_appointment_confirmed_notification(appointment: Appointment, confirmed_datetime):
@@ -230,14 +302,32 @@ def send_appointment_confirmed_notification(appointment: Appointment, confirmed_
     
     # 嘗試發送確認通知給來談者
     try:
-        send_mail(
-            subject=subject,                    # 郵件主旨
-            message=message,                    # 郵件內容
-            # 從settings取得發件人Email
+        # 準備模板上下文
+        template_context = {
+            'appointment': appointment,
+            'confirmed_datetime': confirmed_datetime,
+            'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商'
+        }
+        
+        # 渲染HTML模板
+        html_content = render_to_string('emails/appointment_confirmed.html', template_context)
+        # 從HTML生成純文字版本
+        text_content = strip_tags(html_content)
+        
+        # 創建郵件物件
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,  # 純文字版本
             from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
-            recipient_list=[appointment.user.email],  # 收件人：預約申請人
-            fail_silently=False,                     # 發送失敗時拋出異常
+            to=[appointment.user.email]
         )
+        
+        # 添加HTML版本
+        email.attach_alternative(html_content, "text/html")
+        
+        # 發送郵件
+        email.send(fail_silently=False)
+        
         # 發送成功日誌
         print(f"預約確認通知已發送給: {appointment.user.email}")
         return True  # 回傳成功
@@ -297,14 +387,32 @@ def send_appointment_rejected_notification(appointment: Appointment, rejection_r
     
     # 嘗試發送拒絕通知給來談者
     try:
-        send_mail(
-            subject=subject,                          # 郵件主旨
-            message=message,                          # 郵件內容
-            # 從settings取得發件人Email
+        # 準備模板上下文
+        template_context = {
+            'appointment': appointment,
+            'rejection_reason': rejection_reason,
+            'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商'
+        }
+        
+        # 渲染HTML模板
+        html_content = render_to_string('emails/appointment_rejected.html', template_context)
+        # 從HTML生成純文字版本
+        text_content = strip_tags(html_content)
+        
+        # 創建郵件物件
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,  # 純文字版本
             from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
-            recipient_list=[appointment.user.email],  # 收件人：預約申請人
-            fail_silently=False,                     # 發送失敗時拋出異常
+            to=[appointment.user.email]
         )
+        
+        # 添加HTML版本
+        email.attach_alternative(html_content, "text/html")
+        
+        # 發送郵件
+        email.send(fail_silently=False)
+        
         # 發送成功日誌
         print(f"預約拒絕通知已發送給: {appointment.user.email}")
         return True  # 回傳成功
@@ -351,14 +459,33 @@ def send_appointment_cancelled_notification(appointment: Appointment):
     
     # 嘗試發送取消通知
     try:
-        send_mail(
-            subject=subject,                    # 郵件主旨
-            message=message,                    # 郵件內容
-            # 從settings取得發件人Email
+        # 準備模板上下文
+        template_context = {
+            'appointment': appointment,
+            'recipient_name': recipient_name,
+            'consultation_type_display': '線上諮商' if appointment.consultation_type == 'online' else '實體諮商',
+            'admin_url': 'http://localhost:8000/admin'
+        }
+        
+        # 渲染HTML模板
+        html_content = render_to_string('emails/appointment_cancelled_admin.html', template_context)
+        # 從HTML生成純文字版本
+        text_content = strip_tags(html_content)
+        
+        # 創建郵件物件
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,  # 純文字版本
             from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'),
-            recipient_list=recipient_list,      # 收件人列表
-            fail_silently=False,               # 發送失敗時拋出異常
+            to=recipient_list
         )
+        
+        # 添加HTML版本
+        email.attach_alternative(html_content, "text/html")
+        
+        # 發送郵件
+        email.send(fail_silently=False)
+        
         # 發送成功日誌
         print(f"預約取消通知已發送給: {', '.join(recipient_list)}")
         return True  # 回傳成功

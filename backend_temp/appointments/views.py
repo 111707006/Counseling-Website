@@ -235,6 +235,13 @@ class AppointmentViewSet(
                 # 通知發送失敗不影響狀態更新，只記錄錯誤
                 print(f"拒絕通知發送失敗: {e}")
             
+            # 取消排程的提醒郵件
+            try:
+                from .schedulers import cancel_appointment_reminders
+                cancel_appointment_reminders(appointment)
+            except Exception as e:
+                print(f"取消郵件排程失敗: {e}")
+            
             # 如果預約有確認的時段，釋放該時段
             if appointment.slot:
                 appointment.slot.is_booked = False  # 標記時段為可用
@@ -314,7 +321,22 @@ class AppointmentViewSet(
                 send_appointment_confirmed_notification(appointment, confirmed_datetime)
             except Exception as e:
                 # 郵件發送失敗不影響預約確認，只記錄錯誤
-                print(f"確認通知發送失敗: {e}")
+                print(f"用戶確認通知發送失敗: {e}")
+            
+            # 發送確認通知給心理師
+            try:
+                from .notifications import send_therapist_appointment_confirmed
+                send_therapist_appointment_confirmed(appointment, confirmed_datetime)
+            except Exception as e:
+                print(f"心理師確認通知發送失敗: {e}")
+            
+            # 安排提醒郵件
+            try:
+                from .schedulers import schedule_appointment_reminders
+                schedule_appointment_reminders(appointment)
+            except Exception as e:
+                # 排程失敗不影響預約確認，只記錄錯誤
+                print(f"郵件排程失敗: {e}")
             
             # 回傳成功響應
             return Response({

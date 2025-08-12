@@ -1,0 +1,156 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}預約申請通知 - 心理諮商預約系統{% endblock %}
+
+{% block header_title %}📝 預約申請通知{% endblock %}
+{% block header_subtitle %}<p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">關於您的預約申請處理結果</p>{% endblock %}
+
+{% block greeting %}
+<p>親愛的 {{ appointment.detail.name }} 先生/小姐，您好：</p>
+{% endblock %}
+
+{% block content %}
+<div class="alert warning">
+    <strong>📋 預約申請處理通知</strong><br>
+    很抱歉，經過評估後，我們暫時無法安排您申請的預約時段。詳細說明如下：
+</div>
+{% endblock %}
+
+{% block appointment_details %}
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">您的預約申請</h3>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">預約編號：</span>
+        <span class="detail-value"><strong style="color: #667eea;">#{{ appointment.id }}</strong></span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">申請人姓名：</span>
+        <span class="detail-value">{{ appointment.detail.name }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">指定心理師：</span>
+        <span class="detail-value">{{ appointment.therapist.name }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">申請時間：</span>
+        <span class="detail-value">{{ appointment.created_at|date:"Y年m月d日 H:i" }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">您的偏好時段：</span>
+        <span class="detail-value">
+            {% for period in appointment.preferred_periods.all %}
+                {{ period.date|date:"m/d" }}
+                {% if period.period == 'morning' %}上午
+                {% elif period.period == 'afternoon' %}下午
+                {% elif period.period == 'evening' %}晚上
+                {% endif %}
+                {% if not forloop.last %} • {% endif %}
+            {% endfor %}
+        </span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">處理狀態：</span>
+        <span class="detail-value">
+            <span style="background-color: #fed7d7; color: #9b2c2c; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                📋 需要重新安排
+            </span>
+        </span>
+    </div>
+</div>
+
+{% if rejection_reason %}
+<div class="appointment-card" style="border-left: 4px solid #f56565;">
+    <h3 style="margin-top: 0; color: #e53e3e;">說明原因</h3>
+    <div style="background-color: white; padding: 15px; border-radius: 6px; border: 1px solid #fed7d7;">
+        {{ rejection_reason }}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block actions %}
+<div style="text-align: center; margin: 30px 0;">
+    <p><strong>🔄 您可以選擇以下方式：</strong></p>
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
+        <a href="mailto:tpeap01@cyc.tw?subject=重新預約申請 - #{{ appointment.id }}" class="button">重新申請預約</a>
+        <a href="mailto:tpeap01@cyc.tw?subject=預約諮詢 - #{{ appointment.id }}" class="button secondary">諮詢其他時段</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_info %}
+<div class="divider"></div>
+
+<div style="display: flex; gap: 20px; margin: 20px 0;">
+    <div style="flex: 1; background-color: #f0fff4; padding: 20px; border-radius: 6px; border: 1px solid #9ae6b4;">
+        <h4 style="margin-top: 0; color: #22543d;">💡 建議做法</h4>
+        <ul style="margin: 10px 0; padding-left: 20px; color: #22543d; line-height: 1.6;">
+            <li>提供更多可選時段</li>
+            <li>考慮其他心理師</li>
+            <li>調整預約頻率</li>
+            <li>選擇線上諮商</li>
+        </ul>
+    </div>
+    <div style="flex: 1; background-color: #ebf8ff; padding: 20px; border-radius: 6px; border: 1px solid #90cdf4;">
+        <h4 style="margin-top: 0; color: #2a4365;">🤝 我們的承諾</h4>
+        <p style="color: #2a4365; line-height: 1.6; margin: 0;">
+            我們會盡力為您安排合適的時段，<br>
+            請不要氣餒，讓我們一起<br>
+            找到最適合的安排方式。
+        </p>
+    </div>
+</div>
+
+<div class="alert info">
+    <strong>📞 立即行動</strong><br>
+    <div style="margin-top: 15px; line-height: 1.8;">
+        <div><strong>1. 重新申請：</strong> 提供更多可選時段，增加成功機會</div>
+        <div><strong>2. 電話諮詢：</strong> 直接討論可行的安排方案</div>
+        <div><strong>3. 彈性時段：</strong> 考慮週間或非熱門時段</div>
+    </div>
+</div>
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #667eea;">
+    <h4 style="margin-top: 0; color: #667eea;">🌟 為什麼選擇我們？</h4>
+    <p style="margin-bottom: 10px; color: #555;">儘管這次無法立即安排，但請相信：</p>
+    <ul style="margin: 10px 0; padding-left: 20px; color: #555; line-height: 1.6;">
+        <li>我們有經驗豐富的專業團隊</li>
+        <li>提供多元化的諮商方式</li>
+        <li>致力於找到最適合您的安排</li>
+        <li>重視每一位來談者的需求</li>
+    </ul>
+</div>
+
+<div class="alert warning">
+    <strong>⚠️ 重要提醒</strong><br>
+    • 此次申請結果不代表拒絕您的服務需求<br>
+    • 重新申請時可提供更多時段選擇<br>
+    • 如有急迫需求，請立即電話聯繫<br>
+    • 預約編號 <strong>#{{ appointment.id }}</strong> 請保留，後續聯繫時需要
+</div>
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 8px; margin: 30px 0; text-align: center;">
+    <h3 style="margin: 0 0 15px 0;">💪 不要放棄</h3>
+    <p style="margin: 0; font-size: 16px; opacity: 0.9;">
+        每一個人都值得獲得專業的心理健康支持。<br>
+        讓我們一起努力，找到最適合您的諮商安排！
+    </p>
+</div>
+{% endblock %}
+
+{% block footer %}
+<p>感謝您的理解與耐心，我們會持續為您提供協助。</p>
+<div class="footer-links">
+    <a href="mailto:tpeap01@cyc.tw">立即聯繫</a>
+    <a href="#">重新預約</a>
+    <a href="#">諮商說明</a>
+    <a href="#">常見問題</a>
+</div>
+<p>&copy; 2025 心理諮商預約系統. 保留所有權利。</p>
+{% endblock %}

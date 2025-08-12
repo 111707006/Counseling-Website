@@ -71,7 +71,8 @@
       "Bash(dir:*)",
       "Bash(mv:*)",
       "Bash(start \"\" \"test_api_call.html\")",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

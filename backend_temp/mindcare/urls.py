@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/', include('articles.urls')),
     path('api/auth/token/', obtain_auth_token),  # 登入 API
     path('ckeditor/', include('ckeditor_uploader.urls')),  # CKEditor 上傳
+    path('analytics/', include('analytics.urls')),  # 網站分析
 ]
 
 # 開發環境下提供媒體檔案服務

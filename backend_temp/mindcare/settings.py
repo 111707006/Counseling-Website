@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'assessments',
     'articles',
     'announcements',
+    'analytics',
 ]
 
 # ✅ 中介軟體（React 跨來源支援、Admin 正常啟動所需）
