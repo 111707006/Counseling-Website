@@ -1,0 +1,146 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="content-main">
+    <h1>{{ title }}</h1>
+    
+    <!-- 預約基本資訊 -->
+    <div class="module aligned wide">
+        <h2>預約資訊</h2>
+        <div class="form-row">
+            <div>
+                <strong>用戶：</strong> 
+                {% if appointment.detail.name %}
+                    {{ appointment.detail.name }} ({{ appointment.user.email }})
+                {% else %}
+                    {{ appointment.user.email }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-row">
+            <div><strong>心理師：</strong> {{ appointment.therapist.name|default:"待分配" }}</div>
+        </div>
+        <div class="form-row">
+            <div><strong>當前狀態：</strong> 
+                <span class="status-{{ appointment.status }}">{{ appointment.get_status_display }}</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div><strong>諮商方式：</strong> {{ appointment.get_consultation_type_display }}</div>
+        </div>
+        {% if appointment.slot %}
+        <div class="form-row">
+            <div><strong>確認時間：</strong> {{ appointment.slot.slot_time }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 預約詳細資訊 -->
+    {% if appointment.detail %}
+    <div class="module aligned wide">
+        <h2>預約詳細資訊</h2>
+        <div class="form-row">
+            <div><strong>主要關注議題：</strong> {{ appointment.detail.main_concerns }}</div>
+        </div>
+        {% if appointment.detail.special_needs %}
+        <div class="form-row">  
+            <div><strong>特殊需求：</strong> {{ appointment.detail.special_needs }}</div>
+        </div>
+        {% endif %}
+        <div class="form-row">
+            <div><strong>緊急程度：</strong> {{ appointment.detail.get_urgency_display }}</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 狀態更新表單 -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="module aligned wide">
+            <h2>更新狀態</h2>
+            <div class="form-row">
+                <div>
+                    <label for="status">新狀態：</label>
+                    <select name="status" id="status" required>
+                        <option value="">請選擇狀態</option>
+                        {% for value, display in status_choices %}
+                        <option value="{{ value }}" {% if value == appointment.status %}selected{% endif %}>
+                            {{ display }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 拒絕原因 -->
+            <div class="form-row" id="rejection-reason-row" style="display: none;">
+                <div>
+                    <label for="rejection_reason">拒絕原因：</label>
+                    <textarea name="rejection_reason" id="rejection_reason" rows="3" cols="50"
+                              placeholder="請說明拒絕預約的原因，此訊息將發送給用戶"></textarea>
+                    <p class="help">此原因將在拒絕通知郵件中發送給用戶</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="submit-row">
+            <input type="submit" value="更新狀態" class="default" />
+            <a href="{% url 'admin:appointments_appointment_changelist' %}" class="button cancel-link">取消</a>
+        </div>
+    </form>
+</div>
+
+<script>
+// 當選擇狀態為"拒絕"時顯示拒絕原因輸入框
+document.getElementById('status').addEventListener('change', function() {
+    const rejectionReasonRow = document.getElementById('rejection-reason-row');
+    const rejectionReasonTextarea = document.getElementById('rejection_reason');
+    
+    if (this.value === 'rejected') {
+        rejectionReasonRow.style.display = 'block';
+        rejectionReasonTextarea.required = true;
+    } else {
+        rejectionReasonRow.style.display = 'none';
+        rejectionReasonTextarea.required = false;
+        rejectionReasonTextarea.value = '';
+    }
+});
+
+// 頁面載入時檢查當前狀態
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('status');
+    if (statusSelect.value === 'rejected') {
+        document.getElementById('rejection-reason-row').style.display = 'block';
+        document.getElementById('rejection_reason').required = true;
+    }
+});
+
+// 確認操作
+document.querySelector('form').addEventListener('submit', function(e) {
+    const selectedStatus = document.getElementById('status').value;
+    const statusText = document.getElementById('status').selectedOptions[0].text;
+    
+    if (selectedStatus === 'rejected' || selectedStatus === 'cancelled') {
+        if (!confirm(`確定要將預約狀態變更為「${statusText}」嗎？此操作將發送通知郵件給用戶。`)) {
+            e.preventDefault();
+        }
+    }
+});
+</script>
+
+<style>
+.status-pending { color: orange; font-weight: bold; }
+.status-confirmed { color: green; font-weight: bold; }  
+.status-completed { color: blue; font-weight: bold; }
+.status-cancelled { color: gray; font-weight: bold; }
+.status-rejected { color: red; font-weight: bold; }
+
+.form-row textarea {
+    width: 100%;
+    max-width: 500px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}預約提醒 - 心理師通知{% endblock %}
+
+{% block header_title %}📋 預約提醒{% endblock %}
+{% block header_subtitle %}<p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">您明天有一場諮商預約</p>{% endblock %}
+
+{% block greeting %}
+<p>親愛的 {{ appointment.therapist.name }} 心理師，您好：</p>
+{% endblock %}
+
+{% block content %}
+<div class="alert info">
+    <strong>📅 預約提醒</strong><br>
+    您明天有一場心理諮商預約，請確認您的行程安排。
+</div>
+{% endblock %}
+
+{% block appointment_details %}
+<div class="appointment-card" style="border-left: 4px solid #667eea; background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);">
+    <h3 style="margin-top: 0; color: #667eea;">👨‍⚕️ 明天的預約</h3>
+    
+    <div style="text-align: center; padding: 25px; background-color: white; border-radius: 8px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 10px;">
+            📅 {{ appointment.slot.slot_time|date:"Y年m月d日" }}
+        </div>
+        <div style="font-size: 36px; font-weight: bold; color: #2d3748; margin-bottom: 10px;">
+            ⏰ {{ appointment.slot.slot_time|date:"H:i" }}
+        </div>
+        <div style="font-size: 14px; color: #666; background-color: #f7fafc; padding: 8px 15px; border-radius: 20px; display: inline-block;">
+            明天 {{ appointment.slot.slot_time|date:"l" }}
+        </div>
+    </div>
+</div>
+
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">👤 來談者資訊</h3>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">預約編號：</span>
+        <span class="detail-value"><strong style="color: #667eea;">#{{ appointment.id }}</strong></span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">來談者姓名：</span>
+        <span class="detail-value"><strong>{{ appointment.detail.name }}</strong></span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">聯絡電話：</span>
+        <span class="detail-value">{{ appointment.detail.phone }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">電子郵件：</span>
+        <span class="detail-value">{{ appointment.user.email }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">諮商方式：</span>
+        <span class="detail-value">
+            {% if appointment.consultation_type == 'online' %}
+                🖥️ 線上諮商
+            {% else %}
+                🏢 實體諮商
+            {% endif %}
+        </span>
+    </div>
+    
+    {% if appointment.consultation_type == 'offline' and appointment.therapist.office_location %}
+    <div class="appointment-detail">
+        <span class="detail-label">諮商地點：</span>
+        <span class="detail-value">📍 {{ appointment.therapist.office_location }}</span>
+    </div>
+    {% endif %}
+</div>
+
+{% if appointment.detail.main_concerns %}
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">💭 主要困擾</h3>
+    <div style="background-color: white; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+        {{ appointment.detail.main_concerns }}
+    </div>
+</div>
+{% endif %}
+
+{% if appointment.detail.previous_therapy %}
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">📋 過往經驗</h3>
+    <div class="appointment-detail">
+        <span class="detail-label">曾接受諮商：</span>
+        <span class="detail-value">
+            {% if appointment.detail.previous_therapy %}
+                ✅ 是
+            {% else %}
+                ❌ 否 (首次諮商)
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endif %}
+
+{% if appointment.detail.urgency %}
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">⚡ 緊急程度</h3>
+    <div class="appointment-detail">
+        <span class="detail-value">
+            {% if appointment.detail.urgency == 'low' %}
+                🟢 低度 - 一般關注
+            {% elif appointment.detail.urgency == 'medium' %}
+                🟡 中度 - 需要關注
+            {% elif appointment.detail.urgency == 'high' %}
+                🔴 高度 - 需要優先處理
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endif %}
+
+{% if appointment.detail.special_needs %}
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">🔧 特殊需求</h3>
+    <div style="background-color: white; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+        {{ appointment.detail.special_needs }}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block additional_info %}
+<div style="display: flex; gap: 20px; margin: 30px 0;">
+    <div style="flex: 1; background-color: #f0fff4; padding: 20px; border-radius: 8px; border: 1px solid #9ae6b4;">
+        <h4 style="margin-top: 0; color: #22543d;">✅ 明天請確認</h4>
+        <ul style="margin: 10px 0; padding-left: 20px; color: #22543d; line-height: 1.8;">
+            <li>確認諮商環境準備完成</li>
+            <li>檢查時間安排無衝突</li>
+            {% if appointment.consultation_type == 'online' %}
+            <li>測試線上會議設備</li>
+            <li>準備安靜的諮商環境</li>
+            {% else %}
+            <li>確認診間清潔整理</li>
+            <li>準備相關諮商資料</li>
+            {% endif %}
+        </ul>
+    </div>
+    <div style="flex: 1; background-color: #ebf8ff; padding: 20px; border-radius: 8px; border: 1px solid #90cdf4;">
+        <h4 style="margin-top: 0; color: #2a4365;">💡 專業提醒</h4>
+        <p style="color: #2a4365; line-height: 1.6; margin: 0;">
+            {% if appointment.detail.previous_therapy %}
+            <strong>有經驗來談者：</strong>可深入探討持續性議題
+            {% else %}
+            <strong>首次諮商：</strong>建議多花時間建立關係和說明流程
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="alert warning">
+    <strong>📞 如需調整</strong><br>
+    如果明天的時段有變動需求，請盡快聯繫管理團隊：<br>
+    📧 <a href="mailto:tpeap01@cyc.tw" style="color: #744210; text-decoration: none;"><strong>tpeap01@cyc.tw</strong></a><br>
+    ⚠️ 請確保提前通知來談者任何變更
+</div>
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 8px; margin: 30px 0; text-align: center;">
+    <h3 style="margin: 0 0 15px 0;">🤝 專業服務提醒</h3>
+    <p style="margin: 0; font-size: 16px; opacity: 0.9;">
+        感謝您為來談者提供專業的心理諮商服務。<br>
+        每一次的專業互動都是幫助他人成長的重要時刻。
+    </p>
+</div>
+{% endblock %}
+
+{% block footer %}
+<p>祝您明天的諮商順利進行。</p>
+<div class="footer-links">
+    <a href="mailto:tpeap01@cyc.tw">聯絡管理團隊</a>
+    <a href="#">預約管理</a>
+    <a href="#">專業資源</a>
+</div>
+<p>&copy; 2025 心理諮商預約系統. 保留所有權利。</p>
+{% endblock %}

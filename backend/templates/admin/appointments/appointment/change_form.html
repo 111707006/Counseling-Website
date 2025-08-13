@@ -1,0 +1,132 @@
+{% extends "admin/change_form.html" %}
+
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+<script>
+(function($) {
+    // 諮商室選項配置
+    const roomOptions = {
+        'online': [
+            {value: '', text: '---------'},
+            {value: 'online_room', text: '線上會議室'}
+        ],
+        'offline': [
+            {value: '', text: '---------'},
+            {value: 'room_2', text: '諮商室 2'},
+            {value: 'room_3', text: '諮商室 3'},
+            {value: 'room_4', text: '諮商室 4'},
+            {value: 'room_5', text: '諮商室 5'}
+        ]
+    };
+    
+    function updateRoomOptions() {
+        const consultationType = $('#id_consultation_type').val();
+        const roomSelect = $('#id_consultation_room');
+        const currentValue = roomSelect.val();
+        
+        // 清空現有選項
+        roomSelect.empty();
+        
+        // 根據諮商類型添加對應選項
+        if (roomOptions[consultationType]) {
+            roomOptions[consultationType].forEach(function(option) {
+                roomSelect.append(
+                    $('<option></option>').attr('value', option.value).text(option.text)
+                );
+            });
+            
+            // 嘗試保留原始選擇（如果仍然有效）
+            if (currentValue && roomSelect.find('option[value="' + currentValue + '"]').length > 0) {
+                roomSelect.val(currentValue);
+            }
+            
+            // 啟用諮商室選擇
+            roomSelect.prop('disabled', false);
+        } else {
+            // 如果沒有對應的諮商類型，顯示提示
+            roomSelect.append('<option value="">請先選擇諮商方式</option>');
+            roomSelect.prop('disabled', true);
+        }
+    }
+    
+    // 監聽諮商類型變化
+    $('#id_consultation_type').change(updateRoomOptions);
+    
+    // 頁面載入時初始化
+    updateRoomOptions();
+    
+    // 為備註欄位添加字數統計
+    const notesField = $('#id_admin_notes');
+    if (notesField.length > 0) {
+        // 創建字數統計顯示元素
+        const counterHtml = '<div id="notes-counter" style="margin-top: 5px; color: #666; font-size: 12px;">字數: <span id="notes-count">0</span></div>';
+        notesField.after(counterHtml);
+        
+        function updateCounter() {
+            const count = notesField.val().length;
+            $('#notes-count').text(count);
+            
+            // 超過建議長度時改變顏色
+            if (count > 500) {
+                $('#notes-counter').css('color', '#e74c3c');
+            } else if (count > 300) {
+                $('#notes-counter').css('color', '#f39c12');
+            } else {
+                $('#notes-counter').css('color', '#666');
+            }
+        }
+        
+        // 監聽輸入事件
+        notesField.on('input', updateCounter);
+        
+        // 初始化字數統計
+        updateCounter();
+    }
+    
+})(django.jQuery);
+</script>
+
+<style>
+/* 優化諮商安排區塊的樣式 */
+.form-row .field-consultation_room {
+    margin-bottom: 15px;
+}
+
+.form-row .field-admin_notes {
+    margin-bottom: 10px;
+}
+
+.field-admin_notes textarea {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.field-admin_notes textarea:focus {
+    border-color: #417690;
+    outline: none;
+    box-shadow: 0 0 5px rgba(65, 118, 144, 0.3);
+}
+
+/* 諮商室選擇的樣式 */
+.field-consultation_room select {
+    min-width: 200px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.field-consultation_room select:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+}
+
+/* 為諮商安排fieldset添加圖標 */
+.module h2:contains('諮商安排')::before {
+    content: '🏢 ';
+}
+</style>
+{% endblock %}

@@ -1,0 +1,92 @@
+# Docker Compose - 開發環境
+version: '3.8'
+
+services:
+  # MySQL 數據庫
+  db:
+    image: mysql:8.0
+    container_name: counseling_db_dev
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mindcare_v2_dev
+      MYSQL_USER: dev_user
+      MYSQL_PASSWORD: dev_password
+      MYSQL_ROOT_PASSWORD: root_dev_password
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    ports:
+      - "3307:3306"  # 使用不同端口避免衝突
+    networks:
+      - counseling_dev_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Django 後端 - 開發模式
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: base
+    container_name: counseling_backend_dev
+    restart: unless-stopped
+    environment:
+      - DEBUG=True
+      - MYSQL_DB=mindcare_v2_dev
+      - MYSQL_USER=dev_user
+      - MYSQL_PASSWORD=dev_password
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - SECRET_KEY=django-insecure-dev-key
+      - ALLOWED_HOSTS=*
+    volumes:
+      - ./backend:/app  # 掛載源代碼進行熱重載
+      - static_dev_volume:/app/static
+      - media_dev_volume:/app/media
+    ports:
+      - "8001:8000"  # 使用不同端口
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - counseling_dev_network
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+  # Next.js 前端 - 開發模式
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: deps
+    container_name: counseling_frontend_dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3001:3000"  # 使用不同端口
+    depends_on:
+      - backend
+    networks:
+      - counseling_dev_network
+    command: ["npm", "run", "dev"]
+
+# 網絡配置
+networks:
+  counseling_dev_network:
+    driver: bridge
+    name: counseling_dev_network
+
+# 數據卷配置
+volumes:
+  mysql_dev_data:
+    name: counseling_mysql_dev_data
+  static_dev_volume:
+    name: counseling_static_dev
+  media_dev_volume:
+    name: counseling_media_dev

@@ -1,0 +1,1094 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extrahead %}
+    <!-- FullCalendar CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FullCalendar JavaScript -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/zh-tw.js'></script>
+    
+    <style>
+        /* 主要容器樣式 */
+        .calendar-container {
+            max-width: 100%;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* 篩選區域樣式 */
+        .filter-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            color: white;
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+        
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            background: rgba(255,255,255,0.95);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn-primary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        /* 統計區域 */
+        .stats-section {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 日曆區域 */
+        .calendar-section {
+            padding: 20px;
+        }
+        
+        /* FullCalendar 客製化樣式 */
+        .fc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .fc-toolbar {
+            margin-bottom: 20px;
+        }
+        
+        .fc-toolbar-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .fc-button-primary {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .fc-button-primary:hover {
+            background-color: #5a67d8;
+            border-color: #5a67d8;
+        }
+        
+        /* 修復按鈕文字重複問題 */
+        .fc-button {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fc-button .fc-button-inner {
+            display: block;
+        }
+        
+        /* 確保按鈕文字只顯示一次 */
+        .fc-button::after {
+            content: none !important;
+        }
+        
+        .fc-button-group .fc-button {
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        
+        .fc-button-group .fc-button:first-child {
+            margin-left: 0;
+        }
+        
+        .fc-button-group .fc-button:last-child {
+            margin-right: 0;
+        }
+        
+        .fc-event {
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .fc-event:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* 週檢視和日檢視專用樣式 */
+        .fc-timegrid-event {
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        
+        .fc-timegrid-event .fc-event-main {
+            padding: 1px;
+        }
+        
+        .fc-timegrid-slot {
+            height: 40px !important;
+        }
+        
+        .fc-timegrid-slot-label {
+            vertical-align: middle;
+        }
+        
+        /* 時間軸標籤樣式 */
+        .fc-timegrid-axis {
+            width: 60px;
+        }
+        
+        .fc-timegrid-slot-label-frame {
+            text-align: center;
+        }
+        
+        /* 週檢視按鈕激活狀態 */
+        .fc-button-active {
+            background-color: #667eea !important;
+            border-color: #667eea !important;
+        }
+        
+        /* 響應式調整週檢視 */
+        @media (max-width: 768px) {
+            .fc-timegrid-event {
+                font-size: 10px;
+            }
+            
+            .fc-timegrid-slot {
+                height: 30px !important;
+            }
+            
+            .fc-timegrid-axis {
+                width: 50px;
+            }
+        }
+        
+        /* 心理師圖例 */
+        .legend-section {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .stats-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .legend-items {
+                justify-content: center;
+            }
+        }
+        
+        /* 詳情彈窗樣式 */
+        .appointment-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .appointment-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .modal-close:hover {
+            color: #000;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .detail-value {
+            color: #6c757d;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        /* 出席狀態樣式 */
+        .fc-event.attendance-pending {
+            opacity: 0.8;
+        }
+        
+        .fc-event.attendance-attended {
+            box-shadow: 0 0 6px rgba(40, 167, 69, 0.4);
+        }
+        
+        .fc-event.attendance-no_show {
+            box-shadow: 0 0 6px rgba(220, 53, 69, 0.4);
+        }
+        
+        .fc-event.attendance-leave {
+            box-shadow: 0 0 6px rgba(111, 66, 193, 0.4);
+        }
+
+        /* 載入動畫 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="calendar-container">
+    <!-- 篩選區域 -->
+    <div class="filter-section">
+        <form method="get" action="">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="therapist">心理師</label>
+                    <select name="therapist" id="therapist">
+                        <option value="">全部心理師</option>
+                        {% for therapist in therapists %}
+                            <option value="{{ therapist.id }}" 
+                                {% if filters.therapist == therapist.id|stringformat:"s" %}selected{% endif %}>
+                                {{ therapist.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="room">諮商室</label>
+                    <select name="room" id="room">
+                        <option value="">全部諮商室</option>
+                        {% for room_code, room_name in room_choices %}
+                            <option value="{{ room_code }}" 
+                                {% if filters.room == room_code %}selected{% endif %}>
+                                {{ room_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="consultation_type">諮商方式</label>
+                    <select name="consultation_type" id="consultation_type">
+                        <option value="">全部方式</option>
+                        {% for type_code, type_name in consultation_type_choices %}
+                            <option value="{{ type_code }}" 
+                                {% if filters.consultation_type == type_code %}selected{% endif %}>
+                                {{ type_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel"></i> 篩選
+                    </button>
+                    <a href="?" class="btn btn-primary">
+                        <i class="bi bi-arrow-clockwise"></i> 重置
+                    </a>
+                    <button type="button" class="btn btn-success" onclick="exportToExcel()">
+                        <i class="bi bi-file-earmark-excel"></i> Excel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- 統計區域 -->
+    <div class="stats-section">
+        <div class="stat-item">
+            <div class="stat-number" id="total-appointments">0</div>
+            <div class="stat-label">總預約數</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="today-appointments">0</div>
+            <div class="stat-label">今日預約</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="week-appointments">0</div>
+            <div class="stat-label">本週預約</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="active-therapists">0</div>
+            <div class="stat-label">活躍心理師</div>
+        </div>
+    </div>
+    
+    <!-- 日曆區域 -->
+    <div class="calendar-section">
+        <div id="calendar"></div>
+    </div>
+    
+    <!-- 出席狀態圖例 -->
+    <div class="legend-section">
+        <div class="legend-title">
+            <i class="bi bi-check-circle"></i> 出席狀態色彩圖例
+        </div>
+        <div class="legend-items">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ffa500;"></div>
+                <span>⏳ 待確認出席</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #28a745;"></div>
+                <span>✅ 已到</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #dc3545;"></div>
+                <span>❌ 未到</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #6f42c1;"></div>
+                <span>📝 請假</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 預約詳情彈窗 -->
+<div id="appointmentModal" class="appointment-modal">
+    <div class="appointment-modal-content">
+        <div class="modal-header">
+            <h3 id="modal-title">預約詳情</h3>
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+        </div>
+        <div id="modal-body">
+            <!-- 詳情內容將由 JavaScript 動態填充 -->
+        </div>
+        <div class="modal-actions">
+            <a id="edit-appointment-btn" href="#" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> 編輯預約
+            </a>
+            <button type="button" class="btn btn-info" onclick="closeModal()">
+                <i class="bi bi-x-circle"></i> 關閉
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 載入提示 -->
+<div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>正在載入日曆數據...</p>
+</div>
+
+<script>
+    // 全局變量
+    let calendar;
+    let allEvents = {{ events|safe }};
+    let attendanceColors = {{ attendance_colors|safe }};
+    
+    // 等待所有資源載入完成
+    let waitCount = 0;
+    function waitForFullCalendar() {
+        waitCount++;
+        console.log(`檢查次數: ${waitCount}, FullCalendar 狀態:`, typeof FullCalendar);
+        
+        if (typeof FullCalendar !== 'undefined') {
+            console.log('✅ FullCalendar 已載入');
+            console.log('📊 事件數據:', allEvents);
+            console.log('🔢 事件數量:', allEvents.length);
+            console.log('🎨 出席狀態顏色:', attendanceColors);
+            
+            document.getElementById('loading').style.display = 'none';
+            initializeCalendar();
+            updateStatistics();
+        } else {
+            console.log('⏳ 等待 FullCalendar 載入...');
+            if (waitCount > 50) { // 5秒後超時
+                console.error('❌ FullCalendar 載入超時');
+                document.getElementById('loading').innerHTML = '<div style="color: red;">❌ FullCalendar 載入失敗，請檢查網路連線</div>';
+                return;
+            }
+            setTimeout(waitForFullCalendar, 100);
+        }
+    }
+    
+    // 頁面載入完成後檢查 FullCalendar
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', waitForFullCalendar);
+    } else {
+        waitForFullCalendar();
+    }
+
+    // ===== 日曆功能函數 =====
+
+    // 初始化日曆
+    function initializeCalendar() {
+        console.log('初始化日曆，事件數量:', allEvents.length);
+        const calendarEl = document.getElementById('calendar');
+        
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'zh-tw',
+            height: 'auto',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: '今天',
+                month: '月',
+                week: '週',
+                day: '日'
+            },
+            events: allEvents,
+            eventClick: function(info) {
+                showAppointmentDetails(info.event);
+            },
+            eventMouseEnter: function(info) {
+                info.el.style.transform = 'scale(1.05)';
+                info.el.style.zIndex = '100';
+            },
+            eventMouseLeave: function(info) {
+                info.el.style.transform = 'scale(1)';
+                info.el.style.zIndex = 'auto';
+            },
+            dayMaxEvents: 3,
+            moreLinkClick: 'popover',
+            moreLinkText: function(num) {
+                return '還有 ' + num + ' 個預約';
+            },
+            eventDisplay: 'block',
+            displayEventTime: true,
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            },
+            // 時間軸設定 - 適用於週檢視和日檢視
+            slotMinTime: '08:00:00',
+            slotMaxTime: '20:00:00',
+            slotDuration: '00:30:00', // 30分鐘間隔
+            slotLabelInterval: '01:00:00', // 1小時標籤間隔
+            slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            },
+            allDaySlot: false,
+            nowIndicator: true,
+            weekends: true,
+            // 週檢視專用設定
+            weekNumbers: false,
+            weekNumberCalculation: 'ISO',
+            // 視圖切換時的處理
+            viewDidMount: function(info) {
+                console.log('切換到視圖:', info.view.type);
+                try {
+                    // 週檢視時調整高度
+                    if (info.view.type === 'timeGridWeek') {
+                        calendar.setOption('height', 600);
+                        console.log('週檢視高度已調整');
+                    } else if (info.view.type === 'timeGridDay') {
+                        calendar.setOption('height', 600);
+                        console.log('日檢視高度已調整');
+                    } else {
+                        calendar.setOption('height', 'auto');
+                        console.log('月檢視高度已調整');
+                    }
+                    
+                    // 修復按鈕文字重複問題
+                    setTimeout(function() {
+                        fixButtonText();
+                    }, 50);
+                    
+                } catch (error) {
+                    console.error('視圖切換時發生錯誤:', error);
+                }
+            },
+            // 視圖切換前的處理
+            viewWillUnmount: function(info) {
+                console.log('離開視圖:', info.view.type);
+            },
+            // 事件渲染優化
+            eventContent: function(info) {
+                // 自定義事件內容，確保在不同視圖下都能正確顯示
+                let timeText = info.timeText;
+                let title = info.event.title;
+                
+                // 週檢視和日檢視時顯示更多信息
+                if (info.view.type === 'timeGridWeek' || info.view.type === 'timeGridDay') {
+                    let therapist = info.event.extendedProps.therapist;
+                    let room = info.event.extendedProps.room;
+                    
+                    return {
+                        html: `
+                            <div style="font-size: 12px; line-height: 1.2;">
+                                <div style="font-weight: bold;">${timeText}</div>
+                                <div style="margin-top: 2px;">${title}</div>
+                                <div style="font-size: 10px; opacity: 0.8; margin-top: 1px;">
+                                    ${therapist} | ${room}
+                                </div>
+                            </div>
+                        `
+                    };
+                } else {
+                    // 月檢視保持簡潔
+                    return {
+                        html: `<div style="font-size: 12px;">${title}</div>`
+                    };
+                }
+            },
+            eventDidMount: function(info) {
+                const tooltip = createTooltip(info.event);
+                info.el.setAttribute('title', tooltip);
+                
+                // 處理出席狀態的視覺樣式
+                const attendanceStatus = info.event.extendedProps.attendanceStatusCode;
+                if (attendanceStatus) {
+                    info.el.classList.add('attendance-' + attendanceStatus);
+                }
+                
+                if (!info.event.extendedProps.hasSlot) {
+                    info.el.style.border = '2px dashed #e74c3c';
+                    info.el.style.opacity = '0.7';
+                    info.el.title += '\n⚠️ 待安排確切時間';
+                }
+            }
+        });
+        
+        calendar.render();
+        
+        // 修復按鈕文字重複問題
+        setTimeout(function() {
+            fixButtonText();
+        }, 100);
+    }
+
+    // 創建工具提示內容
+    function createTooltip(event) {
+        const props = event.extendedProps;
+        const startTime = new Date(event.start).toLocaleTimeString('zh-TW', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        let tooltip = `預約時間: ${startTime}
+心理師: ${props.therapist}
+諮商室: ${props.room}
+電話: ${props.phone}
+狀態: ${props.status}
+出席狀態: ${props.attendanceStatus || '待確認出席'}`;
+
+        if (!props.hasSlot) {
+            tooltip += '\n⚠️ 待安排確切時間';
+        }
+        
+        if (props.attendanceTime) {
+            const attendanceTime = new Date(props.attendanceTime).toLocaleString('zh-TW');
+            tooltip += `\n出席確認時間: ${attendanceTime}`;
+        }
+        
+        return tooltip;
+    }
+
+    // 顯示預約詳情彈窗
+    function showAppointmentDetails(event) {
+        const modal = document.getElementById('appointmentModal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const editBtn = document.getElementById('edit-appointment-btn');
+        
+        const props = event.extendedProps;
+        const startDate = new Date(event.start);
+        const endDate = new Date(event.end);
+        
+        modalTitle.textContent = `預約詳情 #${props.appointmentId}`;
+        editBtn.href = `/admin/appointments/appointment/${props.appointmentId}/change/`;
+        
+        modalBody.innerHTML = `
+            <div class="detail-grid">
+                <div class="detail-label">👤 個案姓名:</div>
+                <div class="detail-value">${event.title}</div>
+                
+                <div class="detail-label">📧 電子郵件:</div>
+                <div class="detail-value">${props.email}</div>
+                
+                <div class="detail-label">📱 聯絡電話:</div>
+                <div class="detail-value">${props.phone || '未提供'}</div>
+                
+                <div class="detail-label">👨‍⚕️ 心理師:</div>
+                <div class="detail-value">${props.therapist}</div>
+                
+                <div class="detail-label">📅 預約日期:</div>
+                <div class="detail-value">${startDate.toLocaleDateString('zh-TW')}</div>
+                
+                <div class="detail-label">🕐 預約時間:</div>
+                <div class="detail-value">${startDate.toLocaleTimeString('zh-TW', {hour: '2-digit', minute: '2-digit'})} - ${endDate.toLocaleTimeString('zh-TW', {hour: '2-digit', minute: '2-digit'})}</div>
+                
+                <div class="detail-label">🏢 諮商室:</div>
+                <div class="detail-value">${props.room}</div>
+                
+                <div class="detail-label">💻 諮商方式:</div>
+                <div class="detail-value">${props.consultationType}</div>
+                
+                <div class="detail-label">📋 預約狀態:</div>
+                <div class="detail-value">
+                    <span style="background-color: #c6f6d5; color: #22543d; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+                        ${props.status}
+                    </span>
+                    ${!props.hasSlot ? '<br><span style="color: #e74c3c; font-size: 12px;">⚠️ 待安排確切時間</span>' : ''}
+                </div>
+                
+                <div class="detail-label">🎯 出席狀態:</div>
+                <div class="detail-value">
+                    ${getAttendanceStatusBadge(props.attendanceStatusCode, props.attendanceStatus)}
+                    ${props.attendanceTime ? `<br><small style="color: #6c757d;">確認時間: ${new Date(props.attendanceTime).toLocaleString('zh-TW')}</small>` : ''}
+                </div>
+                
+                ${props.notes ? `
+                    <div class="detail-label">📝 管理員備註:</div>
+                    <div class="detail-value" style="grid-column: 1 / -1; margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        ${props.notes}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        
+        modal.style.display = 'block';
+    }
+
+    // 產生出席狀態徽章
+    function getAttendanceStatusBadge(statusCode, statusDisplay) {
+        const statusConfig = {
+            'pending': { color: '#ffa500', bg: '#fff3cd', icon: '⏳' },
+            'attended': { color: '#28a745', bg: '#d4edda', icon: '✅' },
+            'no_show': { color: '#dc3545', bg: '#f8d7da', icon: '❌' },
+            'leave': { color: '#6f42c1', bg: '#e2d9f3', icon: '📝' }
+        };
+        
+        const config = statusConfig[statusCode] || statusConfig['pending'];
+        
+        return `<span style="background-color: ${config.bg}; color: ${config.color}; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid ${config.color}20;">
+            ${config.icon} ${statusDisplay || '待確認出席'}
+        </span>`;
+    }
+
+    // 關閉彈窗
+    function closeModal() {
+        document.getElementById('appointmentModal').style.display = 'none';
+    }
+
+    // 點擊彈窗外部關閉
+    window.onclick = function(event) {
+        const modal = document.getElementById('appointmentModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    // 更新統計數據
+    function updateStatistics() {
+        console.log('更新統計數據，事件數量:', allEvents.length);
+        
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        
+        let todayCount = 0;
+        let weekCount = 0;
+        let therapistSet = new Set();
+        
+        allEvents.forEach(event => {
+            const eventDate = new Date(event.start);
+            
+            if (eventDate.toDateString() === today.toDateString()) {
+                todayCount++;
+            }
+            
+            if (eventDate >= startOfWeek && eventDate <= endOfWeek) {
+                weekCount++;
+            }
+            
+            // 繼續統計心理師數量（即使不再使用心理師顏色）
+            if (event.extendedProps.therapistId) {
+                therapistSet.add(event.extendedProps.therapistId);
+            }
+        });
+        
+        console.log('統計結果:', {
+            total: allEvents.length,
+            today: todayCount,
+            week: weekCount,
+            therapists: therapistSet.size
+        });
+        
+        document.getElementById('total-appointments').textContent = allEvents.length;
+        document.getElementById('today-appointments').textContent = todayCount;
+        document.getElementById('week-appointments').textContent = weekCount;
+        document.getElementById('active-therapists').textContent = therapistSet.size;
+    }
+
+    // 生成心理師色彩圖例
+    function generateLegend() {
+        const legendContainer = document.getElementById('legend-container');
+        const therapists = {};
+        
+        allEvents.forEach(event => {
+            const therapistId = event.extendedProps.therapistId;
+            const therapistName = event.extendedProps.therapist;
+            
+            if (therapistId && therapistName && !therapists[therapistId]) {
+                therapists[therapistId] = therapistName;
+            }
+        });
+        
+        let legendHTML = '';
+        for (const [therapistId, therapistName] of Object.entries(therapists)) {
+            const color = therapistColors[therapistId] || therapistColors.default;
+            legendHTML += `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${color};"></div>
+                    <span>${therapistName}</span>
+                </div>
+            `;
+        }
+        
+        if (legendHTML === '') {
+            legendHTML = '<div class="legend-item">暫無預約數據</div>';
+        }
+        
+        legendContainer.innerHTML = legendHTML;
+    }
+
+    // 獲取當前檢視的日期範圍
+    function getViewDateRange() {
+        const currentDate = calendar.getDate();
+        const viewType = calendar.view.type;
+        
+        if (viewType === 'dayGridMonth') {
+            // 月檢視：當月第一天到最後一天
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const startDate = new Date(year, month, 1);
+            const endDate = new Date(year, month + 1, 0, 23, 59, 59);
+            return { startDate, endDate, viewName: `${year}年${month + 1}月` };
+            
+        } else if (viewType === 'timeGridWeek') {
+            // 週檢視：本週日到週六
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+            startOfWeek.setHours(0, 0, 0, 0);
+            
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59);
+            
+            const weekStart = startOfWeek.toLocaleDateString('zh-TW', {month: 'numeric', day: 'numeric'});
+            const weekEnd = endOfWeek.toLocaleDateString('zh-TW', {month: 'numeric', day: 'numeric'});
+            
+            return { startDate: startOfWeek, endDate: endOfWeek, viewName: `${weekStart}-${weekEnd}週` };
+            
+        } else if (viewType === 'timeGridDay') {
+            // 日檢視：當天
+            const startDate = new Date(currentDate);
+            startDate.setHours(0, 0, 0, 0);
+            
+            const endDate = new Date(currentDate);
+            endDate.setHours(23, 59, 59);
+            
+            const dayName = currentDate.toLocaleDateString('zh-TW', {month: 'numeric', day: 'numeric', weekday: 'short'});
+            
+            return { startDate, endDate, viewName: `${dayName}` };
+        }
+    }
+    
+    // 根據檢視過濾事件
+    function getFilteredEventsForCurrentView() {
+        const dateRange = getViewDateRange();
+        
+        return allEvents.filter(event => {
+            const eventDate = new Date(event.start);
+            return eventDate >= dateRange.startDate && eventDate <= dateRange.endDate;
+        });
+    }
+
+    // Excel 匯出功能
+    function exportToExcel() {
+        const dateRange = getViewDateRange();
+        const filteredEvents = getFilteredEventsForCurrentView();
+        
+        console.log(`匯出 ${dateRange.viewName} 的預約，共 ${filteredEvents.length} 筆`);
+        
+        const exportData = filteredEvents.map(event => {
+            const startDate = new Date(event.start);
+            const props = event.extendedProps;
+            
+            return {
+                '預約編號': props.appointmentId,
+                '個案姓名': event.title,
+                '電子郵件': props.email,
+                '聯絡電話': props.phone || '',
+                '心理師': props.therapist,
+                '日期': startDate.toLocaleDateString('zh-TW'),
+                '時間': startDate.toLocaleTimeString('zh-TW', {hour: '2-digit', minute: '2-digit'}),
+                '諮商室': props.room,
+                '諮商方式': props.consultationType,
+                '預約狀態': props.status,
+                '出席狀態': props.attendanceStatus || '待確認出席',
+                '出席確認時間': props.attendanceTime ? new Date(props.attendanceTime).toLocaleString('zh-TW') : '',
+                '備註': props.notes || ''
+            };
+        });
+        
+        if (exportData.length === 0) {
+            alert(`${dateRange.viewName} 沒有預約數據可匯出`);
+            return;
+        }
+        
+        const csvContent = convertToCSV(exportData);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `預約排程_${dateRange.viewName}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function convertToCSV(objArray) {
+        const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+        let str = '\uFEFF';
+        
+        const headers = Object.keys(array[0]);
+        str += headers.join(',') + '\r\n';
+        
+        for (let i = 0; i < array.length; i++) {
+            let line = '';
+            for (let index in array[i]) {
+                if (line !== '') line += ',';
+                line += '"' + (array[i][index] || '').toString().replace(/"/g, '""') + '"';
+            }
+            str += line + '\r\n';
+        }
+        
+        return str;
+    }
+
+    
+    // 修復按鈕文字重複問題
+    function fixButtonText() {
+        console.log('修復按鈕文字...');
+        
+        // 檢查所有按鈕
+        const buttons = document.querySelectorAll('.fc-button');
+        buttons.forEach(button => {
+            const text = button.textContent;
+            
+            // 如果文字重複（例如 "日日" 或 "週週"）
+            if (text.length > 1) {
+                const half = text.length / 2;
+                const firstHalf = text.substring(0, half);
+                const secondHalf = text.substring(half);
+                
+                if (firstHalf === secondHalf) {
+                    console.log(`發現重複文字: ${text} -> ${firstHalf}`);
+                    button.textContent = firstHalf;
+                }
+            }
+        });
+        
+        // 特別處理已知的重複問題
+        const monthButton = document.querySelector('.fc-dayGridMonth-button');
+        const weekButton = document.querySelector('.fc-timeGridWeek-button');
+        const dayButton = document.querySelector('.fc-timeGridDay-button');
+        const todayButton = document.querySelector('.fc-today-button');
+        
+        if (monthButton && monthButton.textContent.includes('月月')) {
+            monthButton.textContent = '月';
+        }
+        if (weekButton && weekButton.textContent.includes('週週')) {
+            weekButton.textContent = '週';
+        }
+        if (dayButton && dayButton.textContent.includes('日日')) {
+            dayButton.textContent = '日';
+        }
+        if (todayButton && todayButton.textContent.includes('今天今天')) {
+            todayButton.textContent = '今天';
+        }
+    }
+</script>
+{% endblock %}

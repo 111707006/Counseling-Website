@@ -1,0 +1,117 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}預約申請確認 - 心理諮商預約系統{% endblock %}
+
+{% block header_title %}✅ 預約申請已收到{% endblock %}
+{% block header_subtitle %}<p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">感謝您的預約申請，我們將盡快為您安排</p>{% endblock %}
+
+{% block greeting %}
+<p>親愛的 {{ appointment.detail.name }} 先生/小姐，您好：</p>
+{% endblock %}
+
+{% block content %}
+<div class="alert success">
+    <strong>🎉 預約申請成功！</strong><br>
+    我們已收到您的心理諮商預約申請，專業團隊將在 24 小時內與您確認具體時間。
+</div>
+
+<p>以下是您的預約申請詳細資訊，請妥善保存此信件：</p>
+{% endblock %}
+
+{% block appointment_details %}
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">您的預約資訊</h3>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">預約編號：</span>
+        <span class="detail-value"><strong style="color: #667eea; font-size: 18px;">#{{ appointment.id }}</strong></span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">申請人姓名：</span>
+        <span class="detail-value">{{ appointment.detail.name }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">聯絡電話：</span>
+        <span class="detail-value">{{ appointment.detail.phone }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">指定心理師：</span>
+        <span class="detail-value">{{ appointment.therapist.name }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">申請時間：</span>
+        <span class="detail-value">{{ appointment.created_at|date:"Y年m月d日 H:i" }}</span>
+    </div>
+    
+    <div class="appointment-detail">
+        <span class="detail-label">目前狀態：</span>
+        <span class="detail-value">
+            <span style="background-color: #fef3cd; color: #856404; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+                ⏳ 待確認
+            </span>
+        </span>
+    </div>
+</div>
+
+<div class="appointment-card">
+    <h3 style="margin-top: 0; color: #667eea;">您的偏好時段</h3>
+    <p style="color: #666; margin-bottom: 15px; font-size: 14px;">我們將優先安排以下時段，如有調整會另行通知：</p>
+    {% for period in appointment.preferred_periods.all %}
+    <div class="appointment-detail">
+        <span class="detail-label">選擇 {{ forloop.counter }}：</span>
+        <span class="detail-value">
+            <strong>{{ period.date|date:"Y年m月d日" }}</strong>
+            {% if period.period == 'morning' %} 上午時段 (09:00-12:00)
+            {% elif period.period == 'afternoon' %} 下午時段 (13:00-17:00)
+            {% elif period.period == 'evening' %} 晚上時段 (18:00-21:00)
+            {% endif %}
+        </span>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block additional_info %}
+<div class="divider"></div>
+
+<div class="alert info">
+    <strong>📋 接下來的流程</strong><br>
+    <div style="margin-top: 15px; line-height: 1.8;">
+        <div>1. <strong>等待確認</strong> - 我們將在 24 小時內確認您的預約時間</div>
+        <div>2. <strong>收到通知</strong> - 確認後會發送詳細的預約通知郵件給您</div>
+        <div>3. <strong>準時赴約</strong> - 請依確認時間準時到達諮商地點</div>
+    </div>
+</div>
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <h4 style="margin-top: 0; color: #667eea;">📞 需要協助？</h4>
+    <p style="margin-bottom: 10px;">如果您需要：</p>
+    <ul style="margin: 10px 0; padding-left: 20px; color: #555;">
+        <li>修改預約資訊</li>
+        <li>取消預約申請</li>
+        <li>諮詢相關問題</li>
+    </ul>
+    <p>請隨時與我們聯繫：<a href="mailto:tpeap01@cyc.tw" style="color: #667eea; text-decoration: none;"><strong>tpeap01@cyc.tw</strong></a></p>
+</div>
+
+<div class="alert warning">
+    <strong>⚠️ 重要提醒</strong><br>
+    • 請保持您的聯絡電話暢通，以便我們與您確認時間<br>
+    • 如需取消預約，請至少提前 24 小時通知<br>
+    • 預約編號 <strong>#{{ appointment.id }}</strong> 請妥善保存，後續聯繫時需要提供
+</div>
+{% endblock %}
+
+{% block footer %}
+<p>感謝您選擇我們的心理諮商服務，期待與您見面。</p>
+<div class="footer-links">
+    <a href="mailto:tpeap01@cyc.tw">聯絡我們</a>
+    <a href="#">預約查詢</a>
+    <a href="#">服務說明</a>
+</div>
+<p>&copy; 2025 心理諮商預約系統. 保留所有權利。</p>
+{% endblock %}

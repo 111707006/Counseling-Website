@@ -1,0 +1,11 @@
+Django>=4.2
+mysqlclient
+python-dotenv
+djangorestframework>=3.14
+djangorestframework-simplejwt
+django-filter
+django-ckeditor
+Pillow
+user-agents
+gunicorn
+django-cors-headers 

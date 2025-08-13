@@ -75,7 +75,17 @@
       "Bash(touch:*)",
       "Bash(del test_calendar.py)",
       "Bash(claude doctor)",
-      "Bash(claude --version)"
+      "Bash(claude --version)",
+      "Bash(ren:*)",
+      "Bash(cp:*)",
+      "Bash(wmic:*)",
+      "Bash(chmod:*)",
+      "Bash(\"D:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\" --version)",
+      "Bash(wsl docker:*)",
+      "Bash(start \"\" \"D:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\")",
+      "Bash(docker:*)",
+      "Bash(where docker)",
+      "Bash(del:*)"
     ],
     "deny": []
   }
