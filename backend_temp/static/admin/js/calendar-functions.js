@@ -2,6 +2,7 @@
 
 // 初始化日曆
 function initializeCalendar() {
+    console.log('初始化日曆，事件數量:', allEvents.length);
     const calendarEl = document.getElementById('calendar');
     
     calendar = new FullCalendar.Calendar(calendarEl, {
@@ -61,6 +62,13 @@ function initializeCalendar() {
             if (therapistId) {
                 info.el.classList.add('therapist-' + therapistId);
             }
+            
+            // 如果沒有完整時間槽，添加特殊樣式
+            if (!info.event.extendedProps.hasSlot) {
+                info.el.style.border = '2px dashed #e74c3c';
+                info.el.style.opacity = '0.7';
+                info.el.title += '\n⚠️ 待安排確切時間';
+            }
         }
     });
     
@@ -75,11 +83,18 @@ function createTooltip(event) {
         minute: '2-digit'
     });
     
-    return `預約時間: ${startTime}
+    let tooltip = `預約時間: ${startTime}
 心理師: ${props.therapist}
 諮商室: ${props.room}
 電話: ${props.phone}
 狀態: ${props.status}`;
+
+    // 如果沒有完整時間槽，添加提醒
+    if (!props.hasSlot) {
+        tooltip += '\n⚠️ 待安排確切時間';
+    }
+    
+    return tooltip;
 }
 
 // 顯示預約詳情彈窗
@@ -131,6 +146,7 @@ function showAppointmentDetails(event) {
                 <span style="background-color: #c6f6d5; color: #22543d; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
                     ${props.status}
                 </span>
+                ${!props.hasSlot ? '<br><span style="color: #e74c3c; font-size: 12px;">⚠️ 待安排確切時間</span>' : ''}
             </div>
             
             ${props.notes ? `
@@ -161,6 +177,8 @@ window.onclick = function(event) {
 
 // 更新統計數據
 function updateStatistics() {
+    console.log('更新統計數據，事件數量:', allEvents.length);
+    
     const today = new Date();
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - today.getDay());
@@ -188,6 +206,13 @@ function updateStatistics() {
         if (event.extendedProps.therapistId) {
             therapistSet.add(event.extendedProps.therapistId);
         }
+    });
+    
+    console.log('統計結果:', {
+        total: allEvents.length,
+        today: todayCount,
+        week: weekCount,
+        therapists: therapistSet.size
     });
     
     document.getElementById('total-appointments').textContent = allEvents.length;

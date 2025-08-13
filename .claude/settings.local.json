@@ -72,7 +72,10 @@
       "Bash(mv:*)",
       "Bash(start \"\" \"test_api_call.html\")",
       "WebFetch(domain:localhost)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(del test_calendar.py)",
+      "Bash(claude doctor)",
+      "Bash(claude --version)"
     ],
     "deny": []
   }

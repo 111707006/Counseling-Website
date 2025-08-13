@@ -16,6 +16,13 @@ class Appointment(models.Model):
         ('completed', '已完成'),
         ('cancelled', '已取消'),
     ]
+    
+    ATTENDANCE_CHOICES = [
+        ('pending', '待確認出席'),
+        ('attended', '已到'),
+        ('no_show', '未到'),
+        ('leave', '請假'),
+    ]
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -83,6 +90,19 @@ class Appointment(models.Model):
     admin_notes = models.TextField(
         blank=True,
         help_text='管理員備註（僅管理員可見）'
+    )
+    
+    # 出席狀態管理
+    attendance_status = models.CharField(
+        max_length=20,
+        choices=ATTENDANCE_CHOICES,
+        default='pending',
+        help_text='個案出席狀態'
+    )
+    
+    attendance_time = models.DateTimeField(
+        null=True, blank=True,
+        help_text='出席確認時間'
     )
 
     def save(self, *args, **kwargs):

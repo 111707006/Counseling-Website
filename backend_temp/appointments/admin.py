@@ -56,12 +56,13 @@ class AppointmentAdmin(admin.ModelAdmin):
     form = AppointmentAdminForm
     list_display = (
         'id', 'get_user_info', 'get_therapist_name', 'consultation_type_display',
-        'get_room_display', 'status_display', 'created_at', 'confirmed_at',
-        'get_action_buttons'
+        'get_room_display', 'status_display', 'attendance_status_display', 
+        'created_at', 'confirmed_at', 'get_action_buttons'
     )
     
     list_filter = (
-        'status', 'consultation_type', 'consultation_room', 'therapist', 'created_at'
+        'status', 'attendance_status', 'consultation_type', 'consultation_room', 
+        'therapist', 'created_at'
     )
     
     search_fields = (
@@ -87,6 +88,10 @@ class AppointmentAdmin(admin.ModelAdmin):
         }),
         ('諮商安排', {
             'fields': ('consultation_room', 'admin_notes'),
+            'classes': ('collapse',),
+        }),
+        ('出席管理', {
+            'fields': ('attendance_status', 'attendance_time'),
             'classes': ('collapse',),
         }),
         ('偏好時段', {
@@ -152,6 +157,28 @@ class AppointmentAdmin(admin.ModelAdmin):
         )
     status_display.short_description = "狀態"
     
+    def attendance_status_display(self, obj):
+        """出席狀態顯示（帶顏色）"""
+        colors = {
+            'pending': '#ffa500',    # 橘色
+            'attended': '#28a745',   # 綠色
+            'no_show': '#dc3545',    # 紅色
+            'leave': '#6f42c1',      # 紫色
+        }
+        icons = {
+            'pending': '⏳',
+            'attended': '✅',
+            'no_show': '❌',
+            'leave': '📝',
+        }
+        color = colors.get(obj.attendance_status, 'black')
+        icon = icons.get(obj.attendance_status, '❓')
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{} {}</span>',
+            color, icon, obj.get_attendance_status_display()
+        )
+    attendance_status_display.short_description = "出席狀態"
+    
     def get_room_display(self, obj):
         """顯示諮商室"""
         if obj.consultation_room:
@@ -213,6 +240,14 @@ class AppointmentAdmin(admin.ModelAdmin):
     
     def save_model(self, request, obj, form, change):
         """當在編輯頁面保存時的自定義處理"""
+        from django.utils import timezone
+        
+        # 處理出席狀態變化
+        if change and 'attendance_status' in form.changed_data:
+            # 如果出席狀態有變化，記錄時間
+            if obj.attendance_status != 'pending':
+                obj.attendance_time = timezone.now()
+        
         # 如果是修改（不是新建）並且狀態有變化
         if change and 'status' in form.changed_data:
             old_status = Appointment.objects.get(pk=obj.pk).status
@@ -248,6 +283,10 @@ class AppointmentAdmin(admin.ModelAdmin):
         else:
             # 正常保存
             super().save_model(request, obj, form, change)
+            
+        # 如果有出席狀態變化，顯示訊息
+        if change and 'attendance_status' in form.changed_data:
+            messages.success(request, f'出席狀態已更新為「{obj.get_attendance_status_display()}」')
     
     # ===== 自定義視圖 =====
     
@@ -366,8 +405,6 @@ class AppointmentAdmin(admin.ModelAdmin):
         therapist_filter = request.GET.get('therapist', '')
         room_filter = request.GET.get('room', '')
         consultation_type_filter = request.GET.get('consultation_type', '')
-        start_date = request.GET.get('start_date', '')
-        end_date = request.GET.get('end_date', '')
         
         # 基本查詢：只顯示已確認的預約
         queryset = Appointment.objects.filter(status='confirmed').select_related(
@@ -381,61 +418,60 @@ class AppointmentAdmin(admin.ModelAdmin):
             queryset = queryset.filter(consultation_room=room_filter)
         if consultation_type_filter:
             queryset = queryset.filter(consultation_type=consultation_type_filter)
-        if start_date and end_date:
-            try:
-                start_dt = datetime.strptime(start_date, '%Y-%m-%d')
-                end_dt = datetime.strptime(end_date, '%Y-%m-%d') + timedelta(days=1)
-                queryset = queryset.filter(slot__slot_time__range=[start_dt, end_dt])
-            except ValueError:
-                pass
         
         # 準備日曆事件數據
         events = []
-        therapist_colors = {
-            # 為不同心理師分配顏色
-            'default': '#667eea'
+        
+        # 出席狀態顏色配置
+        attendance_colors = {
+            'pending': '#ffa500',    # 橘色
+            'attended': '#28a745',   # 綠色
+            'no_show': '#dc3545',    # 紅色
+            'leave': '#6f42c1',      # 紫色
+            'default': '#667eea'     # 預設藍色
         }
         
-        color_palette = [
-            '#667eea', '#764ba2', '#f093fb', '#f5576c', 
-            '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
-            '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3'
-        ]
-        
-        therapists = TherapistProfile.objects.all()
-        for i, therapist in enumerate(therapists):
-            therapist_colors[str(therapist.id)] = color_palette[i % len(color_palette)]
-        
         for appointment in queryset:
+            # 檢查是否有時間槽，如果沒有就使用預設時間
             if appointment.slot and appointment.slot.slot_time:
-                # 計算結束時間（預設1小時）
+                # 有完整時間資訊的預約
                 start_time = appointment.slot.slot_time
                 end_time = start_time + timedelta(hours=1)
-                
-                # 獲取心理師顏色
-                therapist_id = str(appointment.therapist.id) if appointment.therapist else 'default'
-                color = therapist_colors.get(therapist_id, therapist_colors['default'])
-                
-                event = {
-                    'id': appointment.id,
-                    'title': f"{appointment.detail.name if hasattr(appointment, 'detail') and appointment.detail.name else appointment.user.email}",
-                    'start': start_time.isoformat(),
-                    'end': end_time.isoformat(),
-                    'backgroundColor': color,
-                    'borderColor': color,
-                    'extendedProps': {
-                        'appointmentId': appointment.id,
-                        'therapist': appointment.therapist.name if appointment.therapist else '未分配',
-                        'therapistId': appointment.therapist.id if appointment.therapist else None,
-                        'room': appointment.get_consultation_room_display() if appointment.consultation_room else '未分配',
-                        'phone': appointment.detail.phone if hasattr(appointment, 'detail') else '',
-                        'email': appointment.user.email,
-                        'consultationType': appointment.get_consultation_type_display(),
-                        'notes': appointment.admin_notes or '',
-                        'status': appointment.get_status_display()
-                    }
+            else:
+                # 沒有時間槽的預約，使用今天的預設時間顯示
+                from django.utils import timezone
+                today = timezone.now().replace(hour=9, minute=0, second=0, microsecond=0)
+                start_time = today
+                end_time = today + timedelta(hours=1)
+            
+            # 根據出席狀態設定事件顏色
+            attendance_status = appointment.attendance_status
+            color = attendance_colors.get(attendance_status, attendance_colors['default'])
+            
+            event = {
+                'id': appointment.id,
+                'title': f"{appointment.detail.name if hasattr(appointment, 'detail') and appointment.detail.name else appointment.user.email}",
+                'start': start_time.isoformat(),
+                'end': end_time.isoformat(),
+                'backgroundColor': color,
+                'borderColor': color,
+                'extendedProps': {
+                    'appointmentId': appointment.id,
+                    'therapist': appointment.therapist.name if appointment.therapist else '待分配心理師',
+                    'therapistId': appointment.therapist.id if appointment.therapist else None,
+                    'room': appointment.get_consultation_room_display() if appointment.consultation_room else '待分配諮商室',
+                    'phone': appointment.detail.phone if hasattr(appointment, 'detail') else '',
+                    'email': appointment.user.email,
+                    'consultationType': appointment.get_consultation_type_display(),
+                    'notes': appointment.admin_notes or '',
+                    'status': appointment.get_status_display(),
+                    'hasSlot': bool(appointment.slot and appointment.slot.slot_time),
+                    'attendanceStatus': appointment.get_attendance_status_display(),
+                    'attendanceStatusCode': appointment.attendance_status,
+                    'attendanceTime': appointment.attendance_time.isoformat() if appointment.attendance_time else None
                 }
-                events.append(event)
+            }
+            events.append(event)
         
         # 獲取篩選選項
         therapists_list = TherapistProfile.objects.all()
@@ -445,16 +481,14 @@ class AppointmentAdmin(admin.ModelAdmin):
         context = {
             'title': '預約日曆排程系統',
             'events': json.dumps(events, cls=DjangoJSONEncoder),
-            'therapist_colors': json.dumps(therapist_colors),
+            'attendance_colors': json.dumps(attendance_colors),
             'therapists': therapists_list,
             'room_choices': room_choices,
             'consultation_type_choices': consultation_type_choices,
             'filters': {
                 'therapist': therapist_filter,
                 'room': room_filter,
-                'consultation_type': consultation_type_filter,
-                'start_date': start_date,
-                'end_date': end_date
+                'consultation_type': consultation_type_filter
             },
             'opts': self.model._meta,
             'has_view_permission': True,
