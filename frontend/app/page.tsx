@@ -10,12 +10,9 @@ export default function HomePage() {
     { src: "/images/唔談室2.JPG", alt: "唔談室環境2" },
     { src: "/images/唔談室3.JPG", alt: "唔談室環境3" },
     { src: "/images/唔談室4.JPG", alt: "唔談室環境4" },
-    { src: "/images/唔談室5.JPG", alt: "唔談室環境5" },
-    { src: "/images/唔談室6.JPG", alt: "唔談室環境6" }
+    { src: "/images/唔談室5.JPG", alt: "唔談室環境5" }
   ]
   
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const imagesPerView = 4
   const [homepageAnnouncements, setHomepageAnnouncements] = useState<AnnouncementHomepageData | null>(null)
   const [announcementsLoading, setAnnouncementsLoading] = useState(true)
 
@@ -33,25 +30,6 @@ export default function HomePage() {
 
     fetchHomepageAnnouncements()
   }, [])
-  
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex + imagesPerView >= images.length ? 0 : prevIndex + 1
-    )
-  }
-  
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? Math.max(0, images.length - imagesPerView) : prevIndex - 1
-    )
-  }
-  
-  const visibleImages = images.slice(currentIndex, currentIndex + imagesPerView)
-  // 如果不足4張，從頭補齊
-  if (visibleImages.length < imagesPerView) {
-    const remaining = imagesPerView - visibleImages.length
-    visibleImages.push(...images.slice(0, remaining))
-  }
 
   return (
     <div className="min-h-screen">
@@ -349,61 +327,21 @@ export default function HomePage() {
               我們提供溫馨、安全且隱私的諮商環境，讓您能在舒適的空間中敞開心扉，與心理師進行深度對話。
             </p>
             
-            {/* Carousel Container */}
-            <div className="relative">
-              {/* Left Arrow */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 hover:scale-110"
-                aria-label="Previous images"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              {/* Images Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500 ease-in-out">
-                {visibleImages.map((image, index) => (
-                  <div key={`${currentIndex}-${index}`} className="group">
-                    <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                      <Image
-                        src={image.src}
-                        alt={image.alt}
-                        width={400}
-                        height={300}
-                        className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
+            {/* Images Grid - Static Display */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {images.map((image, index) => (
+                <div key={index} className="group">
+                  <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      width={400}
+                      height={300}
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                ))}
-              </div>
-
-              {/* Right Arrow */}
-              <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 hover:scale-110"
-                aria-label="Next images"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-                </button>
-
-              {/* Dots Indicator */}
-              <div className="flex justify-center mt-6 space-x-2">
-                {Array.from({ length: Math.ceil(images.length - imagesPerView + 1) }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      currentIndex === index ? 'bg-black' : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
             
             <div className="text-center mt-8">

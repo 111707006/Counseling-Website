@@ -85,7 +85,9 @@
       "Bash(start \"\" \"D:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\")",
       "Bash(docker:*)",
       "Bash(where docker)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(start-complete.bat)",
+      "Bash(tasklist:*)"
     ],
     "deny": []
   }

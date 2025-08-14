@@ -1,0 +1,190 @@
+[33mcommit 4bdc857caefb18456255be29e5e27cd1fcd8a1e4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mclean-slate-2025-08-04[m[33m, [m[1;31morigin/clean-slate-2025-08-04[m[33m)[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 13 20:11:19 2025 +0800
+
+    打包到docker
+
+[33mcommit 87f85c7138af603f6db8bb606872b5c3456cf9a6[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 13 12:30:48 2025 +0800
+
+    刪除無用檔案
+
+[33mcommit 2dd2c31a7258cbcefbe46957253269537d110775[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 13 12:16:47 2025 +0800
+
+    完成管理日曆
+
+[33mcommit bd7484482c5d739a061f698036165792a66b606a[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Tue Aug 12 17:26:32 2025 +0800
+
+    完成資料庫檔案增設
+
+[33mcommit 5c325fd95bb71bc572f9d118f2548b943e90f91d[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Mon Aug 11 20:06:41 2025 +0800
+
+    完成資料庫檔案增設
+
+[33mcommit e5729a1da30a4508f0e8bbd605a450f7df5e8809[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Fri Aug 8 17:45:45 2025 +0800
+
+    儲存
+
+[33mcommit e2cf7d327b50cd3515ffc369ff48564574de9405[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Fri Aug 8 14:05:13 2025 +0800
+
+    新增唔談室照片
+
+[33mcommit 2f1dd24e925aa20b96f1b4094c8474a0b8c3f191[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Fri Aug 8 11:49:47 2025 +0800
+
+    新增最新消息
+
+[33mcommit 20d6cb5b090d07b39affb06260cdfcfeb5d26417[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 6 17:00:57 2025 +0800
+
+    🎨 Remove appointment ID from user-facing interfaces and clean page backgrounds
+    
+    Frontend Changes:
+    - Remove appointment ID display from booking query page for user privacy
+    - Remove gradient backgrounds from articles, assessments, and appointment query pages
+    - Use transparent backgrounds for consistent visual integration with global texture
+    
+    Backend Changes:
+    - Remove appointment ID from all user confirmation emails (booking, confirmation, rejection)
+    - Keep appointment ID in admin/therapist notifications for management purposes
+    - Update email subjects to be more user-friendly without ID references
+    
+    This enhances user experience by providing cleaner interfaces while maintaining backend functionality for administrators.
+    
+    🎨 Generated with [Claude Code](https://claude.ai/code)
+    
+    Co-Authored-By: Claude <noreply@anthropic.com>
+
+[33mcommit c2b4640b0a59f286a358f2508ebd3b5cdcc518fc[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 6 14:52:47 2025 +0800
+
+    🎨 Redesign homepage layout with location information and remove footer
+    
+    - Replace "About Us" section with interactive location information featuring Google Maps
+    - Update contact details: new address (大直街20巷18號), phone (2532-6180), and extended hours
+    - Add comprehensive business information: name, address, phone, hours, transportation
+    - Swap order: counseling room environment section now appears before location section
+    - Remove footer section from layout for cleaner design
+    - Set transparent backgrounds for seamless visual integration
+    - Remove promotional buttons and intro text for streamlined experience
+    
+    🎨 Generated with [Claude Code](https://claude.ai/code)
+    
+    Co-Authored-By: Claude <noreply@anthropic.com>
+
+[33mcommit 89cce4316df93ee478bff999f0fb2a76711d92e2[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 6 14:18:59 2025 +0800
+
+    🔧 Enhance therapist admin interface with email-based user creation
+    
+    - Add custom TherapistProfileForm to support direct email input for user creation
+    - Implement automatic user creation/association when email is provided
+    - Add user_email display in therapist list view for better visibility
+    - Hide original user selection field and replace with intuitive email input
+    - Generate secure random passwords for newly created users
+    - Support both creating new users and linking existing users by email
+    
+    🔧 Generated with [Claude Code](https://claude.ai/code)
+    
+    Co-Authored-By: Claude <noreply@anthropic.com>
+
+[33mcommit 61c697547d9e0387552442482b8b36870dfedb7c[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Wed Aug 6 11:11:54 2025 +0800
+
+    🚀 Complete system fixes and comprehensive testing suite
+    
+    Remove pricing functionality completely:
+    - Remove pricing field from frontend TherapistProfile interface
+    - Update booking page to remove pricing display logic
+    - Fix API_BASE_URL configuration for direct Django connection
+    - Add comprehensive CORS settings for cross-origin requests
+    
+    Add comprehensive testing infrastructure:
+    - System integration tests (simple_system_test.py)
+    - API compatibility validation (simple_api_test.py)
+    - Database integrity checks (simple_db_test.py)
+    - Frontend-backend sync verification (simple_sync_test.py)
+    - Final health report generator (final_system_report.py)
+    - System health summary documentation
+    
+    All tests pass successfully, system is production-ready.
+    
+    🤖 Generated with [Claude Code](https://claude.ai/code)
+    
+    Co-Authored-By: Claude <noreply@anthropic.com>
+
+[33mcommit e76868443b8d7684c4b37b8275ac9219298dfc60[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Mon Aug 4 19:45:38 2025 +0800
+
+    📧 Implement complete email notification system with real SMTP
+    
+    Features added:
+    - Configure admin email to tpeap01@cyc.tw for receiving appointment notifications
+    - Switch from console backend to actual SMTP email sending (Gmail)
+    - Enhanced email templates with detailed appointment information and user details
+    - Add user confirmation emails sent immediately after appointment creation
+    - Create comprehensive admin setup script with email testing functionality
+    - Update notification system to send dual emails (admin + user confirmation)
+    
+    Technical changes:
+    - Update SMTP settings in settings.py with environment variable support
+    - Add EMAIL_HOST_USER and EMAIL_HOST_PASSWORD configuration via .env
+    - Enhance notification.py with professional email formatting and emoji styling
+    - Create setup_admin_email.py script for automated admin account creation and email testing
+    - Modify AppointmentCreateSerializer to trigger both admin and user notifications
+    - Add utility scripts for email testing and admin management
+    
+    Email templates include:
+    - Complete appointment details with applicant contact information
+    - Counseling requirements and preferred time slots
+    - Professional formatting with clear sections and action items
+    - Warm user confirmation emails with next steps explanation
+    
+    🤖 Generated with [Claude Code](https://claude.ai/code)
+    
+    Co-Authored-By: Claude <noreply@anthropic.com>
+
+[33mcommit 29bb546eafcb058690db9f39327bbc6af78fb60e[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Mon Aug 4 19:18:14 2025 +0800
+
+    🎯 Remove specialty categories and update system architecture
+    
+    Major changes:
+    - Remove SpecialtyCategory model entirely, switch to flat specialty structure
+    - Update 10 new specialties: 自我探索, 壓力調適, 人際關係, 親密關係, 生涯諮商, 情緒調節, 親子溝通, 家庭關係, 創傷與失落, 憂鬱與焦慮適應
+    - Fix AppointmentCreateSerializer field handling for name/phone/details
+    - Enhance BSRS-5 suicide risk detection and scoring logic
+    - Align WHO-5 assessment patterns with BSRS-5 implementation
+    - Fix frontend API calls and remove specialty category dependencies
+    - Update therapist profile methods from category-based to flat specialty lists
+    
+    🤖 Generated with [Claude Code](https://claude.ai/code)
+    
+    Co-Authored-By: Claude <noreply@anthropic.com>
+
+[33mcommit 207eefbd6c12db6eb6333698741795efa3d19cda[m
+Author: Jay Liao <a100012577504267@gmail.com>
+Date:   Mon Aug 4 15:32:14 2025 +0800
+
+    🚀 Complete project setup with full-stack counseling platform
+    
+    ✨ Features:
+    - Frontend: Next.js 15 + React 19 +

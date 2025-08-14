@@ -207,8 +207,13 @@ TIME_ZONE = 'Asia/Taipei'
 USE_I18N = True
 USE_TZ = True
 
+# ✅ 靜態文件設定
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
+# ✅ 媒體文件設定  
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

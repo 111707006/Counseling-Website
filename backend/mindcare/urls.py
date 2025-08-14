@@ -17,6 +17,7 @@ urlpatterns = [
     path('analytics/', include('analytics.urls')),  # 網站分析
 ]
 
-# 開發環境下提供媒體檔案服務
+# 開發環境下提供媒體檔案和靜態文件服務
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
