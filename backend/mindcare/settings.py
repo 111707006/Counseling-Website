@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-temp")
 
 # 🚧 開發階段建議設定 True，正式部署記得關閉
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 # 允許的前端來源（React 前端用）
 ALLOWED_HOSTS = ["*"]  # 或指定 frontend 網域
@@ -57,8 +57,6 @@ MIDDLEWARE = [
 # ✅ 主 URL 配置
 ROOT_URLCONF = 'mindcare.urls'
 
-# Debug: 印出 MYSQL_PASSWORD 是否有正確讀取
-print('DEBUG: MYSQL_PASSWORD from env =', os.getenv('MYSQL_PASSWORD'))
 
 # ✅ TEMPLATES 設定（Django admin 需要）
 TEMPLATES = [
@@ -93,8 +91,6 @@ REST_FRAMEWORK = {
 # ✅ 自訂使用者模型
 AUTH_USER_MODEL = 'users.User'
 
-# Debug: 印出 MYSQL_DB 是否有正確讀取
-print('DEBUG: MYSQL_DB from env =', os.getenv('MYSQL_DB'))
 
 # ✅ 資料庫設定（MySQL，讀取環境變數）
 DATABASES = {

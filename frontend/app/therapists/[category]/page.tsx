@@ -121,6 +121,7 @@ export default function TherapistListPage() {
                           src={therapist.photo || "/placeholder.svg"}
                           alt={therapist.name}
                           className="w-full h-full object-cover"
+                          style={{ objectPosition: 'center top' }}
                         />
                       </div>
                       <h3 className="text-lg font-bold text-brand-text">{therapist.name}</h3>

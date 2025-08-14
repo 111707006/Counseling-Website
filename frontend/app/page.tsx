@@ -43,94 +43,19 @@ export default function HomePage() {
     >
 
         <div className="relative max-w-4xl mx-auto">
-          {/* Scaled Container for clean-hero-design.png and all overlays */}
-          <div className="relative transform scale-110 origin-center">
-            {/* Title Text Overlay */}
-            <div className="absolute top-[8%] left-1/2 transform -translate-x-1/2 text-center">
-              <h1
-                className="font-bold mb-2"
-                style={{
-                  fontSize: 'calc(2rem + 5px)', // 3xl 約2rem，+5px
-                  color: '#000',
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-                  position: 'relative',
-                  top: '5px',
-                  left: '15px',
-                }}
-              >
-                張老師台北心理諮商所
-              </h1>
-            </div>
+          {/* Main Container */}
+          <div className="relative">
+            {/* Main hero image */}
+            <Image
+              src="/images/hero-design.png"
+              alt="張老師台北心理諮商所服務介紹"
+              width={1200}
+              height={1600}
+              className="w-full h-auto"
+              priority
+            />
 
-            {/* Subtitle Text */}
-            <div className="absolute top-[15%] left-1/2 transform -translate-x-1/2 text-center">
-              <p
-                className="text-lg md:text-xl mb-1"
-                style={{
-                  color: '#000',
-                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                }}
-              >
-                心理諮商是一次與自己的語言整理
-              </p>
-              <p
-                className="text-base md:text-lg"
-                style={{
-                  color: '#000',
-                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                }}
-              >
-                找出自己真正的聲音...
-              </p>
-            </div>
-
-            {/* Additional descriptive text overlays */}
-            <div
-              className="absolute top-[26%] right-[30%] text-sm max-w-xs text-center"
-              style={{
-                color: '#000',
-                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-              }}
-            >
-              <p>從一通電話開始，張老師開啟了陪伴的旅程。</p>
-              <p>台北諮商所秉持著關懷、專業與經驗的初心，</p>
-              <p>期盼在您需要的時刻，成為那個陪伴您任您的人。</p>
-            </div>
-            <div
-              className="absolute top-[38%] right-[15%] max-w-xs text-center"
-              style={{
-                color: '#000',
-                fontSize: '1.2rem',
-                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-              }}
-            >
-              心理諮商是一次與自己的語言整理
-            </div>
-            <div
-              className="absolute top-[44%] right-[26%]  max-w-xs text-center"
-              style={{
-                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-              }}
-            >
-              
-              <p className="mb-2">所內聚集了專業且擁有豐富經驗的心理師，</p>
-              <p className="mb-2">無論您面臨什麼樣的困擾或需求，</p>
-              <p className="mb-2">我們都會成為您堅實的支持與幫助。</p>
-              <p>能成為您堅實的支持與幫助。</p>
-            </div>
-
-            <div
-              className="absolute top-[62%] left-[35%]  max-w-xs text-center"
-              style={{
-                fontSize: '1.1rem',
-                textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-              }}
-            >
-              <p className="mb-1">心理測驗，是一次與自己對話的起點。</p>
-              <p>在這裡，慢慢找到屬於你的聲音與步調...</p>
-            </div>
-
-            {/* 最新消息布告欄 - 小巧設計 */}
+            {/* 最新消息布告欄 */}
             <div className="absolute bottom-[8%] left-1/2 transform -translate-x-1/2 w-full max-w-sm">
               <div className="bg-brand-bg/95 backdrop-blur-sm rounded-lg shadow-lg border border-brand-orange/30 p-3">
                 {/* 布告欄標題 */}
@@ -178,16 +103,6 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-
-            {/* Main hero image */}
-            <Image
-              src="/images/clean-hero-design.png"
-              alt="張老師台北心理諮商所服務介紹"
-              width={1200}
-              height={1600}
-              className="w-full h-auto"
-              priority
-            />
 
             {/* Clickable Hotspots */}
            
